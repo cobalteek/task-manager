@@ -1,0 +1,12 @@
+
+@tailwind utilities;
+:root {
+  margin: 0;
+  padding: 0;
+  --font-sans: 'Inter', sans-serif;
+  --bg-header: #111111;
+  --bg-context: #17161c;
+  --bg-back: #1f1f29;
+  --bg-modal: #17161c;
+
+}
