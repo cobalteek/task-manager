@@ -19,6 +19,12 @@ async function onLogin() {
 
   await navigateTo('/dashboard')
 }
+
+definePageMeta({
+  middleware: [
+    'guest',
+  ],
+})
 </script>
 
 <template>

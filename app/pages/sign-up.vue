@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useAuth } from '~~/composables/useAuth'
+
+const { login } = useAuth()
 const fields = [
   { key: 'name', type: 'text', placeholder: 'Name' },
   { key: 'email', type: 'email', placeholder: 'Email' },
@@ -27,14 +30,11 @@ async function onRegister() {
     })
 
     // опционально: сразу логин
-    await $fetch('/api/auth/login', {
-      method: 'POST',
-      body: { email: form.value.email, password: form.value.password },
-    })
+    await login(form.value.email, form.value.password)
 
     await navigateTo('/dashboard')
   } catch (e: any) {
-    // Nuxt/ofetch обычно кладёт статус сюда
+
     const status = e?.statusCode || e?.status || e?.response?.status
     const message = e?.data?.message || e?.message || 'Registration failed'
 
@@ -47,6 +47,12 @@ async function onRegister() {
     console.error(e)
   }
 }
+
+definePageMeta({
+  middleware: [
+    'guest',
+  ],
+})
 </script>
 
 <template>

@@ -33,7 +33,6 @@ export function useAuth() {
     authReady.value = false
     await $fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
     user.value = null
-    await fetchUser()
   }
 
   return { user, authReady, fetchUser, login, logout }

@@ -2,8 +2,6 @@
 import {useAuth} from "~~/composables/useAuth";
 const { user, authReady }  = useAuth()
 
-const isLoggedIn = computed(() => !!user.value)
-
 definePageMeta({
   middleware: [
     'auth',
@@ -19,7 +17,7 @@ definePageMeta({
       <p> Your email: {{ user?.email }}</p>
 
     </div>
-    <div v-else class="text-xl text-orange-600">
+    <div v-else-if="!authReady" class="text-xl text-orange-600">
       Loading...
     </div>
   </div>
