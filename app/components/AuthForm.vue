@@ -28,18 +28,18 @@ function setValue(key: string, value: string) {
   <div class="w-2/6 min-w-[300px] max-w-[330px] max-h-4/6 p-10 bg-[var(--bg-modal)] border border-solid border-neutral rounded-xl flex overflow-hidden">
     <div class="flex mx-auto flex-col justify-between items-center">
       <h4 class="font-bold text-xl mb-2 ">
-        {{ props.name }}
+        {{ name }}
       </h4>
       <form @submit.prevent="emit('submit')" class="flex mx-auto flex-col justify-between items-center">
           <input
-            v-for="field in props.inputs"
+            v-for="field in inputs"
             :key="field.key"
-            :value="props.modelValue[field.key] ?? ''"
+            :value="modelValue[field.key] ?? ''"
             @input="setValue(field.key, ($event.target as HTMLInputElement).value)"
             :type="field.type"
             :placeholder="field.placeholder"
             class="p-1 pl-2 w-100 mb-5 rounded-md active:border-gray-600 text-black"/>
-        <div v-if="props.sex" class="flex gap-6">
+        <div v-if="sex" class="flex gap-6">
           <label class="flex items-center gap-2 cursor-pointer">
             <input
               type="radio"
@@ -49,7 +49,7 @@ function setValue(key: string, value: string) {
             peer-checked:border-gray-300
             peer-checked:bg-gray-600
             transition"
-              :checked="props.modelValue.gender === 'male'"
+              :checked="modelValue.gender === 'male'"
               @change="setValue('gender', 'male')"
             />
             <span>Male</span>
@@ -63,22 +63,22 @@ function setValue(key: string, value: string) {
              peer-checked:border-gray-300
             peer-checked:bg-gray-600
             transition"
-              :checked="props.modelValue.gender === 'female'"
+              :checked="modelValue.gender === 'female'"
               @change="setValue('gender', 'female')"
             />
             <span>Female</span>
           </label>
         </div>
         <button type="submit" class="w-1/2 text-bold bg-gray-800 mt-3 rounded-xl p-1 hover:bg-gray-600 transition duration-300">
-          {{props.btnName}}
+          {{btnName}}
         </button>
       </form>
       <div class="flex flex-col justify-between items-center pt-3 w-full">
         <div>
-          {{props.disc}}
+          {{disc}}
         </div>
-        <NuxtLink v-if="props.textLink" :to="props.link" class="text-blue-200 hover:bg-gray-600 transition duration-300">
-          {{props.textLink}}
+        <NuxtLink v-if="textLink" :to="link" class="text-blue-200 hover:bg-gray-600 transition duration-300">
+          {{textLink}}
         </NuxtLink>
       </div>
     </div>

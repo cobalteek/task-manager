@@ -1,4 +1,4 @@
-import type { User } from '../types/api.ts'
+import type { User } from '../types/user.ts'
 
 export function useAuth() {
   const user = useState<User | null>('user', () => null)
