@@ -26,7 +26,7 @@ const logout_ = async () => {
       </NuxtLink>
       <NuxtLink to="/contact">
         Contact
-      </NuxtLink>Об
+      </NuxtLink>
     </div>
     <div v-if="user" class="sm: mr-1">
       <button @click="logout_" class="inline-flex items-center justify-center bg- border-2 rounded p-0.5 sm: mr-4">
