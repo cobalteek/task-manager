@@ -1,47 +1,35 @@
 <script setup lang="ts">
-const fields: {
-  name: keyof Form
-  type: string
-  placeholder: string
-}[] = [
-  {
-    name: '',
-    type: 'email',
-    placeholder: 'Email',
-    validate: (value) =>
-      !value.includes('@') ? 'Некорректный email' : ''},
-  {
-    name: '',
-    type: 'password',
-    placeholder: 'Password',
-    validate: (value) =>
-      value.length < 6 ? 'Минимум 6 символов' : ''
-  }
-];
-function validate() {
-  let isValid = true
+import { useAuth } from '~~/composables/useAuth'
 
-  fields.forEach(field => {
-    const error = field.validate?.(form[field.name])
-    errors[field.name] = error || ''
-    if (error) isValid = false
-  })
+const { login } = useAuth()
+const fields = [
+  { key: 'email', type: 'email', placeholder: 'Email' },
+  { key: 'password', type: 'password', placeholder: 'Password' },
+] as const
 
-  return isValid
-}
-
-const form = reactive({ email: '', password: '' })
+const form = ref({
+  email: '',
+  password: '',
+})
 
 async function onLogin() {
-  await $fetch('/api/auth/login', { method: 'POST', body: form })
+  console.log('LOGIN BODY:', form.value)
+
+  await login(form.value.email, form.value.password)
+
   await navigateTo('/dashboard')
 }
 </script>
 
 <template>
-    <AuthForm name="Sign in" :inputs="fields" btn-name="Auth" disc="New to Task Manager?" text-link="Create an account" link="/sign-up"/>
+  <AuthForm
+    name="Sign In"
+    :inputs="fields"
+    btn-name="Login"
+    disc="No account?"
+    text-link="Sign up"
+    link="/sign-up"
+    v-model="form"
+    @submit="onLogin"
+  />
 </template>
-
-<style scoped>
-
-</style>

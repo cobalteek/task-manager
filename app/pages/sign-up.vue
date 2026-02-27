@@ -1,30 +1,63 @@
 <script setup lang="ts">
-const fields: {
-  name: keyof Form
-  type: string
-  placeholder: string
-}[]   = [
-  {name: '', type: 'text', placeholder: 'Name'},
-  {name: '', type: 'text', placeholder: 'Last Name'},
-  {name: '', type: 'email', placeholder: 'Email'},
-  {name: '', type: 'password', placeholder: 'Password'},
-  {name: '', type: 'password', placeholder: 'Confirm password'},
-]
+const fields = [
+  { key: 'name', type: 'text', placeholder: 'Name' },
+  { key: 'email', type: 'email', placeholder: 'Email' },
+  { key: 'password', type: 'password', placeholder: 'Password' },
+  { key: 'confirmPassword', type: 'password', placeholder: 'Confirm password' }
+] as const
 
-const form = reactive({ email: '', password: '', name: '' })
+const form = ref({
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  gender: ''
+})
 
 async function onRegister() {
-  await $fetch('/api/auth/register', { method: 'POST', body: form })
-  // обычно после регистрации — сразу логин
-  await $fetch('/api/auth/login', { method: 'POST', body: { email: form.email, password: form.password } })
-  await navigateTo('/dashboard')
+  if (form.value.password !== form.value.confirmPassword) {
+    alert('Passwords do not match')
+    return
+  }
+
+  try {
+    await $fetch('/api/auth/register', {
+      method: 'POST',
+      body: { name: form.value.name, email: form.value.email, password: form.value.password },
+    })
+
+    // опционально: сразу логин
+    await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: { email: form.value.email, password: form.value.password },
+    })
+
+    await navigateTo('/dashboard')
+  } catch (e: any) {
+    // Nuxt/ofetch обычно кладёт статус сюда
+    const status = e?.statusCode || e?.status || e?.response?.status
+    const message = e?.data?.message || e?.message || 'Registration failed'
+
+    if (status === 409) {
+      alert('Этот email уже зарегистрирован. Попробуй Sign in.')
+      return
+    }
+
+    alert(message)
+    console.error(e)
+  }
 }
 </script>
 
 <template>
-  <AuthForm name='Sign Up' :inputs="fields" :sex="true" btn-name="Register" disc="Have an account?" text-link="Sign in" link="/sign-in"/>
+  <AuthForm
+    name='Sign Up'
+    :inputs="fields"
+    :sex="true"
+    btn-name="Register"
+    disc="Have an account?"
+    text-link="Sign in"
+    link="/sign-in"
+    v-model="form"
+    @submit="onRegister"/>
 </template>
-
-<style scoped>
-
-</style>

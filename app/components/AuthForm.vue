@@ -1,55 +1,25 @@
 <script setup lang="ts" xmlns:peer-checked="http://www.w3.org/1999/xhtml">
-import {reactive} from 'vue';
 const props = defineProps<{
-  name?: string,
-  inputs: {
-    name: string,
-    type: string,
-    placeholder: string,
-  }[];
-  btnName?: string;
-  disc?: string;
-  link?: string;
-  textLink?: string;
+  name: string,
+  inputs: readonly Field[];
+  modelValue: Model;
+  btnName: string;
+  disc: string;
+  link: string;
+  textLink: string;
   sex?: boolean;
 }>();
 
-const inputs = {...props.inputs};
+type Field = { key: string; type: string; placeholder: string }
+type Model = Record<string, string>
 
-type Form = {
-  email: string,
-  password: string
-}
-type field = {
-  name: string,
-  type: string,
-  placeholder: string,
-}
+const emit = defineEmits<{
+  (e: 'update:modelValue', v: Model): void
+  (e: 'submit'): void
+}>()
 
-const form = reactive<Form>({
-  email: '',
-  password: '',
-})
-
-const errors = reactive({})
-
-
-function validate() {
-  let isValid = true
-
-  inputs.forEach(field => {
-    const error = field.validate?.(form[field.name])
-    errors[field.name] = error || ''
-    if (error) isValid = false
-  })
-
-  return isValid
-}
-
-const submitForm = async (): Promise<void> => {
-  if(!validate()) {
-    console.log('error')
-  }
+function setValue(key: string, value: string) {
+  emit('update:modelValue', { ...props.modelValue, [key]: value })
 }
 
 </script>
@@ -60,10 +30,12 @@ const submitForm = async (): Promise<void> => {
       <h4 class="font-bold text-xl mb-2 ">
         {{ props.name }}
       </h4>
-      <form @submit.prevent="submitForm" class="flex mx-auto flex-col justify-between items-center">
-          <input v-for="(field, index) in inputs"
-                 v-model="field.name"
-            :key="index"
+      <form @submit.prevent="emit('submit')" class="flex mx-auto flex-col justify-between items-center">
+          <input
+            v-for="field in props.inputs"
+            :key="field.key"
+            :value="props.modelValue[field.key] ?? ''"
+            @input="setValue(field.key, ($event.target as HTMLInputElement).value)"
             :type="field.type"
             :placeholder="field.placeholder"
             class="p-1 pl-2 w-100 mb-5 rounded-md active:border-gray-600 text-black"/>
@@ -77,6 +49,8 @@ const submitForm = async (): Promise<void> => {
             peer-checked:border-gray-300
             peer-checked:bg-gray-600
             transition"
+              :checked="props.modelValue.gender === 'male'"
+              @change="setValue('gender', 'male')"
             />
             <span>Male</span>
           </label>
@@ -86,14 +60,16 @@ const submitForm = async (): Promise<void> => {
               name="gender"
               value="female"
               class="w-3 h-3 rounded-full border-2 border-gray-500
-            peer-checked:border-gray-300
+             peer-checked:border-gray-300
             peer-checked:bg-gray-600
             transition"
+              :checked="props.modelValue.gender === 'female'"
+              @change="setValue('gender', 'female')"
             />
             <span>Female</span>
           </label>
         </div>
-        <button @click="submitForm" class="w-1/2 text-bold bg-gray-800 mt-3 rounded-xl p-1 hover:bg-gray-600 transition duration-300">
+        <button type="submit" class="w-1/2 text-bold bg-gray-800 mt-3 rounded-xl p-1 hover:bg-gray-600 transition duration-300">
           {{props.btnName}}
         </button>
       </form>
@@ -108,7 +84,3 @@ const submitForm = async (): Promise<void> => {
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

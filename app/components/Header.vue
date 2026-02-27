@@ -1,4 +1,14 @@
 <script setup lang="ts">
+import {useAuth} from "~~/composables/useAuth";
+import {navigateTo} from "nuxt/app";
+
+const { user, logout, authReady } = useAuth()
+const isLoggedIn = computed(() => !!user.value)
+
+const logout_ = async () => {
+  await logout()
+  await navigateTo('/')
+}
 
 </script>
 
@@ -16,9 +26,15 @@
       </NuxtLink>
       <NuxtLink to="/contact">
         Contact
-      </NuxtLink>
+      </NuxtLink>Об
     </div>
-    <div class="sm: mr-1">
+    <div v-if="user" class="sm: mr-1">
+      <button @click="logout_" class="inline-flex items-center justify-center bg- border-2 rounded p-0.5 sm: mr-4">
+        Logout
+        <img src="../assets/logout.png" alt="logout" class="invert h-[30px]"/>
+      </button>
+    </div>
+    <div v-else class="sm: mr-1">
       <NuxtLink class="sm: mr-1" to= "/sign-in">
         Sign In
       </NuxtLink>

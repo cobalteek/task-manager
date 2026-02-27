@@ -9,5 +9,8 @@ export default defineEventHandler(async (event) => {
     select: { id: true, email: true, name: true },
   })
 
+  if (!user) {
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+  }
   return user
 })
