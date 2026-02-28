@@ -5,8 +5,9 @@
   padding: 0;
   --font-sans: 'Inter', sans-serif;
   --bg-header: #111111;
-  --bg-context: #17161c;
+  --bg-context: #17161CE6;
   --bg-back: #1f1f29;
   --bg-modal: #17161c;
-
+  --bg-error: rgba(112, 2, 2, 0.75);
+  --bg-info: #fdca01;
 }

@@ -12,15 +12,32 @@ const form = ref({
   password: '',
 })
 
+const modalRef = ref(false);
+const textError = ref('')
+
 async function onLogin() {
   console.log('LOGIN BODY:', form.value)
+
+  if(form.value.email === '' && form.value.password === '') {
+    textError.value = 'The fields are empty.'
+    modalRef.value = true
+    return
+  }
+  else if(form.value.password.length < 6) {
+    textError.value = 'Password must be at least 6 characters'
+    modalRef.value = true
+    return
+  }
 
   try {
     await auth.signIn(form.value)
 
     await navigateTo('/dashboard')
   } catch (e) {
-    console.error(e)
+    if (e.response && e.response.status === 401) {
+      textError.value = 'The login or password is incorrect. Please try again.'
+      modalRef.value = true
+    }
   }
 }
 
@@ -42,4 +59,5 @@ definePageMeta({
     v-model="form"
     @submit="onLogin"
   />
+  <Modal v-model="modalRef" head="Error" type="error" :text="textError" />
 </template>

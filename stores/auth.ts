@@ -50,7 +50,6 @@ export const useAuthStore = defineStore('auth', () => {
         credentials: 'include',
       })
 
-      // cookie уже установлена сервером — теперь получаем user
       await fetchMe()
     } catch (e: any) {
       error.value = e?.data?.message ?? e?.message ?? 'Sign in error'

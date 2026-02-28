@@ -17,9 +17,42 @@ const form = ref({
   gender: ''
 })
 
+const modalRef = ref(false);
+const textError = ref('')
+
+function validate(text: string) {
+  return !/^[\x20-\x7E]+$/.test(text);
+
+}
+
 async function onRegister() {
+  if(validate(form.value.password) || validate(form.value.name)) {
+    textError.value = 'Only English characters allowed'
+    modalRef.value = true
+    return
+  }
   if (form.value.password !== form.value.confirmPassword) {
-    alert('Passwords do not match')
+    textError.value = 'Passwords do not match'
+    modalRef.value = true
+    return
+  }
+  else if(form.value.email === '' ||
+    form.value.password === '' ||
+    form.value.confirmPassword === '' ||
+    form.value.name === ''
+  ) {
+    textError.value = 'The fields are empty.'
+    modalRef.value = true
+    return
+  }
+  else if(form.value.password.length < 6) {
+    textError.value = 'Password must be at least 6 characters'
+    modalRef.value = true
+    return
+  }
+  else if(form.value.name.length < 3) {
+    textError.value = 'Name must be at least 3 characters'
+    modalRef.value = true
     return
   }
 
@@ -39,7 +72,7 @@ async function onRegister() {
     const message = e?.data?.message || e?.message || 'Registration failed'
 
     if (status === 409) {
-      alert('Этот email уже зарегистрирован. Попробуй Sign in.')
+      alert('Email already exists')
       return
     }
 
@@ -66,4 +99,5 @@ definePageMeta({
     link="/sign-in"
     v-model="form"
     @submit="onRegister"/>
+  <Modal v-model="modalRef" head="Error" type="error" :text="textError" />
 </template>
