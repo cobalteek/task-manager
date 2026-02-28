@@ -21,6 +21,9 @@ const modalRef = ref(false);
 const textError = ref('')
 
 function validate(text: string) {
+  if (!text) {
+    return false
+  }
   return !/^[\x20-\x7E]+$/.test(text);
 
 }
