@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { useAuth } from '~~/composables/useAuth'
-const { user } = useAuth()
+import {useAuthStore} from "~~/stores/auth";
+
+const auth = useAuthStore()
+const { user, isLoading } = storeToRefs(auth)
 </script>
 <template>
   <div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useAuth } from '~~/composables/useAuth'
+import {useAuthStore} from "~~/stores/auth";
 
-const { login } = useAuth()
+const auth = useAuthStore()
 const fields = [
   { key: 'name', type: 'text', placeholder: 'Name' },
   { key: 'email', type: 'email', placeholder: 'Email' },
@@ -30,7 +30,7 @@ async function onRegister() {
     })
 
     // опционально: сразу логин
-    await login(form.value.email, form.value.password)
+    await auth.signIn(form.value)
 
     await navigateTo('/dashboard')
   } catch (e: any) {

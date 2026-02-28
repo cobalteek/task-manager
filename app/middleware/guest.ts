@@ -1,9 +1,10 @@
 import { defineNuxtRouteMiddleware, navigateTo } from 'nuxt/app'
-import { useAuth } from '~~/composables/useAuth'
+import {useAuthStore} from "~~/stores/auth";
 
 export default defineNuxtRouteMiddleware(async () => {
-  const { user, fetchUser } = useAuth()
+  const auth = useAuthStore()
+  const { user} = storeToRefs(auth)
 
-  if (!user.value) await fetchUser()
+  if (!auth.isReady) await auth.init()
   if (user.value) return navigateTo('/dashboard')
 })

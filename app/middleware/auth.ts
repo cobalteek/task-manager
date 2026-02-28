@@ -1,15 +1,15 @@
 // app/middleware/auth.ts
 import { defineNuxtRouteMiddleware, navigateTo } from 'nuxt/app'
-import { useAuth } from '~~/composables/useAuth'
+import {useAuthStore} from "~~/stores/auth";
 
 export default defineNuxtRouteMiddleware(async () => {
-  const { user, fetchUser } = useAuth()
+  const auth = useAuthStore()
 
-  if (user.value) return
+  if (!auth.isReady) {
+    await auth.init()
+  }
 
-  await fetchUser()
-
-  if (!user.value) {
+  if (!auth.isAuthed) {
     return navigateTo('/sign-in')
   }
 })

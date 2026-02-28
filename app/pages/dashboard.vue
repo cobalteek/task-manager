@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import {useAuth} from "~~/composables/useAuth";
-const { user, authReady }  = useAuth()
+import {useAuthStore} from "~~/stores/auth";
+
+const auth = useAuthStore()
+const { user, isLoading } = storeToRefs(auth)
 
 definePageMeta({
   middleware: [
@@ -17,7 +19,7 @@ definePageMeta({
       <p> Your email: {{ user?.email }}</p>
 
     </div>
-    <div v-else-if="!authReady" class="text-xl text-orange-600">
+    <div v-else-if="isLoading" class="text-xl text-orange-600">
       Loading...
     </div>
   </div>

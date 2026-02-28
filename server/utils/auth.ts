@@ -10,7 +10,7 @@ export function requireUser(event: H3Event) {
   const token = getCookie(event, 'token')
 
   if (!token) {
-    throw 401
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
   try {
@@ -20,6 +20,6 @@ export function requireUser(event: H3Event) {
     return { userId }
 
   } catch {
-    throw 401
+    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 }

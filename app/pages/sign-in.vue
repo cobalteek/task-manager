@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useAuth } from '~~/composables/useAuth'
+import {useAuthStore} from "~~/stores/auth";
 
-const { login } = useAuth()
+const auth = useAuthStore()
 const fields = [
   { key: 'email', type: 'email', placeholder: 'Email' },
   { key: 'password', type: 'password', placeholder: 'Password' },
@@ -15,9 +15,13 @@ const form = ref({
 async function onLogin() {
   console.log('LOGIN BODY:', form.value)
 
-  await login(form.value.email, form.value.password)
+  try {
+    await auth.signIn(form.value)
 
-  await navigateTo('/dashboard')
+    await navigateTo('/dashboard')
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 definePageMeta({

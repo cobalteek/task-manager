@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import {useAuth} from "~~/composables/useAuth";
 import {navigateTo} from "nuxt/app";
+import {useAuthStore} from "~~/stores/auth";
+import {storeToRefs} from "pinia";
 
-const { user, logout, authReady } = useAuth()
-const isLoggedIn = computed(() => !!user.value)
+const auth = useAuthStore()
+const { user, isLoading } = storeToRefs(auth)
 
 const logout_ = async () => {
-  await logout()
+  await auth.logout()
   await navigateTo('/')
 }
 
