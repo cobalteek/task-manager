@@ -29,7 +29,10 @@ const logout_ = async () => {
         Contact
       </NuxtLink>
     </div>
-    <div v-if="user" class="sm: mr-1">
+    <div v-if="user" class="gap-2 sm: mr-1 ">
+      <NuxtLink to="/dashboard" class="mr-4">
+        Dashboard
+      </NuxtLink>
       <button @click="logout_" class="inline-flex items-center justify-center bg- border rounded p-1 sm: mr-4">
         {{ user?.name }}
         <img src="../assets/logout.png" alt="logout" class="invert h-[30px]"/>

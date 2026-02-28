@@ -4,6 +4,7 @@ type User = {
   id: string
   email: string
   name: string
+  gender: string
 } | null
 
 export const useAuthStore = defineStore('auth', () => {
@@ -59,7 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function signUp(payload: { name: string; email: string; password: string }) {
+  async function signUp(payload: { name: string; email: string; password: string; gender: string }) {
     isLoading.value = true
     error.value = null
     try {

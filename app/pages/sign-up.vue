@@ -62,7 +62,7 @@ async function onRegister() {
   try {
     await $fetch('/api/auth/register', {
       method: 'POST',
-      body: { name: form.value.name, email: form.value.email, password: form.value.password },
+      body: { name: form.value.name, email: form.value.email, password: form.value.password, gender: form.value.gender },
     })
 
     // опционально: сразу логин
