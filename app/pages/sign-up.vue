@@ -39,6 +39,11 @@ async function onRegister() {
     modalRef.value = true
     return
   }
+  else if (form.value.gender === '') {
+    textError.value = 'Please select a gender'
+    modalRef.value = true
+    return
+  }
   else if(form.value.email === '' ||
     form.value.password === '' ||
     form.value.confirmPassword === '' ||
