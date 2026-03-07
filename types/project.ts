@@ -1,7 +1,7 @@
 export interface Project {
   id: string
   title: string
-  description: string | null
+  description: string
   createdAt: string // с API обычно приходит string
   deadline: string | null
   statusId: number

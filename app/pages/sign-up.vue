@@ -114,7 +114,5 @@ definePageMeta({
     link="/sign-in"
     v-model="form"
     @submit="onRegister"/>
-  <Modal v-model="modalRef"  class="w-[300px] h-[200px] top-[19%]">
-    <ErrorModalContent head="Error" :type="type_" :text="textError"/>
-  </Modal>
+  <ErrorModalContent v-model="modalRef"  class="w-[300px] h-[200px] top-[19%]" head="Error" :type="type_" :text="textError"/>
 </template>

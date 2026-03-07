@@ -80,11 +80,13 @@ async function submit() {
   }
   else {
     const deadline = new Date(form.value.deadline + ':00')
-    await projectsStore.createProject(
+    const created = await projectsStore.createProject(
       form.value.title,
       form.value.description,
       deadline
     )
+    if (!created) return
+    console.log(created.title)
     await projectsStore.fetchAll()
     close()
   }

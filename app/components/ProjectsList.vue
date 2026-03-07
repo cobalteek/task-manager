@@ -11,6 +11,7 @@ const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()
 const query = ref('')
 const modalOpen = ref(false)
 const selectedProject = ref<Project | undefined>(undefined)
+const projectInfo = ref(false)
 
 const statusesStore = useStatusesStore()
 const projectsStore = useProjectsStore()
@@ -30,7 +31,7 @@ function close() {
   emit('update:modelValue', false)
 }
 
-function formatDate(value: string | null) {
+export function formatDate(value: string | null) {
   if (!value) return '—'
   const d = new Date(value)
   return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
@@ -50,6 +51,12 @@ function onEdit(project: Project) {
   selectedProject.value = project
   modalOpen.value = true
 }
+
+function projectOpen(project: Project) {
+  selectedProject.value = project
+  projectInfo.value = true
+}
+
 </script>
 
 <template>
@@ -106,16 +113,28 @@ function onEdit(project: Project) {
               :key="prj?.id"
               @contextmenu.prevent.stop="onEdit(prj)"
               class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] gap-6 pt-1 my-3 mx-5 items-center hover:bg-[var(--bg-hover-context)] hover:cursor-pointer">
-              <div class="min-w-[100px] max-w-[300px] text-center">
+              <div
+                class="min-w-[100px] max-w-[300px] text-center"
+                @click="projectOpen(prj)"
+              >
                 {{prj.title}}
               </div>
-              <div class="min-w-[50px] max-w-[300px] text-mono">
+              <div
+                class="min-w-[50px] max-w-[300px] text-mono"
+                @click="projectOpen(prj)"
+              >
                 {{prj.description}}
               </div>
-              <div class="min-w-[50px] max-w-[300px] text-center">
+              <div
+                class="min-w-[50px] max-w-[300px] text-center"
+                @click="projectOpen(prj)"
+              >
                 {{formatDate(prj.createdAt)}}
               </div>
-              <div class="min-w-[50px] max-w-[300px] text-center">
+              <div
+                class="min-w-[50px] max-w-[300px] text-center"
+                @click="projectOpen(prj)"
+              >
                 {{ formatDate(prj.deadline)}}
               </div>
               <div class="min-w-[50px] max-w-[300px] text-center">
@@ -132,7 +151,10 @@ function onEdit(project: Project) {
                   </option>
                 </select>
               </div>
-              <div class="min-w-[50px] max-w-[300px] text-center">
+              <div
+                class="min-w-[50px] max-w-[300px] text-center"
+                @click="projectOpen(prj)"
+              >
                 {{prj.createdBy?.name}}
               </div>
             </div>
@@ -141,6 +163,10 @@ function onEdit(project: Project) {
       </div>
       <AddOrEditProjectModalContent
         v-model="modalOpen"
+        :project="selectedProject"
+      />
+      <InfoProjectModalContent
+        v-model="projectInfo"
         :project="selectedProject"
       />
     </div>

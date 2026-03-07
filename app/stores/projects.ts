@@ -33,8 +33,10 @@ export const useProjectsStore = defineStore('project', () => {
       })
 
       projects.value.unshift(created)
+      return created
     } catch (e) {
       console.error(e)
+      return null
     }
   }
 
