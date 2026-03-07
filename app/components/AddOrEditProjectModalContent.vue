@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import {useProjectsStore} from "~/stores/projects";
 import type { Project } from '~~/types/project'
+import {useAuthStore} from "~/stores/auth";
 
 const projectsStore = useProjectsStore()
-
 const props = defineProps<{
   modelValue: boolean
   project?: Project
 }>()
+
+const auth = useAuthStore()
+const { user } = storeToRefs(auth)
 
 const emit = defineEmits<{
   (e: 'update:modelValue', v: boolean): void
@@ -102,6 +105,9 @@ async function submit() {
 }
 
 async function deleteProject(id: string) {
+  if (props.project?.createdById !== user.value?.id) {
+    return console.error("Only the creator of the project can delete it.")
+  }
   try {
     await projectsStore.deleteProject(id)
     await projectsStore.fetchAll()
