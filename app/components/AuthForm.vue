@@ -30,7 +30,9 @@ function setValue(key: string, value: string) {
       <h4 class="font-bold text-xl mb-2 ">
         {{ name }}
       </h4>
-      <form @submit.prevent="emit('submit')" class="flex mx-auto flex-col justify-between items-center">
+      <form
+        @submit.prevent="emit('submit')"
+        class="flex mx-auto flex-col justify-between items-center">
           <input
             v-for="field in inputs"
             :key="field.key"
@@ -38,7 +40,8 @@ function setValue(key: string, value: string) {
             @input="setValue(field.key, ($event.target as HTMLInputElement).value)"
             :type="field.type"
             :placeholder="field.placeholder"
-            class="p-1 pl-2 w-100 mb-5 rounded-md active:border-gray-600 text-black"/>
+            class="p-1 pl-2 w-100 mb-5 rounded-md active:border-gray-600 text-black"
+          />
         <div v-if="sex" class="flex gap-6">
           <label class="flex items-center gap-2 cursor-pointer">
             <input
@@ -69,7 +72,10 @@ function setValue(key: string, value: string) {
             <span>Female</span>
           </label>
         </div>
-        <button type="submit" class="w-1/2 text-bold bg-gray-800 mt-3 rounded-xl p-1 hover:bg-gray-600 transition duration-300">
+        <button
+          type="submit"
+          class="w-1/2 text-bold bg-gray-800 mt-3 rounded-xl p-1 hover:bg-gray-600 transition duration-300"
+        >
           {{btnName}}
         </button>
       </form>
@@ -77,7 +83,11 @@ function setValue(key: string, value: string) {
         <div>
           {{disc}}
         </div>
-        <NuxtLink v-if="textLink" :to="link" class="text-blue-200 hover:bg-gray-600 transition duration-300">
+        <NuxtLink
+          v-if="textLink"
+          :to="link"
+          class="text-blue-200 hover:bg-gray-600 transition duration-300"
+        >
           {{textLink}}
         </NuxtLink>
       </div>

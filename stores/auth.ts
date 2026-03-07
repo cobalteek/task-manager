@@ -1,14 +1,9 @@
 import { defineStore } from 'pinia'
+import type {User} from '../types/user'
 
-type User = {
-  id: string
-  email: string
-  name: string
-  gender: string
-} | null
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<User>(null)
+  const user = ref<User | null>(null)
   const isReady = ref(false)
   const isLoading = ref(false)
   const error = ref<string | null>(null)
@@ -60,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function signUp(payload: { name: string; email: string; password: string; gender: string }) {
+  async function signUp(payload: { name: string; email: string; password: string; gender: string, role: string }) {
     isLoading.value = true
     error.value = null
     try {

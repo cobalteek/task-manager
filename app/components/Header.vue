@@ -4,7 +4,7 @@ import {useAuthStore} from "~~/stores/auth";
 import {storeToRefs} from "pinia";
 
 const auth = useAuthStore()
-const { user, isLoading } = storeToRefs(auth)
+const { user } = storeToRefs(auth)
 
 const logout_ = async () => {
   await auth.logout()
@@ -14,7 +14,7 @@ const logout_ = async () => {
 </script>
 
 <template>
-  <div class="inline-flex justify-between items-center w-full bg-[var(--bg-header)] text-white text-md">
+  <header class="inline-flex justify-between items-center w-full bg-[var(--bg-header)] text-white text-md">
     <NuxtLink class="" to="/">
       <img class="max-w-[100px] invert" src="../assets/logo.png" alt="logo"/>
     </NuxtLink>
@@ -44,5 +44,5 @@ const logout_ = async () => {
       </NuxtLink>
       <NuxtLink to="/sign-up" class="bg- border-2 rounded p-0.5 sm: mr-1">Sign Up</NuxtLink>
     </div>
-  </div>
+  </header>
 </template>

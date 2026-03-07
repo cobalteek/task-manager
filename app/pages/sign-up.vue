@@ -28,20 +28,13 @@ function validate(text: string) {
 
 }
 
+const type_ = ref('error')
+
 async function onRegister() {
   if(validate(form.value.password) || validate(form.value.name)) {
     textError.value = 'Only English characters allowed'
     modalRef.value = true
-    return
-  }
-  if (form.value.password !== form.value.confirmPassword) {
-    textError.value = 'Passwords do not match'
-    modalRef.value = true
-    return
-  }
-  else if (form.value.gender === '') {
-    textError.value = 'Please select a gender'
-    modalRef.value = true
+    type_.value = 'error'
     return
   }
   else if(form.value.email === '' ||
@@ -51,16 +44,31 @@ async function onRegister() {
   ) {
     textError.value = 'The fields are empty.'
     modalRef.value = true
+    type_.value = 'error'
+    return
+  }
+  else if (form.value.gender === '') {
+    textError.value = 'Please select a gender'
+    modalRef.value = true
+    type_.value = 'error'
+    return
+  }
+  if (form.value.password !== form.value.confirmPassword) {
+    textError.value = 'Passwords do not match'
+    modalRef.value = true
+    type_.value = 'error'
     return
   }
   else if(form.value.password.length < 6) {
     textError.value = 'Password must be at least 6 characters'
     modalRef.value = true
+    type_.value = 'info'
     return
   }
   else if(form.value.name.length < 3) {
     textError.value = 'Name must be at least 3 characters'
     modalRef.value = true
+    type_.value = 'error'
     return
   }
 
@@ -70,7 +78,6 @@ async function onRegister() {
       body: { name: form.value.name, email: form.value.email, password: form.value.password, gender: form.value.gender },
     })
 
-    // опционально: сразу логин
     await auth.signIn(form.value)
 
     await navigateTo('/dashboard')
@@ -107,5 +114,7 @@ definePageMeta({
     link="/sign-in"
     v-model="form"
     @submit="onRegister"/>
-  <Modal v-model="modalRef" head="Error" type="error" :text="textError" />
+  <Modal v-model="modalRef"  class="w-[300px] h-[200px] top-[19%]">
+    <ErrorModalContent head="Error" :type="type_" :text="textError"/>
+  </Modal>
 </template>

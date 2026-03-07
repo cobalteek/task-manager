@@ -59,5 +59,5 @@ definePageMeta({
     v-model="form"
     @submit="onLogin"
   />
-  <Modal v-model="modalRef" head="Error" type="error" :text="textError" />
+  <ErrorModalContent head="Error" type="error" :text="textError" class="w-[300px] h-[200px] top-1/4"/>
 </template>
