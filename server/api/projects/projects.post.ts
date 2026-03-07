@@ -4,6 +4,7 @@ export default defineEventHandler(async (event) => {
   const user = requireUser(event)
   const body = await readBody(event)
   try {
+    console.log('DATA:' + JSON.stringify(body))
     return await prisma.project.create({
       data: {
         title: body.title,
