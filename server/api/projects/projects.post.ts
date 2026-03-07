@@ -3,8 +3,8 @@ import { prisma } from '~~/server/utils/prisma'
 export default defineEventHandler(async (event) => {
   const user = requireUser(event)
   const body = await readBody(event)
+  console.log('DATA:' + JSON.stringify(body))
   try {
-    console.log('DATA:' + JSON.stringify(body))
     return await prisma.project.create({
       data: {
         title: body.title,
@@ -22,6 +22,10 @@ export default defineEventHandler(async (event) => {
     })
   } catch (error) {
     console.error(error)
+    throw createError({
+      statusCode: 405,
+      statusMessage: "No created.."
+    })
   }
 
 })
