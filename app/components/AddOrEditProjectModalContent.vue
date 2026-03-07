@@ -86,6 +86,7 @@ async function submit() {
         form.value.description,
         deadline
       )
+      console.log('created in component =', created)
       if (!created) return
     } catch (e) {
       console.error(e)
