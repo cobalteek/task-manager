@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type {Project} from "~~/types/project";
-import {useStatusesStore} from "~~/stores/statuses";
+import {useStatusesStore} from "~/stores/statuses";
 import AddOrEditProjectModalContent from "~/components/AddOrEditProjectModalContent.vue";
-import {useProjectsStore} from "~~/stores/projects";
+import {useProjectsStore} from "~/stores/projects";
 
 defineProps<{ modelValue: boolean }>()
 

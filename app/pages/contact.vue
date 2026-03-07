@@ -7,7 +7,3 @@
     Contact
   </div>
 </template>
-
-<style scoped>
-
-</style>

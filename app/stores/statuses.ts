@@ -1,7 +1,6 @@
-import {useCookie} from "nuxt/app";
 import { defineStore } from 'pinia'
 import {computed, ref} from "vue"
-import type { Status } from '../types/status'
+import type { Status } from '../../types/status'
 
 export const useStatusesStore = defineStore('statuses', () => {
   const statuses = ref<Status[]>([])

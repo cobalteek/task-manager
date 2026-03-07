@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useAuthStore} from "~~/stores/auth";
+import {useAuthStore} from "~/stores/auth";
 import ProjectsList from "~/components/ProjectsList.vue";
 
 const auth = useAuthStore()

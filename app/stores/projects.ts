@@ -1,7 +1,6 @@
-import {useCookie} from "nuxt/app";
 import { defineStore } from 'pinia'
 import { ref } from "vue"
-import type { Project } from '../types/project'
+import type { Project } from '../../types/project'
 
 export const useProjectsStore = defineStore('project', () => {
   const projects = ref<Project[]>([])

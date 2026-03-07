@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useProjectsStore} from "~~/stores/projects";
+import {useProjectsStore} from "~/stores/projects";
 import type { Project } from '~~/types/project'
 
 const projectsStore = useProjectsStore()
