@@ -21,7 +21,7 @@ definePageMeta({
   <div>
     <div v-if="user" class="w-full h-full p-2 flex">
       <div class="w-full h-full">
-        <section v-if="user.role == 'OWNER'" class="inline-flex items-center justify-end w-full gap-3">
+        <section v-if="user.role == 'USER'" class="inline-flex items-center justify-end w-full gap-3">
           <button @click="showAddAdmin = true" class="p-2 text-shadow border border-solid border-gray-100 rounded-md flex justify-center items-center gap-1">
             <span class="text-xl mb-1">+</span> New Admin
           </button>
