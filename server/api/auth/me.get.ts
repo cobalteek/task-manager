@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     include: { roles: { include: { role: true } } }
   })) as UserWithRoles
 
-  const role = user.roles[0]?.role.name
+  const role = user.roles[2]?.role.name
 
   if (!user) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
