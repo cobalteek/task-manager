@@ -17,8 +17,7 @@ export const useUsersStore = defineStore('users', () => {
     error.value = null
 
     try {
-      const data = await $fetch<User[]>('/api/users')
-      items.value = data
+      items.value = await $fetch<User[]>('/api/users')
       loadedOnce.value = true
     } catch (e: any) {
       error.value = e?.data?.message || e?.message || 'Failed to load users'

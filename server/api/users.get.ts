@@ -1,9 +1,9 @@
 import { prisma } from '../utils/prisma'
 import {defineEventHandler} from 'h3'
 
-export default defineEventHandler(async (event: any) => {
+export default defineEventHandler(async () => {
   try {
-    const users = await prisma.user.findMany({
+    return await prisma.user.findMany({
       where: {
         roles: {
           some: {role: {name: 'USER'}},
@@ -14,7 +14,6 @@ export default defineEventHandler(async (event: any) => {
         name: true,
       }
     })
-    return users
   } catch (error) {
     console.log(error)
   }

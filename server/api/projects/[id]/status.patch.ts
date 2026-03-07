@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "statusId is required" })
   }
 
-  const updated = await prisma.project.update({
+  return await prisma.project.update({
     where: { id },
     data: { statusId: Number(body.statusId) },
     include: {
@@ -16,6 +16,4 @@ export default defineEventHandler(async (event) => {
       createdBy: { select: { id: true, name: true } },
     },
   })
-
-  return updated
 })

@@ -17,7 +17,7 @@ export function requireUser(event: H3Event) {
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string }
     const userId = payload.userId
-    if (!userId) throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+    if (!userId) createError({ statusCode: 401, statusMessage: 'Unauthorized' })
     return { userId }
 
   } catch {

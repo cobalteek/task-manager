@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const deletedProject = await prisma.project.delete({
+    return  await prisma.project.delete({
       where: { id },
       include: {
         status: true,
@@ -21,7 +21,6 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    return deletedProject
   } catch (error: any) {
     console.error('DELETE PROJECT ERROR:', error)
 

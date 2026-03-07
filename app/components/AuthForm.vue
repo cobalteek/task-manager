@@ -1,4 +1,4 @@
-<script setup lang="ts" xmlns:peer-checked="http://www.w3.org/1999/xhtml">
+<script setup lang="ts">
 const props = defineProps<{
   name: string,
   inputs: readonly Field[];
