@@ -117,25 +117,25 @@ function projectOpen(project: Project) {
                 class="min-w-[100px] max-w-[300px] text-center"
                 @click="projectOpen(prj)"
               >
-                {{prj.title}}
+                {{prj?.title}}
               </div>
               <div
                 class="min-w-[50px] max-w-[300px] text-mono"
                 @click="projectOpen(prj)"
               >
-                {{prj.description}}
+                {{prj?.description}}
               </div>
               <div
                 class="min-w-[50px] max-w-[300px] text-center"
                 @click="projectOpen(prj)"
               >
-                {{formatDate(prj.createdAt)}}
+                {{formatDate(prj?.createdAt)}}
               </div>
               <div
                 class="min-w-[50px] max-w-[300px] text-center"
                 @click="projectOpen(prj)"
               >
-                {{ formatDate(prj.deadline)}}
+                {{ formatDate(prj?.deadline)}}
               </div>
               <div class="min-w-[50px] max-w-[300px] text-center">
                 <select
