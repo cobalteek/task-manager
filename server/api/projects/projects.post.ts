@@ -1,9 +1,9 @@
 import { prisma } from '~~/server/utils/prisma'
+import { requireUser } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   const user = requireUser(event)
   const body = await readBody(event)
-  console.log('DATA:' + JSON.stringify(body))
   try {
     return await prisma.project.create({
       data: {
