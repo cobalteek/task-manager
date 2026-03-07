@@ -31,7 +31,7 @@ function close() {
   emit('update:modelValue', false)
 }
 
-export function formatDate(value: string | null) {
+function formatDate(value: string | null) {
   if (!value) return '—'
   const d = new Date(value)
   return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
