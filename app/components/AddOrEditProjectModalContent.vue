@@ -79,16 +79,24 @@ async function submit() {
     close()
   }
   else {
-    const deadline = new Date(form.value.deadline + ':00')
-    const created = await projectsStore.createProject(
-      form.value.title,
-      form.value.description,
-      deadline
-    )
-    if (!created) return
-    console.log(created.title)
-    await projectsStore.fetchAll()
-    close()
+    try {
+      const deadline = new Date(form.value.deadline + ':00')
+      const created = await projectsStore.createProject(
+        form.value.title,
+        form.value.description,
+        deadline
+      )
+      if (!created) return
+    } catch (e) {
+      console.error(e)
+      throw createError({
+        statusCode: 401,
+        statusMessage: "Error creating project"
+      })
+    } finally {
+      await projectsStore.fetchAll()
+      close()
+    }
   }
 }
 

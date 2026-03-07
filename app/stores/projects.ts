@@ -36,7 +36,10 @@ export const useProjectsStore = defineStore('project', () => {
       return created
     } catch (e) {
       console.error(e)
-      return null
+      throw createError({
+        statusCode: 402,
+        statusMessage: "Create project if failed"
+      })
     }
   }
 
