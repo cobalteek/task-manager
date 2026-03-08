@@ -4,15 +4,21 @@ import { formatDate } from "~~/utils/formatDate";
 import { storeToRefs } from "pinia";
 import type { Project } from "~~/types/project";
 import AddOrEditProjectModalContent from "~/components/AddOrEditProjectModalContent.vue";
+import {creatorOnly} from "~~/utils/creatorOnly";
 
 defineProps<{ modelValue: boolean }>()
 
 const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()
 
-const query = ref('')
-const modalOpen = ref(false)
 const selectedProject = ref<Project | undefined>(undefined)
+
+const modalOpen = ref(false)
 const projectInfo = ref(false)
+const modalError = ref(false)
+
+const textError = ref('')
+const query = ref('')
+const type_ = ref('')
 
 const projectsStore = useProjectsStore()
 
@@ -35,7 +41,12 @@ function onAdd() {
   modalOpen.value = true
 }
 
-function onEdit(project: Project) {
+function onEdit(project: Project)  {
+  if(creatorOnly(project)) {
+    textError.value = '"Only the creator of the project can do it."'
+    modalError.value = true
+    return
+  }
   selectedProject.value = project
   modalOpen.value = true
 }
@@ -143,8 +154,14 @@ function projectOpen(project: Project) {
         :project="selectedProject"
       />
       <InfoProjectModalContent
+        v-if="selectedProject"
         v-model="projectInfo"
-        :project="selectedProject!"
+        :project="selectedProject"
       />
+      <ErrorModalContent
+        v-model="modalError"
+        head="Error"
+        type="error"
+        :text="textError"/>
     </div>
 </template>

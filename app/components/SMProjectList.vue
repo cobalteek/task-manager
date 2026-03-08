@@ -5,10 +5,13 @@ import { useProjectsStore } from "~/stores/projects";
 import type { Project } from "~~/types/project";
 import {storeToRefs} from "pinia";
 import AddOrEditProjectModalContent from "~/components/AddOrEditProjectModalContent.vue";
+import {creatorOnly} from "~~/utils/creatorOnly";
 
 const selectedProject = ref<Project>();
-const modalOpen = ref(false);
+const modalOpen = ref(false)
+const modalError = ref(false)
 const query = ref('')
+const textError = ref('')
 
 const projectsStore = useProjectsStore()
 
@@ -27,7 +30,12 @@ function onAdd() {
   modalOpen.value = true
 }
 
-function onEdit(project: Project) {
+function onEdit(project: Project)  {
+  if(creatorOnly(project)) {
+    textError.value = '"Only the creator of the project can do it."'
+    modalError.value = true
+    return
+  }
   selectedProject.value = project
   modalOpen.value = true
 }
@@ -55,7 +63,7 @@ function onEdit(project: Project) {
       </div>
       <div v-for="prj in projects"
            :key="prj?.id"
-           @contextmenu.prevent.stop="onEdit(prj)"
+           @click="onEdit(prj)"
            class="mt-5 w-full">
         <div class="flex flex-col border border-gray-200 border-solid rounded-xl h-[600px]">
             <div class="flex flex-col justify-center items-center w-full my-auto">
@@ -106,5 +114,10 @@ function onEdit(project: Project) {
         v-model="modalOpen"
         :project="selectedProject"
       />
+      <ErrorModalContent
+        v-model="modalError"
+        head="Error"
+        type="error"
+        :text="textError"/>
     </div>
 </template>
