@@ -2,6 +2,7 @@ import { prisma } from "~~/server/utils/prisma"
 
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event)
+  const { userId } = requireUser(event)
 
   const body = await readBody<{
     title: string
@@ -14,6 +15,28 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 400,
       statusMessage: "Data not found"
+    })
+  }
+
+  const project = await prisma.project.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      createdById: true,
+    },
+  })
+
+  if (!project) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Project not found"
+    })
+  }
+
+  if (project.createdById !== userId) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: "Only the creator of the project can edit it"
     })
   }
 
