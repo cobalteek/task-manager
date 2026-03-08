@@ -32,12 +32,12 @@ function onAdd() {
 
 function onEdit(project: Project)  {
   if(creatorOnly(project)) {
-    textError.value = '"Only the creator of the project can do it."'
-    modalError.value = true
+    selectedProject.value = project
+    modalOpen.value = true
     return
   }
-  selectedProject.value = project
-  modalOpen.value = true
+  textError.value = 'Only the creator of the project can do it.'
+  modalError.value = true
 }
 </script>
 
