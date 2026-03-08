@@ -5,9 +5,25 @@ export default defineEventHandler(async (event) => {
   const user = requireUser(event)
   const body = await readBody(event)
 
+  if (!body) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Data not found"
+    })
+  }
+  const dateFromString = body.deadline
+  const now = Date.now() + 60_000
+
+  const targetTime = new Date(dateFromString).getTime()
+
+  if (targetTime < now) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "The deadline cannot be earlier than the creation of the project"
+    })
+  }
+
   try {
-    console.log('USER:', user)
-    console.log('BODY:', body)
 
     const existingUser = await prisma.user.findUnique({
       where: { id: user.userId }
