@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type {Project} from "~~/types/project";
-import {useStatusesStore} from "~/stores/statuses";
+import { useProjectsStore } from "~/stores/projects";
+import { formatDate } from "~~/utils/formatDate";
+import { storeToRefs } from "pinia";
+import type { Project } from "~~/types/project";
 import AddOrEditProjectModalContent from "~/components/AddOrEditProjectModalContent.vue";
-import {useProjectsStore} from "~/stores/projects";
 
 defineProps<{ modelValue: boolean }>()
 
@@ -13,14 +14,12 @@ const modalOpen = ref(false)
 const selectedProject = ref<Project | undefined>(undefined)
 const projectInfo = ref(false)
 
-const statusesStore = useStatusesStore()
 const projectsStore = useProjectsStore()
 
 const { projects } = storeToRefs(projectsStore)
 
 onMounted(async () => {
   await projectsStore.fetchAll()
-  await statusesStore.fetchAll()
 })
 
 watch(query, async (v) => {
@@ -29,17 +28,6 @@ watch(query, async (v) => {
 
 function close() {
   emit('update:modelValue', false)
-}
-
-function formatDate(value: string | null) {
-  if (!value) return '—'
-  const d = new Date(value)
-  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
-}
-
-async function onStatusChange(projectId: string, statusId: number) {
-  await statusesStore.updateStatus(projectId, statusId)
-  await projectsStore.fetchAll()
 }
 
 function onAdd() {
@@ -114,16 +102,18 @@ function projectOpen(project: Project) {
               @contextmenu.prevent.stop="onEdit(prj)"
               class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] gap-6 pt-1 my-3 mx-5 items-center hover:bg-[var(--bg-hover-context)] hover:cursor-pointer">
               <div
-                class="min-w-[100px] max-w-[300px] text-center"
+                class="min-w-[100px] max-w-[300px] text-center overflow-hidden line-clamp-3 break-words"
                 @click="projectOpen(prj)"
               >
                 {{prj?.title}}
               </div>
-              <div
-                class="min-w-[50px] max-w-[300px] text-mono"
-                @click="projectOpen(prj)"
-              >
-                {{prj?.description}}
+              <div>
+                <div
+                  class="min-w-[50px] max-w-[300px] overflow-hidden line-clamp-3 break-words"
+                  @click="projectOpen(prj)"
+                >
+                  {{prj?.description}}
+                </div>
               </div>
               <div
                 class="min-w-[50px] max-w-[300px] text-center"
@@ -137,20 +127,7 @@ function projectOpen(project: Project) {
               >
                 {{ formatDate(prj?.deadline)}}
               </div>
-              <div class="min-w-[50px] max-w-[300px] text-center">
-                <select
-                  @change="onStatusChange(prj.id, Number(($event.target as HTMLSelectElement).value))"
-                  :value="prj.statusId"
-                  class="text-gray-100 bg-[var(--bg-context)] rounded-md p-1 border border-gray-100 w-[150px]">
-                  <option
-                    v-for="o in statusesStore.options"
-                    :key="o.value"
-                    :value="o.value"
-                  >
-                    {{ o.label }}
-                  </option>
-                </select>
-              </div>
+              <StatusesList :project="prj" />
               <div
                 class="min-w-[50px] max-w-[300px] text-center"
                 @click="projectOpen(prj)"
@@ -167,7 +144,7 @@ function projectOpen(project: Project) {
       />
       <InfoProjectModalContent
         v-model="projectInfo"
-        :project="selectedProject"
+        :project="selectedProject!"
       />
     </div>
 </template>
