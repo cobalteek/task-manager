@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import {useAuthStore} from "~/stores/auth";
 import ProjectsList from "~/components/ProjectsList.vue";
+import { storeToRefs } from "pinia";
+import {useBreakpoint} from "~~/composables/useBreakpoint";
+
 
 const auth = useAuthStore()
 const { user, isLoading } = storeToRefs(auth)
-
+const { isMobile, isDesktop, isTablet } = useBreakpoint()
 const showAddAdmin = ref(false)
 const showProjects = ref(false)
 const kek = '</>'
@@ -19,13 +22,16 @@ definePageMeta({
 
 <template>
   <div>
-    <div v-if="user" class="w-full h-full p-2 flex">
+    <div v-if="isLoading" class="text-xl text-orange-600">
+      Loading...
+    </div>
+    <div v-else-if="user" class="w-full h-full p-2 flex">
       <div class="w-full h-full">
         <section class="inline-flex items-center justify-end w-full gap-3">
-          <button @click="showAddAdmin = true" class="p-2 text-shadow border border-solid border-gray-100 rounded-md flex justify-center items-center gap-1">
+          <button @click="showAddAdmin = !showAddAdmin" class="p-2 text-shadow border border-solid border-gray-100 rounded-md flex justify-center items-center gap-1">
             <span class="text-xl mb-1">+</span> New Admin
           </button>
-          <button @click="showProjects = true" class="p-3 text-shadow border border-solid border-gray-100 rounded-md">
+          <button @click="showProjects = !showProjects" class="p-3 text-shadow border border-solid border-gray-100 rounded-md">
             Projects
           </button>
         </section>
@@ -42,17 +48,17 @@ definePageMeta({
         <div>
           Role: {{user.role}}
         </div>
-        <div v-if="showProjects" class="flex justify-center">
+        <div v-if="showProjects && (isDesktop || isTablet)" class="flex justify-center">
           <ProjectsList class="mt-5" v-model="showProjects"/>
+        </div>
+        <div v-if="showProjects && isMobile" class="flex flex-col justify-center items-center">
+          <SMProjectList/>
         </div>
       </div>
     </div>
       <div v-if="!showProjects" class="my-auto w-full h-full flex justify-center items-center text-[200px] text-[var(--bg-back)]">
         <h1>{{kek}}</h1>
       </div>
-    <div v-else-if="isLoading" class="text-xl text-orange-600">
-      Loading...
-    </div>
   </div>
 </template>
 
