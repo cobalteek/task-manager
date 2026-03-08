@@ -97,7 +97,10 @@ function onEdit(project: Project)  {
                 <div class="text-[18px] text-center">
                   Status:
                 </div>
-                <StatusesList :project="prj" />
+                <StatusesList
+                  :disabled = !creatorOnly(prj)
+                  :project="prj"
+                />
               </div>
               <div class='flex flex-col gap-2 justify-center items-center'>
                 <div>

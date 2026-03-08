@@ -5,7 +5,7 @@ import {storeToRefs} from "pinia";
 export function creatorOnly(project: Project) {
   const auth = useAuthStore()
   const { user } = storeToRefs(auth)
-  if (project.createdById == user.value?.id) {
+  if (project.createdById == user.value?.id || user.value?.role == 'OWNER') {
     return true
   }
   console.error("Only the creator of the project can do it.")

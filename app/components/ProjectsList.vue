@@ -86,7 +86,7 @@ function projectOpen(project: Project) {
       <hr class="my-1 w-full">
       <div>
         <div class="overflow-x-auto hide-scrollbar max-w-[1500px]">
-          <div class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] gap-6 pt-1 my-3 text-center w-full">
+          <div class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] gap-6 mx-5 pt-1 my-3 text-center w-full">
             <div>
               Title
             </div>
@@ -138,7 +138,10 @@ function projectOpen(project: Project) {
               >
                 {{ formatDate(prj?.deadline)}}
               </div>
-              <StatusesList :project="prj" />
+              <StatusesList
+                :disabled = !creatorOnly(prj)
+                :project="prj"
+              />
               <div
                 class="min-w-[50px] max-w-[300px] text-center"
                 @click="projectOpen(prj)"

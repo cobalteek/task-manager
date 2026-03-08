@@ -1,8 +1,8 @@
 import { prisma } from "~~/server/utils/prisma"
+import {creatorOnly} from "~~/utils/creatorOnly";
 
 export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event)
-  const { userId } = requireUser(event)
 
   const body = await readBody<{
     title: string
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (project.createdById !== userId) {
+  if (creatorOnly(project)) {
     throw createError({
       statusCode: 403,
       statusMessage: "Only the creator of the project can edit it"
