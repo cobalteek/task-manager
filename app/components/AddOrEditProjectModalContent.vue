@@ -41,7 +41,6 @@ watch(
   (isOpen) => {
     if (!isOpen && !props.project) {
       form.value = getEmptyForm()
-      console.log(form)
     }
   }
 )
@@ -89,7 +88,6 @@ async function submit() {
         form.value.description,
         deadline
       )
-      console.log('created in component =', created)
       if (!created) return
     } catch (e) {
       console.error(e)

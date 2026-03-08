@@ -13,13 +13,16 @@ export default defineEventHandler(async (event) => {
   const user = (await prisma.user.findUnique({
     where: { id: userId },
     include: { roles: { include: { role: true } } }
-  })) as UserWithRoles
-
-  const role = user.roles[0]?.role.name
+  })) as UserWithRoles | null
 
   if (!user) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized'
+    })
   }
+
+  const role = user.roles[0]?.role.name
   return {
     id: user.id,
     email: user.email,
