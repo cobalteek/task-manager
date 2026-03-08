@@ -4,7 +4,6 @@ import { prisma } from '~~/server/utils/prisma'
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    console.log('REGISTER BODY:', body)
 
     const { email, password, name, gender } = body
 
@@ -19,7 +18,6 @@ export default defineEventHandler(async (event) => {
       where: { email },
     })
 
-    console.log('EXISTS:', exists)
 
     if (exists) {
       throw createError({
@@ -32,7 +30,6 @@ export default defineEventHandler(async (event) => {
       where: { name: 'USER' },
     })
 
-    console.log('USER ROLE:', userRole)
 
     if (!userRole) {
       throw createError({
@@ -42,7 +39,6 @@ export default defineEventHandler(async (event) => {
     }
 
     const hash = await bcrypt.hash(password, 10)
-    console.log('HASH CREATED')
 
     const user = await prisma.user.create({
       data: {
@@ -65,7 +61,7 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-    console.log('USER CREATED:', user)
+
 
     return {
       id: user.id,
