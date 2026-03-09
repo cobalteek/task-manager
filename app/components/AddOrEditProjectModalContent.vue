@@ -13,6 +13,7 @@ const error = ref(false)
 const props = defineProps<{
   modelValue: boolean
   project?: Project
+  sort: boolean
 }>()
 
 const emit = defineEmits<{
@@ -105,7 +106,10 @@ async function submit() {
         deadline
       )
       if (!created) return
-      await projectsStore.fetchAll()
+      if (props.sort) {
+        await projectsStore.fetchAll()
+      }
+      else await projectsStore.myFetch()
       close()
     }
   } catch (e: any) {

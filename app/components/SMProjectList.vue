@@ -10,6 +10,7 @@ import {creatorOnly} from "~~/utils/creatorOnly";
 const selectedProject = ref<Project>();
 const modalOpen = ref(false)
 const modalError = ref(false)
+const allProjects = ref(true)
 const query = ref('')
 const textError = ref('')
 const type_ = ref('')
@@ -62,12 +63,60 @@ function onEdit(project: Project) {
   textError.value = 'Only the creator of the project can do it.'
   modalError.value = true
 }
+
+async function allFetch() {
+  try {
+    allProjects.value = true
+    await projectsStore.fetchAll()
+  } catch (e: any) {
+    type_.value = 'error'
+    textError.value =
+      e?.data?.statusMessage ||
+      e?.data?.message ||
+      e?.message ||
+      'Failed to fetch all projects'
+  }
+}
+
+async function myFetch() {
+  try {
+    allProjects.value = false
+    await projectsStore.myFetch()
+  } catch (e: any) {
+    type_.value = 'error'
+    textError.value =
+      e?.data?.statusMessage ||
+      e?.data?.message ||
+      e?.message ||
+      'Failed to fetch all projects'
+  }
+}
 </script>
 
 <template>
   <div>
     <div class="inline-flex justify-end w-full">
       <div class="flex items-center gap-3">
+        <button
+          :disabled = allProjects
+          @click="allFetch"
+          class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
+        >
+          All Projects
+        </button>
+        <button
+          :disabled = !allProjects
+          @click="myFetch"
+          class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
+        >
+          My Projects
+        </button>
+        <button
+          @click="onAdd"
+          class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
+        >
+          Add
+        </button>
         <div class="ml-1 relative inline-block mr-1">
           <input
             v-model="query"
@@ -76,12 +125,6 @@ function onEdit(project: Project) {
           >
           <img alt="search logo" src="../assets/search16.svg" class="absolute right-2 top-1/2 -translate-y-1/2">
         </div>
-        <button
-          @click="onAdd"
-          class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
-        >
-          Add
-        </button>
       </div>
     </div>
     <div v-for="prj in projects"
@@ -137,6 +180,7 @@ function onEdit(project: Project) {
       </div>
     </div>
     <AddOrEditProjectModalContent
+      :sort="allProjects"
       v-model="modalOpen"
       :project="selectedProject"
     />

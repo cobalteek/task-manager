@@ -15,6 +15,7 @@ const selectedProject = ref<Project | undefined>(undefined)
 const modalOpen = ref(false)
 const projectInfo = ref(false)
 const modalError = ref(false)
+const allProjects = ref(true)
 
 const textError = ref('')
 const query = ref('')
@@ -25,18 +26,7 @@ const projectsStore = useProjectsStore()
 const {projects} = storeToRefs(projectsStore)
 
 onMounted(async () => {
-  try {
-    await projectsStore.fetchAll()
-  } catch (e: any) {
-    type_.value = 'info'
-    textError.value =
-      e?.data?.statusMessage ||
-      e?.data?.message ||
-      e?.message ||
-      'Failed to fetch projects'
-    modalError.value = true
-    return
-  }
+  await allFetch()
 })
 
 watch(query, async (v) => {
@@ -78,6 +68,34 @@ function projectOpen(project: Project) {
   projectInfo.value = true
 }
 
+async function allFetch() {
+  try {
+    allProjects.value = true
+    await projectsStore.fetchAll()
+  } catch (e: any) {
+    type_.value = 'error'
+    textError.value =
+      e?.data?.statusMessage ||
+      e?.data?.message ||
+      e?.message ||
+      'Failed to fetch all projects'
+  }
+}
+
+async function myFetch() {
+  try {
+    allProjects.value = false
+    await projectsStore.myFetch()
+  } catch (e: any) {
+    type_.value = 'error'
+    textError.value =
+      e?.data?.statusMessage ||
+      e?.data?.message ||
+      e?.message ||
+      'Failed to fetch all projects'
+  }
+}
+
 </script>
 
 <template>
@@ -87,6 +105,20 @@ function projectOpen(project: Project) {
     <div class="relative">
       <div class="w-full inline-flex justify-center pt-1 lg:justify-end">
         <div class="flex items-center gap-3">
+          <button
+            :disabled = allProjects
+            @click="allFetch"
+            class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
+          >
+            All Projects
+          </button>
+          <button
+            :disabled = !allProjects
+            @click="myFetch"
+            class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
+          >
+            My Projects
+          </button>
           <button
             @click="onAdd"
             class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
@@ -108,8 +140,8 @@ function projectOpen(project: Project) {
       </div>
     </div>
     <hr class="my-1 w-full">
-    <div>
-      <div class="overflow-x-auto hide-scrollbar max-w-[1500px]">
+    <div class="overflow-x-auto hide-scrollbar h-full">
+      <div class=" max-w-[1500px]">
         <div class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] gap-6 mx-5 pt-1 my-3 text-center w-full">
           <div>
             Title
@@ -130,7 +162,7 @@ function projectOpen(project: Project) {
             Created By
           </div>
         </div>
-        <div>
+        <div class="h-full">
           <div
             v-for="prj in projects"
             :key="prj?.id"
@@ -177,6 +209,7 @@ function projectOpen(project: Project) {
       </div>
     </div>
     <AddOrEditProjectModalContent
+      :sort="allProjects"
       v-model="modalOpen"
       :project="selectedProject"
     />

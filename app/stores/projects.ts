@@ -15,6 +15,15 @@ export const useProjectsStore = defineStore('project', () => {
     }
   }
 
+  async function myFetch() {
+    isLoading.value = true
+    try {
+      projects.value = await $fetch<Project[]>('/api/projects/myProjects')
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   async function searchProjects(query: string) {
     projects.value = await $fetch<Project[]>(
       `/api/projects/projectSearch?q=${encodeURIComponent(query)}`
@@ -52,6 +61,7 @@ export const useProjectsStore = defineStore('project', () => {
     projects,
     isLoading,
     fetchAll,
+    myFetch,
     createProject,
     searchProjects,
     updateProject,
