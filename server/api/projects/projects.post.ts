@@ -1,5 +1,5 @@
-import { prisma } from '~~/server/utils/prisma'
-import { requireUser } from '../../utils/auth'
+import {prisma} from '~~/server/utils/prisma'
+import {requireUser} from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   const user = requireUser(event)
@@ -11,22 +11,11 @@ export default defineEventHandler(async (event) => {
       statusMessage: "Data not found"
     })
   }
-  const dateFromString = body.deadline
-  const now = Date.now() + 60_000
-
-  const targetTime = new Date(dateFromString).getTime()
-
-  if (targetTime < now) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: "The deadline cannot be earlier than the creation of the project"
-    })
-  }
 
   try {
 
     const existingUser = await prisma.user.findUnique({
-      where: { id: user.userId }
+      where: {id: user.userId}
     })
 
     if (!existingUser) {
@@ -56,7 +45,7 @@ export default defineEventHandler(async (event) => {
       include: {
         status: true,
         createdBy: {
-          select: { id: true, name: true }
+          select: {id: true, name: true}
         }
       }
     })

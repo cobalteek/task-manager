@@ -3,10 +3,10 @@ import {useAuthStore} from "~/stores/auth";
 
 const auth = useAuthStore()
 const fields = [
-  { key: 'name', type: 'text', placeholder: 'Name' },
-  { key: 'email', type: 'email', placeholder: 'Email' },
-  { key: 'password', type: 'password', placeholder: 'Password' },
-  { key: 'confirmPassword', type: 'password', placeholder: 'Confirm password' }
+  {key: 'name', type: 'text', placeholder: 'Name'},
+  {key: 'email', type: 'email', placeholder: 'Email'},
+  {key: 'password', type: 'password', placeholder: 'Password'},
+  {key: 'confirmPassword', type: 'password', placeholder: 'Confirm password'}
 ] as const
 
 const form = ref({
@@ -14,7 +14,8 @@ const form = ref({
   email: '',
   password: '',
   confirmPassword: '',
-  gender: ''
+  gender: '',
+  role: ''
 })
 
 const modalRef = ref(false);
@@ -31,13 +32,12 @@ function validate(text: string) {
 const type_ = ref('error')
 
 async function onRegister() {
-  if(validate(form.value.password) || validate(form.value.name)) {
+  if (validate(form.value.password) || validate(form.value.name)) {
     textError.value = 'Only English characters allowed'
     modalRef.value = true
     type_.value = 'error'
     return
-  }
-  else if(form.value.email === '' ||
+  } else if (form.value.email === '' ||
     form.value.password === '' ||
     form.value.confirmPassword === '' ||
     form.value.name === ''
@@ -46,8 +46,7 @@ async function onRegister() {
     modalRef.value = true
     type_.value = 'error'
     return
-  }
-  else if (form.value.gender === '') {
+  } else if (form.value.gender === '') {
     textError.value = 'Please select a gender'
     modalRef.value = true
     type_.value = 'error'
@@ -58,14 +57,12 @@ async function onRegister() {
     modalRef.value = true
     type_.value = 'error'
     return
-  }
-  else if(form.value.password.length < 6) {
+  } else if (form.value.password.length < 6) {
     textError.value = 'Password must be at least 6 characters'
     modalRef.value = true
     type_.value = 'info'
     return
-  }
-  else if(form.value.name.length < 3) {
+  } else if (form.value.name.length < 3) {
     textError.value = 'Name must be at least 3 characters'
     modalRef.value = true
     type_.value = 'error'
@@ -73,10 +70,7 @@ async function onRegister() {
   }
 
   try {
-    await $fetch('/api/auth/register', {
-      method: 'POST',
-      body: { name: form.value.name, email: form.value.email, password: form.value.password, gender: form.value.gender },
-    })
+    await auth.signUp(form.value)
 
     await auth.signIn(form.value)
 
@@ -90,9 +84,6 @@ async function onRegister() {
       alert('Email already exists')
       return
     }
-
-    alert(message)
-    console.error(e)
   }
 }
 
@@ -114,5 +105,5 @@ definePageMeta({
     link="/sign-in"
     v-model="form"
     @submit="onRegister"/>
-  <ErrorModalContent v-model="modalRef"  class="w-[300px] h-[200px] top-[19%]" head="Error" :type="type_" :text="textError"/>
+  <ErrorModalContent v-model="modalRef" class="w-[300px] h-[200px] top-[19%]" :type="type_" :text="textError"/>
 </template>

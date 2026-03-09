@@ -1,14 +1,29 @@
 <script setup lang="ts">
 import {navigateTo} from "nuxt/app";
 import {useAuthStore} from "~/stores/auth";
-import { storeToRefs } from "pinia";
+import {storeToRefs} from "pinia";
 
 const auth = useAuthStore()
-const { user } = storeToRefs(auth)
+const {user} = storeToRefs(auth)
+
+const type_ = ref('')
+const text = ref('')
+const error = ref(false)
 
 const logout_ = async () => {
-  await auth.logout()
-  await navigateTo('/')
+  try {
+    await auth.logout()
+    await navigateTo('/')
+  } catch (e: any) {
+    type_.value = 'error'
+    text.value =
+      e?.data?.statusMessage ||
+      e?.data?.message ||
+      e?.message ||
+      'Failed to log out'
+    error.value = true
+    return
+  }
 }
 
 </script>
@@ -39,10 +54,15 @@ const logout_ = async () => {
       </button>
     </div>
     <div v-else class="sm: mr-1">
-      <NuxtLink class="sm: mr-1" to= "/sign-in">
+      <NuxtLink class="sm: mr-1" to="/sign-in">
         Sign In
       </NuxtLink>
       <NuxtLink to="/sign-up" class="bg- border-2 rounded p-0.5 sm: mr-1">Sign Up</NuxtLink>
     </div>
+    <ErrorModalContent
+      v-model="error"
+      :type="type_"
+      :text="text"
+    />
   </header>
 </template>

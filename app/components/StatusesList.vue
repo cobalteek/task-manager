@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useStatusesStore } from "~/stores/statuses";
-import { useProjectsStore } from "~/stores/projects";
+import {useStatusesStore} from "~/stores/statuses";
+import {useProjectsStore} from "~/stores/projects";
 import type {Project} from "~~/types/project";
 
 defineProps<{
@@ -11,8 +11,23 @@ defineProps<{
 const statusesStore = useStatusesStore()
 const projectsStore = useProjectsStore()
 
+const type_ = ref('')
+const textError = ref('')
+const modalError = ref(false)
+
 onMounted(async () => {
-  await statusesStore.fetchAll()
+  try {
+    await statusesStore.fetchAll()
+  } catch (e: any) {
+    type_.value = 'info'
+    textError.value =
+      e?.data?.statusMessage ||
+      e?.data?.message ||
+      e?.message ||
+      'Failed to fetch projects'
+    modalError.value = true
+    return
+  }
 })
 
 async function onStatusChange(projectId: string, statusId: number) {
@@ -26,7 +41,7 @@ async function onStatusChange(projectId: string, statusId: number) {
     <select
       :disabled=disabled
       @change="onStatusChange(project.id, Number(($event.target as HTMLSelectElement).value))"
-      :value="project.statusId"
+      :value="project.statusId ? project.statusId : textError"
       class="text-gray-100 bg-[var(--bg-context)] rounded-md p-1 border border-gray-100 w-[150px]">
       <option
         v-for="o in statusesStore.options"
@@ -37,4 +52,9 @@ async function onStatusChange(projectId: string, statusId: number) {
       </option>
     </select>
   </div>
+  <ErrorModalContent
+    v-model="modalError"
+    :text="textError"
+    :type="type_"
+  />
 </template>

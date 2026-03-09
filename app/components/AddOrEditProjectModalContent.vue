@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import {useProjectsStore} from "~/stores/projects";
-import type { Project } from '~~/types/project'
-import {useAuthStore} from "~/stores/auth";
+import type {Project} from '~~/types/project'
+import {creatorOnly} from "~~/utils/creatorOnly";
 
 const projectsStore = useProjectsStore()
+
+const type_ = ref('')
+const text = ref('')
+
+const error = ref(false)
+
 const props = defineProps<{
   modelValue: boolean
   project?: Project
 }>()
-
-const auth = useAuthStore()
-const { user } = storeToRefs(auth)
 
 const emit = defineEmits<{
   (e: 'update:modelValue', v: boolean): void
@@ -21,7 +24,7 @@ const form = ref(getEmptyForm())
 watch(
   () => props.project,
   (p) => {
-    if(!p) {
+    if (!p) {
       form.value = getEmptyForm()
       return
     }
@@ -33,7 +36,7 @@ watch(
         : ''
     }
   },
-  { immediate: true }
+  {immediate: true}
 )
 
 watch(
@@ -71,48 +74,81 @@ function close() {
 }
 
 async function submit() {
-  if(props.project) {
-    const prj = props.project
-    prj.title = form.value.title
-    prj.description = form.value.description
-    prj.deadline = form.value.deadline
-    await projectsStore.updateProject(prj)
-    await projectsStore.fetchAll()
-    close()
-  }
-  else {
-    try {
-      const deadline = new Date(form.value.deadline + ':00')
+  console.log('SUBMIT FIRED')
+  try {
+    let deadline: Date | null = null
+    if (form.value.deadline) {
+      deadline = new Date(form.value.deadline + ':00')
+      const now = Date.now() + 60_000
+
+      const targetTime = new Date(deadline).getTime()
+
+      if (targetTime < now) {
+        throw createError({
+          statusCode: 401,
+          statusMessage: "The deadline cannot be earlier than the creation of the project"
+        })
+      }
+    }
+    if (props.project) {
+      const prj = props.project
+      prj.title = form.value.title
+      prj.description = form.value.description
+      prj.deadline = form.value.deadline
+      await projectsStore.updateProject(prj)
+      await projectsStore.fetchAll()
+      close()
+    } else {
       const created = await projectsStore.createProject(
         form.value.title,
         form.value.description,
         deadline
       )
       if (!created) return
-    } catch (e) {
-      console.error(e)
-      throw createError({
-        statusCode: 401,
-        statusMessage: "Error creating project"
-      })
-    } finally {
       await projectsStore.fetchAll()
       close()
     }
+  } catch (e: any) {
+    type_.value = 'error'
+    text.value =
+      e?.data?.statusMessage ||
+      e?.data?.message ||
+      e?.message ||
+      'Failed, please check your project details'
+    error.value = true
+    return
   }
 }
 
-async function deleteProject(id: string) {
-  if (props.project?.createdById !== user.value?.id) {
-    return console.error("Only the creator of the project can delete it.")
-  }
+async function deleteProject(project: Project) {
   try {
-    await projectsStore.deleteProject(id)
+
+    if (!creatorOnly(project)) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: "Only the creator of the project can delete it."
+      })
+    }
+
+    await projectsStore.deleteProject(project.id)
     await projectsStore.fetchAll()
     close()
-  } catch (e) {
-    console.error("ERROR IN DELETE PROJECT: ", e)
+  } catch (e: any) {
+    type_.value = 'error'
+    text.value =
+      e?.data?.statusMessage ||
+      e?.data?.message ||
+      e?.message ||
+      'Failed to delete project'
+    error.value = true
+    return
   }
+}
+
+function resetErrorModal() {
+  error.value = false
+  text.value = ''
+  type_.value = ''
 }
 </script>
 
@@ -156,12 +192,18 @@ async function deleteProject(id: string) {
             v-if="project"
             type="button"
             class="p-2 border rounded-md"
-            @click="deleteProject(project.id)"
+            @click="deleteProject(project)"
           >
             Delete
           </button>
         </div>
       </div>
     </form>
+    <ErrorModalContent
+      v-model="error"
+      :type="type_"
+      :text="text"
+      @close="resetErrorModal"
+    />
   </Modal>
 </template>
