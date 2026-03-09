@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import {useAuthStore} from "~/stores/auth";
-import ProjectsList from "~/components/ProjectsList.vue";
-import { storeToRefs } from "pinia";
+import {storeToRefs} from "pinia";
 import {useBreakpoint} from "~~/composables/useBreakpoint";
+import ChangeRoleModalContent from "~/components/ChangeRoleModalContent.vue";
 
 
 const auth = useAuthStore()
-const { user, isLoading } = storeToRefs(auth)
-const { isMobile, isDesktop, isTablet } = useBreakpoint()
-const showAddAdmin = ref(false)
+const {user, isLoading} = storeToRefs(auth)
+const {isMobile, isDesktop, isTablet} = useBreakpoint()
+const chooseRole = ref(false)
 const showProjects = ref(false)
 const kek = '</>'
 
@@ -28,28 +28,30 @@ definePageMeta({
     <div v-else-if="user" class="w-full h-full p-2 flex">
       <div class="w-full h-full">
         <section class="inline-flex items-center justify-end w-full gap-3">
-          <button @click="showAddAdmin = !showAddAdmin" class="p-2 text-shadow border border-solid border-gray-100 rounded-md flex justify-center items-center gap-1">
-            <span class="text-xl mb-1">+</span> New Admin
+          <button v-if="user.role === 'OWNER'" @click="chooseRole = !chooseRole"
+                  class="p-2 text-shadow border border-solid border-gray-100 rounded-md flex justify-center items-center gap-1">
+            Change Role
           </button>
-          <button @click="showProjects = !showProjects" class="p-3 text-shadow border border-solid border-gray-100 rounded-md">
+          <button @click="showProjects = !showProjects"
+                  class="p-2 text-shadow border border-solid border-gray-100 rounded-md">
             Projects
           </button>
         </section>
-        <AddAdminModalContent
+        <ChangeRoleModalContent
           class="w-[320px] h-[180px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          v-model="showAddAdmin"
+          v-model="chooseRole"
         />
         <div>
-          Name: {{user.name}}
+          Name: {{ user.name }}
         </div>
         <div>
-          Email: {{user.email}}
+          Email: {{ user.email }}
         </div>
         <div>
-          Gender: {{user.gender}}
+          Gender: {{ user.gender }}
         </div>
         <div>
-          Role: {{user.role}}
+          Role: {{ user.role }}
         </div>
         <AppTransition>
           <div v-if="showProjects" class="flex flex-col justify-center items-center">
@@ -65,8 +67,9 @@ definePageMeta({
       </div>
     </div>
     <AppTransition>
-      <div v-if="!showProjects" class="my-auto w-full h-full flex justify-center items-center text-[200px] text-[var(--bg-back)]">
-        <h1>{{kek}}</h1>
+      <div v-if="!showProjects"
+           class="my-auto w-full h-full flex justify-center items-center text-[200px] text-[var(--bg-back)]">
+        <h1>{{ kek }}</h1>
       </div>
     </AppTransition>
   </div>
