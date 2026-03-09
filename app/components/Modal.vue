@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppTransition from "~/components/AppTransition.vue";
+
 defineProps<{
   modelValue: boolean
 }>()
@@ -8,20 +10,12 @@ const emit = defineEmits<{
 }>()
 
 function close() {
-  console.log('modal close click')
   emit('update:modelValue', false)
 }
 </script>
 
 <template>
-  <Transition
-    enter-active-class="transition duration-200 ease-out"
-    enter-from-class="opacity-0 scale-90"
-    enter-to-class="opacity-100 scale-100"
-    leave-active-class="transition duration-200 ease-in"
-    leave-from-class="opacity-100"
-    leave-to-class="opacity-0"
-  >
+  <AppTransition>
     <div
       v-if="modelValue"
       class="fixed inset-0 flex items-center justify-center"
@@ -31,11 +25,12 @@ function close() {
         class="flex flex-col gap-2 border border-solid border-gray-200 rounded-xl bg-[var(--bg-modal)] min-w-[280px] min-h-[160px]"
       >
         <div class="flex-1">
-          <slot />
+          <slot/>
         </div>
 
         <div class="flex justify-center items-center h-[50px]">
           <button
+            type="button"
             @click="close"
             class="border border-solid border-gray-200 rounded-md p-1"
           >
@@ -44,5 +39,5 @@ function close() {
         </div>
       </div>
     </div>
-  </Transition>
+  </AppTransition>
 </template>
