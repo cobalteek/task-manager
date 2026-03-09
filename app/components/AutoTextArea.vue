@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, watch } from 'vue'
+import {nextTick, ref, watch} from 'vue'
 
 const props = defineProps<{
   text?: string
@@ -22,7 +22,7 @@ watch(
   () => {
     setHeight()
   },
-  { immediate: true }
+  {immediate: true}
 )
 </script>
 

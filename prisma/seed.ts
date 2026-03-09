@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import {PrismaClient} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -13,14 +13,14 @@ async function main() {
   ];
 
   await prisma.status.createMany({
-    data: statuses.map((name) => ({ name })),
+    data: statuses.map((name) => ({name})),
     skipDuplicates: true,
   });
 
   const roles = ["USER", "ADMIN", "OWNER"];
 
   await prisma.role.createMany({
-    data: roles.map((name) => ({ name })),
+    data: roles.map((name) => ({name})),
     skipDuplicates: true,
   });
 

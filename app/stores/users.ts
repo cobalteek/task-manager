@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
-import { computed, ref } from "vue";
+import {defineStore} from 'pinia'
+import {computed, ref} from "vue";
 
 type User = { id: string; name: string; email?: string }
 
@@ -26,10 +26,9 @@ export const useUsersStore = defineStore('users', () => {
     }
   }
 
-  // удобная “прослойка” для селекта
   const options = computed(() =>
-    items.value.map(u => ({ value: u.id, label: u.name }))
+    items.value.map(u => ({value: u.id, label: u.name}))
   )
 
-  return { items, options, loading, error, fetchUsers }
+  return {items, options, loading, error, fetchUsers}
 })

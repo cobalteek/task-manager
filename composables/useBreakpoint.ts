@@ -1,4 +1,3 @@
-import {ref, computed, onMounted, onBeforeUnmount } from 'vue'
 export function useBreakpoint() {
   const width = ref<number | null>(null)
 

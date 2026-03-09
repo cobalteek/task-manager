@@ -19,13 +19,14 @@ const emit = defineEmits<{
 }>()
 
 function setValue(key: string, value: string) {
-  emit('update:modelValue', { ...props.modelValue, [key]: value })
+  emit('update:modelValue', {...props.modelValue, [key]: value})
 }
 
 </script>
 
 <template>
-  <div class="w-2/6 min-w-[300px] max-w-[330px] max-h-4/6 p-10 bg-[var(--bg-modal)] border border-solid border-neutral rounded-xl flex overflow-hidden">
+  <div
+    class="w-2/6 min-w-[300px] max-w-[330px] max-h-4/6 p-10 bg-[var(--bg-modal)] border border-solid border-neutral rounded-xl flex overflow-hidden">
     <div class="flex mx-auto flex-col justify-between items-center">
       <h4 class="font-bold text-xl mb-2 ">
         {{ name }}
@@ -33,15 +34,15 @@ function setValue(key: string, value: string) {
       <form
         @submit.prevent="emit('submit')"
         class="flex mx-auto flex-col justify-between items-center">
-          <input
-            v-for="field in inputs"
-            :key="field.key"
-            :value="modelValue[field.key] ?? ''"
-            @input="setValue(field.key, ($event.target as HTMLInputElement).value)"
-            :type="field.type"
-            :placeholder="field.placeholder"
-            class="p-1 pl-2 w-100 mb-5 rounded-md active:border-gray-600 text-black"
-          />
+        <input
+          v-for="field in inputs"
+          :key="field.key"
+          :value="modelValue[field.key] ?? ''"
+          @input="setValue(field.key, ($event.target as HTMLInputElement).value)"
+          :type="field.type"
+          :placeholder="field.placeholder"
+          class="p-1 pl-2 w-100 mb-5 rounded-md active:border-gray-600 text-black"
+        />
         <div v-if="sex" class="flex gap-6">
           <label class="flex items-center gap-2 cursor-pointer">
             <input
@@ -76,19 +77,19 @@ function setValue(key: string, value: string) {
           type="submit"
           class="w-1/2 text-bold bg-gray-800 mt-3 rounded-xl p-1 hover:bg-gray-600 transition duration-300"
         >
-          {{btnName}}
+          {{ btnName }}
         </button>
       </form>
       <div class="flex flex-col justify-between items-center pt-3 w-full">
         <div>
-          {{disc}}
+          {{ disc }}
         </div>
         <NuxtLink
           v-if="textLink"
           :to="link"
           class="text-blue-200 hover:bg-gray-600 transition duration-300"
         >
-          {{textLink}}
+          {{ textLink }}
         </NuxtLink>
       </div>
     </div>

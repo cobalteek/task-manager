@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import {defineStore} from 'pinia'
+import {ref} from 'vue'
 
 type Task = {
   id: string
@@ -23,10 +23,10 @@ export const useTasksStore = defineStore('tasks', () => {
   async function createTask(title: string) {
     const created = await $fetch<Task>('/api/tasks', {
       method: 'POST',
-      body: { title },
+      body: {title},
     })
     items.value.unshift(created)
   }
 
-  return { items, isLoading, fetchAll, createTask }
+  return {items, isLoading, fetchAll, createTask}
 })

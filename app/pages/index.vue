@@ -2,7 +2,7 @@
 import {useAuthStore} from "~/stores/auth";
 
 const auth = useAuthStore()
-const { user } = storeToRefs(auth)
+const {user} = storeToRefs(auth)
 </script>
 <template>
   <div>
@@ -10,7 +10,7 @@ const { user } = storeToRefs(auth)
       Home
     </h1>
     <h3 v-if="user" class="text-xl text-gray-100 text-center">
-      Hello, {{user?.name}}!
+      Hello, {{ user?.name }}!
     </h3>
   </div>
 </template>

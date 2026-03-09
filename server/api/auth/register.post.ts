@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt'
-import { prisma } from '~~/server/utils/prisma'
+import {prisma} from '~~/server/utils/prisma'
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
-    const { email, password, name, gender } = body
+    const {email, password, name, gender} = body
 
     if (!email || !password || !name || !gender) {
       throw createError({
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const exists = await prisma.user.findUnique({
-      where: { email },
+      where: {email},
     })
 
 
@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const userRole = await prisma.role.findUnique({
-      where: { name: 'USER' },
+      where: {name: 'USER'},
     })
 
 
@@ -60,7 +60,6 @@ export default defineEventHandler(async (event) => {
         },
       },
     })
-
 
 
     return {

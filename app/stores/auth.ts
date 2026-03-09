@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
-import type { User } from '~~/types/user'
+import {defineStore} from 'pinia'
+import type {User} from '~~/types/user'
 
 
 export const useAuthStore = defineStore('auth', () => {
@@ -72,8 +72,12 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout() {
-    user.value = null
-    await $fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
+    try {
+      user.value = null
+      await $fetch('/api/auth/logout', {method: 'POST', credentials: 'include'})
+    } catch (e: any) {
+      throw e
+    }
   }
 
   return {

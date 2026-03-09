@@ -3,7 +3,7 @@
 </script>
 
 <template>
-<div class="text-xl">
-  Docs
-</div>
+  <div class="text-xl">
+    Docs
+  </div>
 </template>

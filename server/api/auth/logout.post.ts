@@ -6,6 +6,6 @@ export default defineEventHandler(async (event) => {
     secure: process.env.NODE_ENV === 'production',
   })
 
-  return { success: true }
+  return {success: true}
 
 })

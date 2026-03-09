@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 import {computed, ref} from "vue"
-import type { Status } from '~~/types/status'
+import type {Status} from '~~/types/status'
 
 export const useRolesStore = defineStore('roles', () => {
   const roles = ref<Status[]>([])
@@ -16,7 +16,6 @@ export const useRolesStore = defineStore('roles', () => {
   }
 
   async function changeRole(candidate: string, roleId: number) {
-
     await $fetch('/api/changeRole', {
       method: "POST",
       body: {candidate: candidate, roleId: roleId}
@@ -25,8 +24,8 @@ export const useRolesStore = defineStore('roles', () => {
   }
 
   const options = computed(() =>
-    roles.value.map(u => ({ value: u.id, label: u.name }))
+    roles.value.map(u => ({value: u.id, label: u.name}))
   )
 
-  return { items: roles, isLoading, options, fetchAll, changeRole }
+  return {items: roles, isLoading, options, fetchAll, changeRole}
 })
