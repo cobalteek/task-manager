@@ -35,7 +35,10 @@ definePageMeta({
             Projects
           </button>
         </section>
-        <AddAdminModalContent v-model="showAddAdmin"/>
+        <AddAdminModalContent
+          class="w-[320px] h-[180px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          v-model="showAddAdmin"
+        />
         <div>
           Name: {{user.name}}
         </div>
@@ -48,17 +51,24 @@ definePageMeta({
         <div>
           Role: {{user.role}}
         </div>
-        <div v-if="showProjects && (isDesktop || isTablet)" class="flex justify-center">
-          <ProjectsList class="mt-5" v-model="showProjects"/>
-        </div>
-        <div v-if="showProjects && isMobile" class="flex flex-col justify-center items-center">
-          <SMProjectList/>
-        </div>
+        <AppTransition>
+          <div v-if="showProjects" class="flex flex-col justify-center items-center">
+            <ProjectsList
+              v-if="(isDesktop || isTablet)"
+              class="mt-5"
+              v-model="showProjects"/>
+            <SMProjectList
+              v-if="isMobile"
+            />
+          </div>
+        </AppTransition>
       </div>
     </div>
+    <AppTransition>
       <div v-if="!showProjects" class="my-auto w-full h-full flex justify-center items-center text-[200px] text-[var(--bg-back)]">
         <h1>{{kek}}</h1>
       </div>
+    </AppTransition>
   </div>
 </template>
 
