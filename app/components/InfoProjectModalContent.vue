@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { formatDate } from "~~/utils/formatDate";
+import {formatDate} from "~~/utils/formatDate";
 import type {Project} from "~~/types/project";
 import AutoTextArea from "~/components/AutoTextArea.vue";
+import {creatorOnly} from "~~/utils/creatorOnly";
 
-const props = defineProps<{
+defineProps<{
   modelValue: boolean,
   project: Project
 }>();
@@ -11,10 +12,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', v: boolean): void
 }>()
-
-function close() {
-  emit('update:modelValue', false)
-}
 
 </script>
 
@@ -56,7 +53,10 @@ function close() {
           <div class="text-[18px]">
             Status:
           </div>
-          <StatusesList :project="project" />
+          <StatusesList
+            :disabled = !creatorOnly(project)
+            :project="project"
+          />
         </div>
         <div>
           Created By: {{ project.createdBy.name }}
