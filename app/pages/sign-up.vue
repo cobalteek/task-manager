@@ -78,7 +78,6 @@ async function onRegister() {
   } catch (e: any) {
 
     const status = e?.statusCode || e?.status || e?.response?.status
-    const message = e?.data?.message || e?.message || 'Registration failed'
 
     if (status === 409) {
       alert('Email already exists')
