@@ -29,11 +29,11 @@ definePageMeta({
       <div class="w-full h-full">
         <section class="inline-flex items-center justify-end w-full gap-3">
           <button v-if="user.role === 'OWNER'" @click="chooseRole = !chooseRole"
-                  class="p-2 text-shadow border border-solid border-gray-100 rounded-md flex justify-center items-center gap-1">
+                  class="p-2 text-shadow btn">
             Change Role
           </button>
           <button @click="showProjects = !showProjects"
-                  class="p-2 text-shadow border border-solid border-gray-100 rounded-md">
+                  class="p-2 text-shadow btn">
             Projects
           </button>
         </section>

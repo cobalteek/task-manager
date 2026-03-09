@@ -108,20 +108,20 @@ async function myFetch() {
           <button
             :disabled = allProjects
             @click="allFetch"
-            class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
+            class="p-3 text-shadow btn"
           >
             All Projects
           </button>
           <button
             :disabled = !allProjects
             @click="myFetch"
-            class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
+            class="p-3 text-shadow btn"
           >
             My Projects
           </button>
           <button
             @click="onAdd"
-            class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
+            class="p-3 text-shadow btn"
           >
             Add
           </button>

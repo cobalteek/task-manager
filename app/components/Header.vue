@@ -48,7 +48,7 @@ const logout_ = async () => {
       <NuxtLink to="/dashboard" class="mr-4">
         Dashboard
       </NuxtLink>
-      <button @click="logout_" class="inline-flex items-center justify-center bg- border rounded p-1 sm: mr-4">
+      <button @click="logout_" class="inline-flex items-center justify-center bg- border rounded p-1 btn sm: mr-4">
         {{ user?.name }}
         <img src="../assets/logout.png" alt="logout" class="invert h-[30px]"/>
       </button>

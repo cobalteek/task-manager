@@ -1,17 +1,35 @@
 
 @tailwind base;
 @tailwind utilities;
+@tailwind components;
+
 :root {
   margin: 0;
   padding: 0;
   --font-sans: 'Inter', sans-serif;
   --bg-header: #111111;
   --bg-context: #17161CE6;
-  --bg-hover-context: rgba(255, 255, 255, 0.15);
+  --bg-hover-context: #FFFFFF26;
   --bg-back: #1f1f29;
   --bg-modal: #17161c;
   --bg-error: rgba(112, 2, 2, 0.75);
   --bg-info: #fdca01;
+  --btn-hover: #4b4b50;
+
+  .btn {
+    @apply
+    border
+    border-solid
+    border-gray-100
+    rounded-md
+    hover:bg-[var(--bg-hover-context)]
+    disabled:border-gray-600
+    disabled:text-gray-600
+    transition
+    duration-100;
+  }
+
+
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -21,6 +39,7 @@
     scrollbar-width: none;
   }
 }
+
 
 @theme {
   --btn-default: "p-3 text-shadow border border-solid border-gray-100 rounded-md"
