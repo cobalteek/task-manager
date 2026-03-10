@@ -5,6 +5,8 @@ import {creatorOnly} from "~~/utils/creatorOnly";
 
 const projectsStore = useProjectsStore()
 
+const {isLoading} = projectsStore
+
 const type_ = ref('')
 const text = ref('')
 
@@ -75,7 +77,6 @@ function close() {
 }
 
 async function submit() {
-  console.log('SUBMIT FIRED')
   try {
     let deadline: Date | null = null
     if (form.value.deadline) {
@@ -126,7 +127,6 @@ async function submit() {
 
 async function deleteProject(project: Project) {
   try {
-
     if (!creatorOnly(project)) {
       throw createError({
         statusCode: 401,
@@ -169,7 +169,7 @@ function resetErrorModal() {
           <input
             required
             v-model="form.title"
-            class="m-1 rounded-xl w-1/2 mx-auto h-[50px] text-black p-1"
+            class="m-1 rounded-xl w-1/2 mx-auto h-[50px] text-black bg-white  p-1"
           />
         </div>
         <div class="flex flex-col gap-4">
@@ -177,14 +177,14 @@ function resetErrorModal() {
           <textarea
             required
             v-model="form.description"
-            class="m-1 rounded-xl h-[150px] text-black text-mono p-1"
+            class="m-1 rounded-xl h-[150px] text-black bg-white  text-mono p-1"
           />
         </div>
         <div class="flex flex-col gap-4 text-center">
           <label>Deadline</label>
           <input
             v-model="form.deadline"
-            class="m-1 rounded-xl w-1/2 mx-auto text-black p-1"
+            class="m-1 rounded-xl w-1/2 mx-auto text-black p-1 bg-white "
             type="datetime-local"
           />
         </div>
@@ -209,5 +209,6 @@ function resetErrorModal() {
       :text="text"
       @close="resetErrorModal"
     />
+    <Loading v-if="isLoading"/>
   </Modal>
 </template>

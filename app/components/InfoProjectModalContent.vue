@@ -28,7 +28,7 @@ const emit = defineEmits<{
         </div>
         <AutoTextArea
           :text="project.title"
-          class="w-1/2 text-black text-center rounded-md max-h-[50px] overflow-y-auto"
+          class="w-1/2 text-black text-center rounded-md max-h-[50px] overflow-y-auto bg-white "
         />
       </div>
       <div class="my-auto flex flex-col justify-center items-center w-full">
@@ -37,7 +37,7 @@ const emit = defineEmits<{
         </div>
         <AutoTextArea
           :text="project.description"
-          class="w-full max-h-[300px] max-w-[550px] resize-none overflow-y-auto rounded-md border p-2 text-black active:border-0 m-1"
+          class="w-full max-h-[300px] max-w-[550px] resize-none overflow-y-auto rounded-md border p-2 text-black active:border-0 m-1 bg-white "
         />
       </div>
       <section class="inline-flex justify-between items-center w-full px-3 my-auto">

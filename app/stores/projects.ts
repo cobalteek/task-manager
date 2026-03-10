@@ -31,13 +31,18 @@ export const useProjectsStore = defineStore('project', () => {
   }
 
   async function createProject(title: string, description: string, deadline: Date | null) {
-    const created = await $fetch<Project>('/api/projects/projects', {
-      method: 'POST',
-      body: {title, description, deadline}
-    })
+    isLoading.value = true
+    try {
+      const created = await $fetch<Project>('/api/projects/projects', {
+        method: 'POST',
+        body: {title, description, deadline}
+      })
 
-    projects.value.unshift(created)
-    return created
+      projects.value.unshift(created)
+      return created
+    } finally {
+      isLoading.value = false
+    }
   }
 
   async function updateProject(project: Project) {

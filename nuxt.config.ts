@@ -1,10 +1,19 @@
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   nitro: {
     preset: "netlify"
   },
 
+  css: ['~/assets/css/main.css'],
+
+  vite: {
+    plugins: [
+      tailwindcss(),
+    ],
+  },
+
   modules: [
-    '@nuxtjs/tailwindcss',
     '@pinia/nuxt'
   ],
 
@@ -12,10 +21,8 @@ export default defineNuxtConfig({
     enabled: true
   },
 
-  css: ['~/assets/css/main.css'],
-
   routeRules: {
-    '/': { prerender: true }
+    '/': {prerender: true}
   },
 
   compatibilityDate: '2025-01-15'

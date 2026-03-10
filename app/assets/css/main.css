@@ -1,7 +1,4 @@
-
-@tailwind base;
-@tailwind utilities;
-@tailwind components;
+@import "tailwindcss";
 
 :root {
   margin: 0;
@@ -40,9 +37,4 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-}
-
-
-@theme {
-  --btn-default: "p-3 text-shadow border border-solid border-gray-100 rounded-md"
 }

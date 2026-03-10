@@ -122,7 +122,7 @@ async function myFetch() {
         <div class="relative inline-block">
           <input
             v-model="query"
-            class="focus:outline-none text-black rounded-xl p-1"
+            class="focus:outline-none text-black rounded-xl p-1 bg-white "
             placeholder="Search"
           >
           <img alt="search logo" src="../assets/search16.svg" class="absolute right-0 top-1/2 -translate-y-1/2">

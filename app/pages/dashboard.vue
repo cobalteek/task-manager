@@ -22,10 +22,8 @@ definePageMeta({
 
 <template>
   <div>
-    <div v-if="isLoading" class="text-xl text-orange-600">
-      Loading...
-    </div>
-    <div v-else-if="user" class="w-full h-full p-2 flex">
+    <Loading v-if="isLoading"/>
+    <div v-if="user" class="w-full h-full p-2 flex">
       <div class="w-full h-full">
         <section class="inline-flex items-center justify-end w-full gap-3">
           <button v-if="user.role === 'OWNER'" @click="chooseRole = !chooseRole"

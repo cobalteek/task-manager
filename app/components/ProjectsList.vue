@@ -125,16 +125,16 @@ async function myFetch() {
           >
             Add
           </button>
-          <div class="ml-1 relative inline-block mr-1">
+          <div class="relative inline-block">
             <input
               v-model="query"
-              class="focus:outline-none text-black rounded-xl p-1"
+              class="focus:outline-none rounded-xl p-1 bg-white text-black"
               placeholder="Search"
             >
             <img alt="search logo" src="../assets/search16.svg" class="absolute right-2 top-1/2 -translate-y-1/2">
           </div>
         </div>
-        <button @click="close" class="p-3 text-shadow text-2xl mb-2 ">
+        <button @click="close" class="p-3 text-shadow text-2xl">
           ×
         </button>
       </div>
