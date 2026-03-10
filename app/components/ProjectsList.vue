@@ -141,8 +141,8 @@ async function myFetch() {
     </div>
     <hr class="my-1 w-full">
     <div class="overflow-x-auto hide-scrollbar h-full">
-      <div class=" max-w-[1500px]">
-        <div class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] gap-6 mx-5 pt-1 my-3 text-center w-full">
+      <div class="max-w-[1500px]">
+        <div class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] my-3 text-center w-full">
           <div>
             {{ $t('project.title') }}
           </div>
@@ -168,7 +168,7 @@ async function myFetch() {
             v-for="prj in projects"
             :key="prj?.id"
             @contextmenu.prevent.stop="onEdit(prj)"
-            class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] gap-6 pt-1 my-3 mx-5 items-center hover:bg-[var(--bg-hover-context)] hover:cursor-pointer">
+            class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] gap-1 pt-1 my-3  items-center hover:bg-[var(--bg-hover-context)] hover:cursor-pointer">
             <div
               class="min-w-[100px] max-w-[300px] text-center overflow-hidden line-clamp-3 break-words"
               @click="projectOpen(prj)"
