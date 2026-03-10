@@ -3,7 +3,7 @@ import {requireUser} from "#imports";
 
 export default defineEventHandler(async (event) => {
 
-  const {userId} = requireUser(event)
+  const {userId} = await requireUser(event)
 
   return prisma.project.findMany({
     where: {

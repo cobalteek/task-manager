@@ -2,11 +2,12 @@ import {prisma} from "~~/server/utils/prisma"
 
 export default defineEventHandler(async (event) => {
   const {id} = getRouterParams(event)
-  const {userId} = requireUser(event)
+  const {userId} = await requireUser(event)
   const body = await readBody<{ statusId: number }>(event)
+  const t = await useTranslation(event)
 
   if (!body?.statusId) {
-    throw createError({statusCode: 400, statusMessage: "statusId is required"})
+    throw createError({statusCode: 400, statusMessage: t('error.status.statusId')})
   }
 
   const project = await prisma.project.findUnique({
@@ -20,14 +21,14 @@ export default defineEventHandler(async (event) => {
   if (!project) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Project not found"
+      statusMessage: t('error.project.notFound')
     })
   }
 
   if (project.createdById !== userId) {
     throw createError({
       statusCode: 403,
-      statusMessage: "Only the creator of the project can edit it"
+      statusMessage: t('error.user.onlyCreator')
     })
   }
 

@@ -40,8 +40,8 @@ function setValue(key: string, value: string) {
           :value="modelValue[field.key] ?? ''"
           @input="setValue(field.key, ($event.target as HTMLInputElement).value)"
           :type="field.type"
-          :placeholder="field.placeholder"
-          class="p-1 pl-2 w-100 mb-5 rounded-md active:border-gray-600 text-black"
+          :placeholder="$t(field.placeholder)"
+          class="p-1 pl-2 mb-5 rounded-md active:border-gray-600 text-black bg-white"
         />
         <div v-if="sex" class="flex gap-6">
           <label class="flex items-center gap-2 cursor-pointer">
@@ -56,7 +56,7 @@ function setValue(key: string, value: string) {
               :checked="modelValue.gender === 'male'"
               @change="setValue('gender', 'male')"
             />
-            <span>Male</span>
+            <span>{{ $t('user.male') }}</span>
           </label>
           <label class="flex items-center gap-2 cursor-pointer">
             <input
@@ -70,11 +70,11 @@ function setValue(key: string, value: string) {
               :checked="modelValue.gender === 'female'"
               @change="setValue('gender', 'female')"
             />
-            <span>Female</span>
+            <span>{{ $t('user.female') }}</span>
           </label>
         </div>
         <button
-          type="submit"
+          @submit.prevent="emit('submit')"
           class="w-1/2 text-bold bg-gray-800 mt-3 rounded-xl p-1 hover:bg-gray-600 transition duration-300"
         >
           {{ btnName }}

@@ -34,7 +34,7 @@ function close() {
             @click="close"
             class="border border-solid border-gray-200 rounded-md p-1"
           >
-            Close
+            {{ $t('btn.close') }}
           </button>
         </div>
       </div>

@@ -38,7 +38,7 @@ watch(query, async (v) => {
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      'Failed to search projects'
+      $t('error.project.searchFailed')
     modalError.value = true
     return
   }
@@ -59,7 +59,7 @@ function onEdit(project: Project) {
     modalOpen.value = true
     return
   }
-  textError.value = '"Only the creator of the project can do it."'
+  textError.value = $t('error.user.creatorOnly')
   modalError.value = true
 }
 
@@ -78,7 +78,7 @@ async function allFetch() {
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      'Failed to fetch all projects'
+      $t('error.project.fetchAll')
   }
 }
 
@@ -92,7 +92,7 @@ async function myFetch() {
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      'Failed to fetch all projects'
+      $t('error.project.fetchMy')
   }
 }
 
@@ -110,20 +110,20 @@ async function myFetch() {
             @click="allFetch"
             class="p-3 text-shadow btn"
           >
-            All Projects
+            {{ $t('btn.allProjects') }}
           </button>
           <button
             :disabled = !allProjects
             @click="myFetch"
             class="p-3 text-shadow btn"
           >
-            My Projects
+            {{ $t('btn.myProjects') }}
           </button>
           <button
             @click="onAdd"
             class="p-3 text-shadow btn"
           >
-            Add
+            {{ $t('btn.add') }}
           </button>
           <div class="relative inline-block">
             <input
@@ -135,7 +135,7 @@ async function myFetch() {
           </div>
         </div>
         <button @click="close" class="p-3 text-shadow text-2xl">
-          ×
+          {{ $t('btn.cross') }}
         </button>
       </div>
     </div>
@@ -144,22 +144,22 @@ async function myFetch() {
       <div class=" max-w-[1500px]">
         <div class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] gap-6 mx-5 pt-1 my-3 text-center w-full">
           <div>
-            Title
+            {{ $t('project.title') }}
           </div>
           <div>
-            Description
+            {{ $t('project.description') }}
           </div>
           <div>
-            Created At
+            {{ $t('project.createdAt') }}
           </div>
           <div>
-            Deadline
+            {{ $t('project.deadline') }}
           </div>
           <div>
-            Status
+            {{ $t('project.status') }}
           </div>
           <div>
-            Created By
+            {{ $t('project.createdBy') }}
           </div>
         </div>
         <div class="h-full">

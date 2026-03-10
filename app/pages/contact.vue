@@ -4,6 +4,6 @@
 
 <template>
   <div class="text-xl">
-    Contact
+    {{$t('pages.contact')}}
   </div>
 </template>

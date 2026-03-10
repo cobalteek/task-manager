@@ -3,8 +3,8 @@ import {useAuthStore} from "~/stores/auth";
 
 const auth = useAuthStore()
 const fields = [
-  {key: 'email', type: 'email', placeholder: 'Email'},
-  {key: 'password', type: 'password', placeholder: 'Password'},
+  {key: 'email', type: 'email', placeholder: 'form.placeholder.email'},
+  {key: 'password', type: 'password', placeholder: 'form.placeholder.password'},
 ] as const
 
 const form = ref({
@@ -20,12 +20,12 @@ async function onLogin() {
 
   if (form.value.email === '' && form.value.password === '') {
     type_.value = 'error'
-    textError.value = 'The fields are empty.'
+    textError.value = $t('error.form.fieldsEmpty')
     modalRef.value = true
     return
   } else if (form.value.password.length < 6) {
     type_.value = 'info'
-    textError.value = 'Password must be at least 6 characters'
+    textError.value = $t('error.auth.passwordLength')
     modalRef.value = true
     return
   }
@@ -37,7 +37,7 @@ async function onLogin() {
   } catch (e: any) {
     if (e.response && e.response.status === 401) {
       type_.value = 'error'
-      textError.value = 'The login or password is incorrect. Please try again.'
+      textError.value = $t('.auth.loginOrPasswordInvalid')
       modalRef.value = true
     }
   }
@@ -58,11 +58,11 @@ definePageMeta({
 
 <template>
   <AuthForm
-    name="Sign In"
+    :name="$t('auth.signIn')"
     :inputs="fields"
-    btn-name="Login"
-    disc="No account?"
-    text-link="Sign up"
+    :btn-name="$t('auth.signIn')"
+    :disc="$t('auth.noAccount')"
+    :text-link="$t('auth.signUp')"
     link="/sign-up"
     v-model="form"
     @submit="onLogin"

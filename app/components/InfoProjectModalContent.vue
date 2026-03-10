@@ -24,7 +24,7 @@ const emit = defineEmits<{
     <div class="flex flex-col h-full">
       <div class="flex flex-col justify-center items-center w-full my-auto">
         <div>
-          Title
+          {{ $t('project.title') }}
         </div>
         <AutoTextArea
           :text="project.title"
@@ -33,7 +33,7 @@ const emit = defineEmits<{
       </div>
       <div class="my-auto flex flex-col justify-center items-center w-full">
         <div>
-          Description
+          {{ $t('project.description') }}
         </div>
         <AutoTextArea
           :text="project.description"
@@ -42,16 +42,16 @@ const emit = defineEmits<{
       </div>
       <section class="inline-flex justify-between items-center w-full px-3 my-auto">
         <div>
-          Created At: {{ formatDate(project.createdAt) }}
+          {{ $t('project.createdAt') }}: {{ formatDate(project.createdAt) }}
         </div>
         <div>
-          Deadline: {{ formatDate(project.deadline) }}
+          {{ $t('project.deadline') }} {{ formatDate(project.deadline) }}
         </div>
       </section>
       <section class="inline-flex justify-between items-center w-full px-3 my-auto">
         <div class="inline-flex gap-2 items-center">
           <div class="text-[18px]">
-            Status:
+            {{ $t('project.status') }}:
           </div>
           <StatusesList
             :disabled = !creatorOnly(project)
@@ -59,7 +59,7 @@ const emit = defineEmits<{
           />
         </div>
         <div>
-          Created By: {{ project.createdBy.name }}
+          {{ $t('project.createdBy') }}: {{ project.createdBy.name }}
         </div>
       </section>
     </div>

@@ -4,12 +4,13 @@ import {signToken} from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   const {email, password} = await readBody(event)
+  const t = await useTranslation(event)
 
   const user = await prisma.user.findUnique({where: {email}})
-  if (!user) throw createError({statusCode: 401, statusMessage: 'Invalid credentials'})
+  if (!user) throw createError({statusCode: 401, statusMessage: t('error.auth.credentials')})
 
   const ok = await bcrypt.compare(password, user.password)
-  if (!ok) throw createError({statusCode: 401, statusMessage: 'Invalid credentials'})
+  if (!ok) throw createError({statusCode: 401, statusMessage: t('error.auth.credentials')})
 
   const token = signToken({userId: user.id})
 

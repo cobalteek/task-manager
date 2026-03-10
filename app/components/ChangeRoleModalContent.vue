@@ -8,6 +8,8 @@ const usersStore = useUsersStore()
 const roleStore = useRolesStore()
 const auth = useAuthStore()
 
+const { isLoading } = storeToRefs(usersStore)
+
 const candidate = ref('')
 const role = ref()
 const type_ = ref('')
@@ -27,7 +29,7 @@ watch(
         roleStore.fetchAll()
       } catch (e: any) {
         type_.value = 'error'
-        text.value = e?.data?.message || e?.message || 'Failed to load users'
+        text.value = e?.data?.message || e?.message || $t('error.user.loadUsers')
         error.value = true
       }
     }
@@ -41,7 +43,7 @@ function close() {
 async function addRole() {
   if (candidate.value == '' || !role.value) {
     type_.value = 'info'
-    text.value = 'Choose user and role'
+    text.value = $t('error.user.chooseUserAndRole')
     error.value = true
     return
   }
@@ -56,7 +58,7 @@ async function addRole() {
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      'Couldn\'t assign a role'
+      $t('error.user.assignRole')
     error.value = true
   }
 }
@@ -71,14 +73,13 @@ async function addRole() {
   >
     <div class="w-full h-full mt-5">
       <div class="flex flex-col justify-center items-center w-full h-full gap-5">
-        <div v-if="usersStore.loading">Loading...</div>
-        <div v-else-if="usersStore.error">{{ usersStore.error }}</div>
+        <Loading v-if="isLoading"/>
         <div class="inline-flex items-center justify-center w-full gap-3">
           <select
             v-model="candidate"
             class="text-gray-100 bg-[var(--bg-context)] rounded-md p-1 border border-gray-100"
           >
-            <option disabled value>Select user</option>
+            <option disabled value>{{$t('select.selectUser')}}</option>
             <option
               v-for="o in usersStore.options"
               :key="o.value"
@@ -91,13 +92,13 @@ async function addRole() {
             v-model="role"
             class="text-gray-100 bg-[var(--bg-context)] rounded-md p-1 border border-gray-100"
           >
-            <option disabled value>Select role</option>
+            <option disabled value>{{$t('select.selectRole')}}</option>
             <option
               v-for="o in roleStore.options"
               :key="o.value"
               :value="o.value"
             >
-              {{ o.label }}
+              {{ $t(`role.${o.label}`) }}
             </option>
           </select>
         </div>
@@ -106,7 +107,7 @@ async function addRole() {
             @click="addRole"
             class="rounded-md p-1 border border-gray-100"
           >
-            Set
+            {{$t('btn.set')}}
           </button>
         </div>
       </div>

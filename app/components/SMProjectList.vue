@@ -1,18 +1,18 @@
-<script setup="setup" lang="ts">
-import {formatDate} from "~~/utils/formatDate";
-import AutoTextArea from "~/components/AutoTextArea.vue";
+<script setup lang="ts">
 import {useProjectsStore} from "~/stores/projects";
-import type {Project} from "~~/types/project";
+import {formatDate} from "~~/utils/formatDate";
 import {storeToRefs} from "pinia";
+import type {Project} from "~~/types/project";
 import AddOrEditProjectModalContent from "~/components/AddOrEditProjectModalContent.vue";
 import {creatorOnly} from "~~/utils/creatorOnly";
 
-const selectedProject = ref<Project>();
+const selectedProject = ref<Project | undefined>(undefined)
 const modalOpen = ref(false)
 const modalError = ref(false)
 const allProjects = ref(true)
-const query = ref('')
+
 const textError = ref('')
+const query = ref('')
 const type_ = ref('')
 
 const projectsStore = useProjectsStore()
@@ -20,18 +20,7 @@ const projectsStore = useProjectsStore()
 const {projects, isLoading} = storeToRefs(projectsStore)
 
 onMounted(async () => {
-  try {
-    await projectsStore.fetchAll()
-  } catch (e: any) {
-    type_.value = 'info'
-    textError.value =
-      e?.data?.statusMessage ||
-      e?.data?.message ||
-      e?.message ||
-      'Failed to fetch projects'
-    modalError.value = true
-    return
-  }
+  await allFetch()
 })
 
 watch(query, async (v) => {
@@ -43,7 +32,7 @@ watch(query, async (v) => {
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      'Failed to search projects'
+      $t('error.project.searchFailed')
     modalError.value = true
     return
   }
@@ -60,7 +49,7 @@ function onEdit(project: Project) {
     modalOpen.value = true
     return
   }
-  textError.value = 'Only the creator of the project can do it.'
+  textError.value = $t('error.user.creatorOnly')
   modalError.value = true
 }
 
@@ -74,7 +63,7 @@ async function allFetch() {
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      'Failed to fetch all projects'
+      $t('error.project.fetchAll')
   }
 }
 
@@ -88,9 +77,10 @@ async function myFetch() {
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      'Failed to fetch all projects'
+      $t('error.project.fetchMy')
   }
 }
+
 </script>
 
 <template>
@@ -103,21 +93,21 @@ async function myFetch() {
             @click="allFetch"
             class="p-1 text-shadow btn"
           >
-            All Projects
+            {{ $t('btn.allProjects') }}
           </button>
           <button
             :disabled = !allProjects
             @click="myFetch"
             class="p-1 text-shadow btn"
           >
-            My Projects
+            {{ $t('btn.myProjects') }}
           </button>
         </div>
         <button
           @click="onAdd"
           class="p-3 text-shadow btn"
         >
-          Add
+          {{ $t('btn.add') }}
         </button>
         <div class="relative inline-block">
           <input
@@ -138,7 +128,7 @@ async function myFetch() {
       <div class="flex flex-col border border-gray-200 border-solid rounded-xl h-[600px]">
         <div class="flex flex-col justify-center items-center w-full my-auto">
           <div>
-            Title
+            {{ $t('project.title') }}
           </div>
           <AutoTextArea
             :text="prj.title"
@@ -147,7 +137,7 @@ async function myFetch() {
         </div>
         <div class="my-auto flex flex-col justify-center items-center w-full">
           <div>
-            Description
+            {{ $t('project.description') }}
           </div>
           <AutoTextArea
             :text="prj.description"
@@ -156,16 +146,16 @@ async function myFetch() {
         </div>
         <section class="inline-flex justify-between items-center w-full px-3 my-auto gap-4">
           <div>
-            Created At: {{ formatDate(prj.createdAt) }}
+            {{ $t('project.createdAt') }}: {{ formatDate(prj.createdAt) }}
           </div>
           <div>
-            Deadline: {{ formatDate(prj.deadline) }}
+            {{ $t('project.deadline') }}: {{ formatDate(prj.deadline) }}
           </div>
         </section>
         <section class="inline-flex justify-between items-center w-full px-3 my-auto">
           <div class="'flex flex-col gap-2 justify-center items-center' gap-2 items-center">
             <div class="text-[18px] text-center">
-              Status:
+              {{ $t('project.status') }}:
             </div>
             <StatusesList
               :disabled=!creatorOnly(prj)
@@ -174,7 +164,7 @@ async function myFetch() {
           </div>
           <div class='flex flex-col gap-2 justify-center items-center'>
             <div>
-              Created by:
+              {{ $t('project.createdBy') }}:
             </div>
             <div>
               {{ prj.createdBy.name }}

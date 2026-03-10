@@ -4,19 +4,20 @@ import {requireUser} from "#server/utils/auth";
 
 export default defineEventHandler(async (event) => {
   const {candidate, roleId} = await readBody(event)
-  const {userId} = requireUser(event)
+  const {userId} = await requireUser(event)
+  const t = await useTranslation(event)
 
   if (!candidate) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Candidate not found"
+      statusMessage: t('error.data.notFound')
     })
   }
 
   if (!roleId) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Role ID not found"
+      statusMessage: t('error.role.idNotFound')
     })
   }
 
@@ -39,7 +40,7 @@ export default defineEventHandler(async (event) => {
   if (!user) {
     throw createError({
       statusCode: 404,
-      statusMessage: "User not found",
+      statusMessage: t('error.user.notFound')
     })
   }
 
@@ -48,12 +49,12 @@ export default defineEventHandler(async (event) => {
   if (!isOwner) {
     throw createError({
       statusCode: 403,
-      statusMessage: "Only owner can change role!",
+      statusMessage: t('error.user.onlyCreator')
     })
   } else if (candidate === userId) {
     throw createError({
       statusCode: 403,
-      statusMessage: "You can't change your role!",
+      statusMessage: t('error.user.creatorForever')
     })
   }
 
@@ -76,7 +77,7 @@ export default defineEventHandler(async (event) => {
     console.error(e)
     throw createError({
       statusCode: 401,
-      statusMessage: "Change role if failed"
+      statusMessage: t('error.role.change')
     })
   }
 })

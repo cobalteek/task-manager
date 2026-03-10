@@ -2,15 +2,15 @@ import bcrypt from 'bcrypt'
 import {prisma} from '~~/server/utils/prisma'
 
 export default defineEventHandler(async (event) => {
+  const t = await useTranslation(event)
   try {
     const body = await readBody(event)
-
     const {email, password, name, gender} = body
 
     if (!email || !password || !name || !gender) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'All fields are required',
+        statusMessage: t('error.form.fieldsEmpty'),
       })
     }
 
@@ -22,19 +22,19 @@ export default defineEventHandler(async (event) => {
     if (exists) {
       throw createError({
         statusCode: 409,
-        statusMessage: 'Email already exists',
+        statusMessage: t('error.auth.emailExist'),
       })
     }
 
     const userRole = await prisma.role.findUnique({
-      where: {name: 'USER'},
+      where: {name: 'user'},
     })
 
 
     if (!userRole) {
       throw createError({
         statusCode: 500,
-        statusMessage: 'Role USER not found',
+        statusMessage: t('error.user.roleUserNotFound'),
       })
     }
 
@@ -77,7 +77,7 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: 500,
-      statusMessage: error?.message || 'Registration failed',
+      statusMessage: error?.message || t('error.auth.register'),
     })
   }
 })

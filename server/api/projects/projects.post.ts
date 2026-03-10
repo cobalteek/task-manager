@@ -2,13 +2,14 @@ import {prisma} from '~~/server/utils/prisma'
 import {requireUser} from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
-  const user = requireUser(event)
+  const user = await requireUser(event)
   const body = await readBody(event)
+  const t = await useTranslation(event)
 
   if (!body) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Data not found"
+      statusMessage: t('error.data.notFound')
     })
   }
 
@@ -21,7 +22,7 @@ export default defineEventHandler(async (event) => {
     if (!existingUser) {
       throw createError({
         statusCode: 401,
-        statusMessage: 'User not found'
+        statusMessage: t('error.user.notFound')
       })
     }
 
@@ -30,7 +31,7 @@ export default defineEventHandler(async (event) => {
     if (!defaultStatus) {
       throw createError({
         statusCode: 500,
-        statusMessage: 'No statuses found in database'
+        statusMessage: t('error.status.notFound')
       })
     }
 
@@ -57,7 +58,7 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: error?.statusCode || 500,
-      statusMessage: error?.message || error?.statusMessage || 'Project create failed'
+      statusMessage: error?.message || error?.statusMessage || t('error.project.create')
     })
   }
 })

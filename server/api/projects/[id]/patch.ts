@@ -2,7 +2,8 @@ import {prisma} from "~~/server/utils/prisma"
 
 export default defineEventHandler(async (event) => {
   const {id} = getRouterParams(event)
-  const {userId} = requireUser(event)
+  const {userId} = await requireUser(event)
+  const t = await useTranslation(event)
 
   const body = await readBody<{
     title: string
@@ -13,7 +14,7 @@ export default defineEventHandler(async (event) => {
   if (!body) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Data not found"
+      statusMessage: t('error.data.notFound')
     })
   }
 
@@ -28,7 +29,7 @@ export default defineEventHandler(async (event) => {
   if (!project) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Project not found"
+      statusMessage: t('error.project.notFound')
     })
   }
 
@@ -51,7 +52,7 @@ export default defineEventHandler(async (event) => {
   if (!user) {
     throw createError({
       statusCode: 404,
-      statusMessage: "User not found",
+      statusMessage: t('error.user.notFound'),
     })
   }
 
@@ -60,7 +61,7 @@ export default defineEventHandler(async (event) => {
   if (project.createdById !== userId && !isOwner) {
     throw createError({
       statusCode: 403,
-      statusMessage: "Only the creator of the project or OWNER can delete it",
+      statusMessage: t('error.user.onlyCreator')
     })
   }
 
@@ -77,7 +78,7 @@ export default defineEventHandler(async (event) => {
     console.error("PATCH PROJECT ERROR:", e)
     throw createError({
       statusCode: 500,
-      statusMessage: "Failed to update project"
+      statusMessage: t('error.project.update')
     })
   }
 })

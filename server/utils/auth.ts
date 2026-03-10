@@ -6,20 +6,20 @@ export function signToken(payload: object) {
 }
 
 
-export function requireUser(event: H3Event) {
+export async function requireUser(event: H3Event) {
   const token = getCookie(event, 'token')
-
+  const t = await useTranslation(event)
   if (!token) {
-    throw createError({statusCode: 401, statusMessage: 'Unauthorized'})
+    throw createError({statusCode: 401, statusMessage: t('error.auth.unAuth')})
   }
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string }
     const userId = payload.userId
-    if (!userId) throw createError({statusCode: 401, statusMessage: 'Unauthorized'})
+    if (!userId) throw createError({statusCode: 401, statusMessage: t('error.auth.unAuth')})
     return {userId}
 
   } catch {
-    throw createError({statusCode: 401, statusMessage: 'Unauthorized'})
+    throw createError({statusCode: 401, statusMessage: t('error.auth.unAuth')})
   }
 }

@@ -26,13 +26,13 @@ definePageMeta({
     <div v-if="user" class="w-full h-full p-2 flex">
       <div class="w-full h-full">
         <section class="inline-flex items-center justify-end w-full gap-3">
-          <button v-if="user.role === 'OWNER'" @click="chooseRole = !chooseRole"
+          <button v-if="user.role === 'owner'" @click="chooseRole = !chooseRole"
                   class="p-2 text-shadow btn">
-            Change Role
+            {{$t('btn.changeRole')}}
           </button>
           <button @click="showProjects = !showProjects"
                   class="p-2 text-shadow btn">
-            Projects
+            {{$t('btn.projects')}}
           </button>
         </section>
         <ChangeRoleModalContent
@@ -40,16 +40,16 @@ definePageMeta({
           v-model="chooseRole"
         />
         <div>
-          Name: {{ user.name }}
+          {{$t('user.name')}}: {{ user.name }}
         </div>
         <div>
-          Email: {{ user.email }}
+          {{$t('user.email')}}: {{ user.email }}
         </div>
         <div>
-          Gender: {{ user.gender }}
+          {{$t('user.gender')}}: {{ $t(`user.${user.gender}`) }}
         </div>
         <div>
-          Role: {{ user.role }}
+          {{$t('user.role')}}: {{ $t(`role.${user.role}`) }}
         </div>
         <AppTransition>
           <div v-if="showProjects" class="flex flex-col justify-center items-center">

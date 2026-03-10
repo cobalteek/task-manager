@@ -2,19 +2,20 @@ import {prisma} from '~~/server/utils/prisma'
 
 export default defineEventHandler(async (event) => {
   const {id} = getRouterParams(event)
-  const {userId} = requireUser(event)
+  const t = await useTranslation(event)
+  const {userId} = await requireUser(event)
 
   if (!id) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Project id is required'
+      statusMessage: t('error.project.idRequired')
     })
   }
 
   if (!userId) {
     throw createError({
       statusCode: 400,
-      statusMessage: "User id is required"
+      statusMessage: t('error.user.idRequired')
     })
   }
 
@@ -29,7 +30,7 @@ export default defineEventHandler(async (event) => {
   if (!project) {
     throw createError({
       statusCode: 404,
-      statusMessage: "Project not found"
+      statusMessage: t('error.project.notFound')
     })
   }
 
@@ -52,7 +53,7 @@ export default defineEventHandler(async (event) => {
   if (!user) {
     throw createError({
       statusCode: 404,
-      statusMessage: "User not found",
+      statusMessage: t('error.user.notFound'),
     })
   }
 
@@ -61,7 +62,7 @@ export default defineEventHandler(async (event) => {
   if (project.createdById !== userId && !isOwner) {
     throw createError({
       statusCode: 403,
-      statusMessage: "Only the creator of the project or OWNER can delete it",
+      statusMessage: t('error.user.onlyCreator'),
     })
   }
 
@@ -82,7 +83,7 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: 400,
-      statusMessage: error?.message || 'Unable to delete'
+      statusMessage: error?.message || t('error.project.delete')
     })
   }
 })

@@ -48,7 +48,7 @@ export const useAuthStore = defineStore('auth', () => {
 
       await fetchMe()
     } catch (e: any) {
-      error.value = e?.data?.message ?? e?.message ?? 'Sign in error'
+      error.value = e?.data?.message ?? e?.message ?? $t('error.auth.signIn')
       throw e
     } finally {
       isLoading.value = false

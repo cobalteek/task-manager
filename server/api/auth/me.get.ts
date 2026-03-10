@@ -4,8 +4,8 @@ import {createError} from 'h3'
 import type {Prisma} from "@prisma/client";
 
 export default defineEventHandler(async (event) => {
-  const {userId} = requireUser(event)
-
+  const {userId} = await requireUser(event)
+  const t = await useTranslation(event)
   type UserWithRoles = Prisma.UserGetPayload<{
     include: { roles: { include: { role: true } } }
   }>
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   if (!user) {
     throw createError({
       statusCode: 401,
-      statusMessage: 'Unauthorized'
+      statusMessage: t('error.auth.unAuth')
     })
   }
 

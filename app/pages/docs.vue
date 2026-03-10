@@ -4,6 +4,6 @@
 
 <template>
   <div class="text-xl">
-    Docs
+    {{$t('pages.docs')}}
   </div>
 </template>

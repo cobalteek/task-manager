@@ -88,7 +88,7 @@ async function submit() {
       if (targetTime < now) {
         throw createError({
           statusCode: 401,
-          statusMessage: "The deadline cannot be earlier than the creation of the project"
+          statusMessage: $t('error.project.deadlineEarlier'),
         })
       }
     }
@@ -119,7 +119,7 @@ async function submit() {
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      'Failed, please check your project details'
+      $t('error.project.addEdit')
     error.value = true
     return
   }
@@ -130,7 +130,7 @@ async function deleteProject(project: Project) {
     if (!creatorOnly(project)) {
       throw createError({
         statusCode: 401,
-        statusMessage: "Only the creator of the project can delete it."
+        statusMessage: $t('error.user.onlyCreator'),
       })
     }
 
@@ -143,7 +143,7 @@ async function deleteProject(project: Project) {
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      'Failed to delete project'
+      $t('error.project.delete')
     error.value = true
     return
   }
@@ -165,7 +165,7 @@ function resetErrorModal() {
     <form @submit.prevent="submit">
       <div class="grid gap-4 mx-2 mt-1 text-xl">
         <div class="flex flex-col justify-center gap-2 text-center">
-          <label>Title</label>
+          <label>{{ $t('project.title') }}</label>
           <input
             required
             v-model="form.title"
@@ -173,7 +173,7 @@ function resetErrorModal() {
           />
         </div>
         <div class="flex flex-col gap-4">
-          <label class="text-center">Description</label>
+          <label class="text-center">{{ $t('project.description') }}</label>
           <textarea
             required
             v-model="form.description"
@@ -181,7 +181,7 @@ function resetErrorModal() {
           />
         </div>
         <div class="flex flex-col gap-4 text-center">
-          <label>Deadline</label>
+          <label>{{ $t('project.deadline') }}</label>
           <input
             v-model="form.deadline"
             class="m-1 rounded-xl w-1/2 mx-auto text-black p-1 bg-white "
@@ -190,7 +190,7 @@ function resetErrorModal() {
         </div>
         <div class="flex justify-center gap-2 mt-2">
           <button type="submit" class="p-2 border rounded-md">
-            Save
+            {{ $t('btn.save') }}
           </button>
           <button
             v-if="project"
@@ -198,7 +198,7 @@ function resetErrorModal() {
             class="p-2 border rounded-md"
             @click="deleteProject(project)"
           >
-            Delete
+            {{ $t('btn.delete') }}
           </button>
         </div>
       </div>

@@ -2,12 +2,13 @@
 import {useAuthStore} from "~/stores/auth";
 
 const auth = useAuthStore()
-const fields = [
-  {key: 'name', type: 'text', placeholder: 'Name'},
-  {key: 'email', type: 'email', placeholder: 'Email'},
-  {key: 'password', type: 'password', placeholder: 'Password'},
-  {key: 'confirmPassword', type: 'password', placeholder: 'Confirm password'}
-] as const
+const {t} = useI18n()
+const fields = computed(() => [
+  {key: 'name', type: 'text', placeholder: t('form.placeholder.name')},
+  {key: 'email', type: 'email', placeholder: t('form.placeholder.email')},
+  {key: 'password', type: 'password', placeholder: t('form.placeholder.password')},
+  {key: 'confirmPassword', type: 'password', placeholder: t('form.placeholder.confirmPassword')},
+] as const)
 
 const form = ref({
   name: '',
@@ -33,7 +34,7 @@ const type_ = ref('error')
 
 async function onRegister() {
   if (validate(form.value.password) || validate(form.value.name)) {
-    textError.value = 'Only English characters allowed'
+    textError.value = $t('error.auth.onlyEnglish')
     modalRef.value = true
     type_.value = 'error'
     return
@@ -42,28 +43,28 @@ async function onRegister() {
     form.value.confirmPassword === '' ||
     form.value.name === ''
   ) {
-    textError.value = 'The fields are empty.'
+    textError.value = $t('error.form.fieldsEmpty')
     modalRef.value = true
     type_.value = 'error'
     return
   } else if (form.value.gender === '') {
-    textError.value = 'Please select a gender'
+    textError.value = $t('error.auth.selectGender')
     modalRef.value = true
     type_.value = 'error'
     return
   }
   if (form.value.password !== form.value.confirmPassword) {
-    textError.value = 'Passwords do not match'
+    textError.value = $t('error.auth.passwordNotMatch')
     modalRef.value = true
     type_.value = 'error'
     return
   } else if (form.value.password.length < 6) {
-    textError.value = 'Password must be at least 6 characters'
+    textError.value = $t('error.auth.passwordLength')
     modalRef.value = true
     type_.value = 'info'
     return
   } else if (form.value.name.length < 3) {
-    textError.value = 'Name must be at least 3 characters'
+    textError.value = $t('error.auth.nameLength')
     modalRef.value = true
     type_.value = 'error'
     return
@@ -80,7 +81,7 @@ async function onRegister() {
     const status = e?.statusCode || e?.status || e?.response?.status
 
     if (status === 409) {
-      alert('Email already exists')
+      alert($t('error.auth.emailExist'))
       return
     }
   }
@@ -95,12 +96,12 @@ definePageMeta({
 
 <template>
   <AuthForm
-    name='Sign Up'
+    :name="$t('auth.signUp')"
     :inputs="fields"
     :sex="true"
-    btn-name="Register"
-    disc="Have an account?"
-    text-link="Sign in"
+    :btn-name="$t('auth.signUp')"
+    :disc="$t('auth.haveAccount')"
+    :text-link="$t('auth.signIn')"
     link="/sign-in"
     v-model="form"
     @submit="onRegister"/>

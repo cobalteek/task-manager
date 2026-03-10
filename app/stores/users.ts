@@ -5,24 +5,25 @@ type User = { id: string; name: string; email?: string }
 
 export const useUsersStore = defineStore('users', () => {
   const items = ref<User[]>([])
-  const loading = ref(false)
+  const isLoading = ref(false)
   const error = ref<string | null>(null)
   const loadedOnce = ref(false)
 
   async function fetchUsers(opts?: { force?: boolean }) {
-    if (loading.value) return
+    if (isLoading.value) return
     if (loadedOnce.value && !opts?.force) return
 
-    loading.value = true
+    isLoading.value = true
     error.value = null
 
     try {
       items.value = await $fetch<User[]>('/api/users')
       loadedOnce.value = true
     } catch (e: any) {
-      error.value = e?.data?.message || e?.message || 'Failed to load users'
+      error.value = e?.data?.message || e?.message || $t('error.user.loadUsers')
+      throw e
     } finally {
-      loading.value = false
+      isLoading.value = false
     }
   }
 
@@ -30,5 +31,5 @@ export const useUsersStore = defineStore('users', () => {
     items.value.map(u => ({value: u.id, label: u.name}))
   )
 
-  return {items, options, loading, error, fetchUsers}
+  return {items, options, loading: isLoading, error, fetchUsers}
 })

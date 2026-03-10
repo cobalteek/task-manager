@@ -17,7 +17,7 @@ async function main() {
     skipDuplicates: true,
   });
 
-  const roles = ["USER", "ADMIN", "OWNER"];
+  const roles = ["user", "admin", "owner"];
 
   await prisma.role.createMany({
     data: roles.map((name) => ({name})),

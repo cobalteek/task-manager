@@ -7,10 +7,10 @@ const {user} = storeToRefs(auth)
 <template>
   <div>
     <h1 class="text-xl text-gray-100 text-shadow">
-      Home
+      {{$t('pages.home')}}
     </h1>
     <h3 v-if="user" class="text-xl text-gray-100 text-center">
-      Hello, {{ user?.name }}!
+      {{$t('message.hello')}}, {{ user?.name }}!
     </h3>
   </div>
 </template>

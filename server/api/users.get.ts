@@ -1,7 +1,8 @@
 import {prisma} from '../utils/prisma'
 import {defineEventHandler} from 'h3'
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
+  const t = await useTranslation(event)
   try {
     return await prisma.user.findMany({
       select: {
@@ -13,7 +14,7 @@ export default defineEventHandler(async () => {
     console.log(error)
     throw createError({
       statusCode: 404,
-      statusMessage: "Users with role 'USER' not found"
+      statusMessage: t('error.user.get')
     })
   }
 })

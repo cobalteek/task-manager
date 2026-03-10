@@ -42,13 +42,13 @@ async function onStatusChange(projectId: string, statusId: number) {
       :disabled=disabled
       @change="onStatusChange(project.id, Number(($event.target as HTMLSelectElement).value))"
       :value="project.statusId ? project.statusId : textError"
-      class="text-gray-100 bg-[var(--bg-context)] rounded-md p-1 border border-gray-100 w-[150px]">
+      class="select w-[150px]">
       <option
         v-for="o in statusesStore.options"
         :key="o.value"
         :value="o.value"
       >
-        {{ o.label }}
+        {{ $t(`status.${o.label}`) }}
       </option>
     </select>
   </div>
