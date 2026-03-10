@@ -23,7 +23,7 @@ const type_ = ref('')
 
 const projectsStore = useProjectsStore()
 
-const {projects} = storeToRefs(projectsStore)
+const {projects, isLoading} = storeToRefs(projectsStore)
 
 onMounted(async () => {
   await allFetch()
@@ -164,6 +164,7 @@ async function myFetch() {
         </div>
         <div class="h-full">
           <div
+            v-if="projects"
             v-for="prj in projects"
             :key="prj?.id"
             @contextmenu.prevent.stop="onEdit(prj)"
@@ -172,27 +173,27 @@ async function myFetch() {
               class="min-w-[100px] max-w-[300px] text-center overflow-hidden line-clamp-3 break-words"
               @click="projectOpen(prj)"
             >
-              {{ prj?.title }}
+              {{ prj.title }}
             </div>
             <div>
               <div
                 class="min-w-[50px] max-w-[300px] overflow-hidden line-clamp-3 break-words"
                 @click="projectOpen(prj)"
               >
-                {{ prj?.description }}
+                {{ prj.description }}
               </div>
             </div>
             <div
               class="min-w-[50px] max-w-[300px] text-center"
               @click="projectOpen(prj)"
             >
-              {{ formatDate(prj?.createdAt) }}
+              {{ formatDate(prj.createdAt) }}
             </div>
             <div
               class="min-w-[50px] max-w-[300px] text-center"
               @click="projectOpen(prj)"
             >
-              {{ formatDate(prj?.deadline) }}
+              {{ formatDate(prj.deadline) }}
             </div>
             <StatusesList
               :disabled=!creatorOnly(prj)
@@ -202,9 +203,10 @@ async function myFetch() {
               class="min-w-[50px] max-w-[300px] text-center"
               @click="projectOpen(prj)"
             >
-              {{ prj.createdBy?.name }}
+              {{ prj.createdBy.name }}
             </div>
           </div>
+          <Loading v-if="isLoading" />
         </div>
       </div>
     </div>

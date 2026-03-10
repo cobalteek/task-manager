@@ -17,7 +17,7 @@ const type_ = ref('')
 
 const projectsStore = useProjectsStore()
 
-const {projects} = storeToRefs(projectsStore)
+const {projects, isLoading} = storeToRefs(projectsStore)
 
 onMounted(async () => {
   try {
@@ -95,42 +95,46 @@ async function myFetch() {
 
 <template>
   <div>
-    <div class="inline-flex justify-end w-full">
+    <div class="inline-flex justify-center w-full mt-1">
       <div class="flex items-center gap-3">
-        <button
-          :disabled = allProjects
-          @click="allFetch"
-          class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
-        >
-          All Projects
-        </button>
-        <button
-          :disabled = !allProjects
-          @click="myFetch"
-          class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
-        >
-          My Projects
-        </button>
+        <div class="flex flex-col items-center gap-2">
+          <button
+            :disabled = allProjects
+            @click="allFetch"
+            class="p-1 text-shadow btn"
+          >
+            All Projects
+          </button>
+          <button
+            :disabled = !allProjects
+            @click="myFetch"
+            class="p-1 text-shadow btn"
+          >
+            My Projects
+          </button>
+        </div>
         <button
           @click="onAdd"
-          class="p-3 text-shadow border border-solid border-gray-100 rounded-md"
+          class="p-3 text-shadow btn"
         >
           Add
         </button>
-        <div class="ml-1 relative inline-block mr-1">
+        <div class="relative inline-block">
           <input
             v-model="query"
             class="focus:outline-none text-black rounded-xl p-1"
             placeholder="Search"
           >
-          <img alt="search logo" src="../assets/search16.svg" class="absolute right-2 top-1/2 -translate-y-1/2">
+          <img alt="search logo" src="../assets/search16.svg" class="absolute right-0 top-1/2 -translate-y-1/2">
         </div>
       </div>
     </div>
-    <div v-for="prj in projects"
-         :key="prj?.id"
-         @click="onEdit(prj)"
-         class="mt-5 w-full">
+    <div
+      v-if="projects"
+      v-for="prj in projects"
+      :key="prj?.id"
+      @click="onEdit(prj)"
+      class="mt-5 w-full">
       <div class="flex flex-col border border-gray-200 border-solid rounded-xl h-[600px]">
         <div class="flex flex-col justify-center items-center w-full my-auto">
           <div>
@@ -179,6 +183,7 @@ async function myFetch() {
         </section>
       </div>
     </div>
+    <Loading v-if="isLoading" />
     <AddOrEditProjectModalContent
       :sort="allProjects"
       v-model="modalOpen"
