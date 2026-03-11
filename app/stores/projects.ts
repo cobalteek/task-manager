@@ -47,7 +47,7 @@ export const useProjectsStore = defineStore('project', () => {
 
   async function updateProject(project: Project) {
 
-    const updated = await $fetch<Project>(`/api/projects/${project.id}/projects`, {
+    const updated = await $fetch<Project>(`/api/projects/${project.id}/patch`, {
       method: 'PATCH',
       body: project,
     })

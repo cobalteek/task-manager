@@ -25,7 +25,32 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (project.createdById !== userId) {
+  const user = await prisma.user.findUnique({
+    where: {id: userId},
+    select: {
+      id: true,
+      roles: {
+        select: {
+          role: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  if (!user) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: t('error.user.notFound'),
+    })
+  }
+
+  const isOwner = user.roles.some((r: { role: { name: string; }; }) => r.role.name === 'owner')
+
+  if (project.createdById !== userId && !isOwner) {
     throw createError({
       statusCode: 403,
       statusMessage: t('error.user.onlyCreator')

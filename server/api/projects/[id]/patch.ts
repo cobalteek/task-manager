@@ -56,7 +56,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const isOwner = user.roles.some((r: { role: { name: string; }; }) => r.role.name === 'OWNER')
+  const isOwner = user.roles.some((r: { role: { name: string; }; }) => r.role.name === 'owner')
 
   if (project.createdById !== userId && !isOwner) {
     throw createError({
