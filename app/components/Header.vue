@@ -5,7 +5,7 @@ import {storeToRefs} from "pinia";
 
 const auth = useAuthStore()
 const {user} = storeToRefs(auth)
-const {locale} = useI18n()
+const {locale, setLocale} = useI18n()
 const type_ = ref('')
 const text = ref('')
 const error = ref(false)
@@ -26,6 +26,13 @@ const logout_ = async () => {
   }
 }
 
+type AppLocale = 'ru' | 'en'
+
+const onChangeLocale = async (event: Event) => {
+  const value = (event.target as HTMLSelectElement).value as AppLocale
+  await setLocale(value)
+}
+
 </script>
 
 <template>
@@ -34,23 +41,26 @@ const logout_ = async () => {
       <NuxtLink class="" to="/">
         <img class="max-w-[100px] invert" src="../assets/logo.png" alt="logo"/>
       </NuxtLink>
-      <div>
-        <select
-          v-model="locale"
-          class="select"
-        >
-          <option
-            value="ru"
+      <ClientOnly>
+        <div>
+          <select
+            :value="locale"
+            class="select"
+            @change="onChangeLocale"
           >
-            {{ $t('locale.ru') }}
-          </option>
-          <option
-            value="en"
-          >
-            {{ $t('locale.en') }}
-          </option>
-        </select>
-      </div>
+            <option
+              value="ru"
+            >
+              {{ $t('locale.ru') }}
+            </option>
+            <option
+              value="en"
+            >
+              {{ $t('locale.en') }}
+            </option>
+          </select>
+        </div>
+      </ClientOnly>
     </div>
     <div class="sm:inline-flex hidden gap-8">
       <NuxtLink to="/docs">
