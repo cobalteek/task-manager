@@ -44,14 +44,16 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const isOwner = user.roles.some((r: { role: { name: string } }) => r.role.name === 'OWNER')
+  const isOwner = user.roles.some((r: { role: { name: string } }) => r.role.name === 'owner')
 
   if (!isOwner) {
     throw createError({
       statusCode: 403,
-      statusMessage: t('error.user.onlyCreator')
+      statusMessage: t('error.user.onlyOwner')
     })
-  } else if (candidate === userId) {
+  }
+
+  if (candidate === userId) {
     throw createError({
       statusCode: 403,
       statusMessage: t('error.user.creatorForever')
