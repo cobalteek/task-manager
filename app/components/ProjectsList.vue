@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {useProjectsStore} from "~/stores/projects";
-import {formatDate} from "~~/utils/formatDate";
-import {storeToRefs} from "pinia";
-import type {Project} from "~~/types/project";
-import AddOrEditProjectModalContent from "~/components/AddOrEditProjectModalContent.vue";
-import {creatorOnly} from "~~/utils/creatorOnly";
+import { useProjectsStore } from "~/stores/projects"
+import { storeToRefs } from "pinia"
+import type { Project } from "~~/types/project"
+import AddOrEditModalContent from "~/components/AddOrEditModalContent.vue"
+import { hasAccess } from "~~/utils/hasAccess"
+import InfoModalContent from "~/components/InfoModalContent.vue";
 
 defineProps<{ modelValue: boolean }>()
 
@@ -22,8 +22,7 @@ const query = ref('')
 const type_ = ref('')
 
 const projectsStore = useProjectsStore()
-
-const {projects, isLoading} = storeToRefs(projectsStore)
+const { projects, isLoading } = storeToRefs(projectsStore)
 
 onMounted(async () => {
   await allFetch()
@@ -40,7 +39,6 @@ watch(query, async (v) => {
       e?.message ||
       $t('error.project.searchFailed')
     modalError.value = true
-    return
   }
 })
 
@@ -54,12 +52,13 @@ function onAdd() {
 }
 
 function onEdit(project: Project) {
-  if (creatorOnly(project)) {
+  if (hasAccess({project, roles: ['owner']})) {
     selectedProject.value = project
     modalOpen.value = true
     return
   }
-  textError.value = $t('error.user.creatorOnly')
+
+  textError.value = $t('error.user.hasAccess')
   modalError.value = true
 }
 
@@ -95,134 +94,48 @@ async function myFetch() {
       $t('error.project.fetchMy')
   }
 }
-
 </script>
 
 <template>
   <div
+    v-if="modelValue"
     class="w-full border border-solid border-gray-100 rounded-md h-[50vh] overflow-x-hidden hide-scrollbar max-w-[1500px]"
-    v-if="modelValue" @update:model-value="emit('update:modelValue', $event)">
-    <div class="relative">
-      <div class="w-full inline-flex justify-center pt-1 lg:justify-end">
-        <div class="flex items-center gap-3">
-          <button
-            :disabled = allProjects
-            @click="allFetch"
-            class="p-3 text-shadow btn"
-          >
-            {{ $t('btn.allProjects') }}
-          </button>
-          <button
-            :disabled = !allProjects
-            @click="myFetch"
-            class="p-3 text-shadow btn"
-          >
-            {{ $t('btn.myProjects') }}
-          </button>
-          <button
-            @click="onAdd"
-            class="p-3 text-shadow btn"
-          >
-            {{ $t('btn.add') }}
-          </button>
-          <div class="relative inline-block">
-            <input
-              v-model="query"
-              class="focus:outline-none rounded-xl p-1 bg-white text-black"
-              :placeholder="$t('form.placeholder.search')"
-            >
-            <img alt="search logo" src="../assets/search16.svg" class="absolute right-2 top-1/2 -translate-y-1/2">
-          </div>
-        </div>
-        <button @click="close" class="p-3 text-shadow text-2xl">
-          {{ $t('btn.cross') }}
-        </button>
-      </div>
-    </div>
+  >
+    <TablesProjectsToolbar
+      :query="query"
+      :all-projects="allProjects"
+      @update:query="query = $event"
+      @all="allFetch"
+      @my="myFetch"
+      @add="onAdd"
+      @close="close"
+    />
+
     <hr class="my-1 w-full">
-    <div class="overflow-x-auto hide-scrollbar h-full">
-      <div class="max-w-[1500px]">
-        <div class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] my-3 text-center w-full">
-          <div>
-            {{ $t('project.title') }}
-          </div>
-          <div>
-            {{ $t('project.description') }}
-          </div>
-          <div>
-            {{ $t('project.createdAt') }}
-          </div>
-          <div>
-            {{ $t('project.deadline') }}
-          </div>
-          <div>
-            {{ $t('project.status') }}
-          </div>
-          <div>
-            {{ $t('project.createdBy') }}
-          </div>
-        </div>
-        <div class="h-full">
-          <div
-            v-if="projects"
-            v-for="prj in projects"
-            :key="prj?.id"
-            @contextmenu.prevent.stop="onEdit(prj)"
-            class="grid grid-flow-col grid-cols-[repeat(6,minmax(200px,1fr))] gap-1 pt-1 my-3  items-center hover:bg-[var(--bg-hover-context)] hover:cursor-pointer">
-            <div
-              class="min-w-[100px] max-w-[300px] text-center overflow-hidden line-clamp-3 break-words"
-              @click="projectOpen(prj)"
-            >
-              {{ prj.title }}
-            </div>
-            <div>
-              <div
-                class="min-w-[50px] max-w-[300px] overflow-hidden line-clamp-3 break-words"
-                @click="projectOpen(prj)"
-              >
-                {{ prj.description }}
-              </div>
-            </div>
-            <div
-              class="min-w-[50px] max-w-[300px] text-center"
-              @click="projectOpen(prj)"
-            >
-              {{ formatDate(prj.createdAt) }}
-            </div>
-            <div
-              class="min-w-[50px] max-w-[300px] text-center"
-              @click="projectOpen(prj)"
-            >
-              {{ formatDate(prj.deadline) }}
-            </div>
-            <StatusesList
-              :disabled=!creatorOnly(prj)
-              :project="prj"
-            />
-            <div
-              class="min-w-[50px] max-w-[300px] text-center"
-              @click="projectOpen(prj)"
-            >
-              {{ prj.createdBy.name }}
-            </div>
-          </div>
-          <Loading v-if="isLoading" />
-        </div>
-      </div>
-    </div>
-    <AddOrEditProjectModalContent
-      :sort="allProjects"
+
+    <TablesProjectsTable
+      :projects="projects"
+      :is-loading="isLoading"
+      @open="projectOpen"
+      @edit="onEdit"
+    />
+
+    <AddOrEditModalContent
       v-model="modalOpen"
+      :sort="allProjects"
       :project="selectedProject"
     />
-    <InfoProjectModalContent
+
+    <InfoModalContent
       v-if="selectedProject"
       v-model="projectInfo"
       :project="selectedProject"
     />
+
     <ErrorModalContent
       v-model="modalError"
       type="error"
-      :text="textError"/>
+      :text="textError"
+    />
   </div>
 </template>
