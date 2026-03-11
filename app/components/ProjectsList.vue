@@ -129,7 +129,7 @@ async function myFetch() {
             <input
               v-model="query"
               class="focus:outline-none rounded-xl p-1 bg-white text-black"
-              placeholder="Search"
+              :placeholder="$t('form.placeholder.search')"
             >
             <img alt="search logo" src="../assets/search16.svg" class="absolute right-2 top-1/2 -translate-y-1/2">
           </div>
