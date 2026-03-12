@@ -41,6 +41,7 @@ export default {
     add: 'Create',
     changeRole: 'Change Role',
     projects: 'Projects',
+    tasks: 'Tasks',
     save: 'Save',
     delete: 'Delete',
     set: 'Set',
@@ -113,6 +114,7 @@ export default {
       notFound: "User not found",
       idRequired: 'User ID required',
       onlyCreator: 'Only the creator of the project can do it.',
+      onlyOwner: 'Only owner can do it.',
       chooseUserAndRole: 'Please choose a user and a role.',
       loadUsers: 'Failed to load users.',
       get: 'Get user is failed'
