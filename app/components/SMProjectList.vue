@@ -3,8 +3,8 @@ import {useProjectsStore} from "~/stores/projects";
 import {formatDate} from "~~/utils/formatDate";
 import {storeToRefs} from "pinia";
 import type {Project} from "~~/types/project";
-import AddOrEditProjectModalContent from "~/components/AddOrEditProjectModalContent.vue";
-import {creatorOnly} from "~~/utils/creatorOnly";
+import AddOrEditModalContent from "~/components/AddOrEditModalContent.vue";
+import {hasAccess} from "~~/utils/hasAccess";
 
 const selectedProject = ref<Project | undefined>(undefined)
 const modalOpen = ref(false)
@@ -44,12 +44,12 @@ function onAdd() {
 }
 
 function onEdit(project: Project) {
-  if (creatorOnly(project)) {
+  if (hasAccess(project)) {
     selectedProject.value = project
     modalOpen.value = true
     return
   }
-  textError.value = $t('error.user.creatorOnly')
+  textError.value = $t('error.user.hasAccess')
   modalError.value = true
 }
 
@@ -113,7 +113,7 @@ async function myFetch() {
           <input
             v-model="query"
             class="focus:outline-none text-black rounded-xl p-1 bg-white "
-            placeholder="$t('form.placeholder.search')"
+            :placeholder="$t('form.placeholder.search')"
           >
           <img alt="search logo" src="../assets/search16.svg" class="absolute right-0 top-1/2 -translate-y-1/2">
         </div>
@@ -158,7 +158,7 @@ async function myFetch() {
               {{ $t('project.status') }}:
             </div>
             <StatusesList
-              :disabled=!creatorOnly(prj)
+              :disabled="!hasAccess({ project: prj, roles: ['owner'] })"
               :project="prj"
             />
           </div>
@@ -174,7 +174,7 @@ async function myFetch() {
       </div>
     </div>
     <Loading v-if="isLoading" />
-    <AddOrEditProjectModalContent
+    <AddOrEditModalContent
       :sort="allProjects"
       v-model="modalOpen"
       :project="selectedProject"

@@ -2,9 +2,11 @@
 import {useStatusesStore} from "~/stores/statuses";
 import {useProjectsStore} from "~/stores/projects";
 import type {Project} from "~~/types/project";
+import type {Task} from "~~/types/task";
 
 defineProps<{
-  project: Project
+  project?: Project
+  task?: Task
   disabled?: boolean
 }>()
 

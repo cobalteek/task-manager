@@ -2,11 +2,13 @@
 import {formatDate} from "~~/utils/formatDate";
 import type {Project} from "~~/types/project";
 import AutoTextArea from "~/components/AutoTextArea.vue";
-import {creatorOnly} from "~~/utils/creatorOnly";
+import {hasAccess} from "~~/utils/hasAccess";
+import type {Task} from "~~/types/task";
 
 defineProps<{
   modelValue: boolean,
-  project: Project
+  project?: Project
+  task?: Task
 }>();
 
 const emit = defineEmits<{
@@ -27,7 +29,7 @@ const emit = defineEmits<{
           {{ $t('project.title') }}
         </div>
         <AutoTextArea
-          :text="project.title"
+          :text="project?.title"
           class="w-1/2 text-black text-center rounded-md max-h-[50px] overflow-y-auto bg-white "
         />
       </div>
@@ -36,16 +38,16 @@ const emit = defineEmits<{
           {{ $t('project.description') }}
         </div>
         <AutoTextArea
-          :text="project.description"
+          :text="project?.description"
           class="w-full max-h-[300px] max-w-[550px] resize-none overflow-y-auto rounded-md border p-2 text-black active:border-0 m-1 bg-white "
         />
       </div>
       <section class="inline-flex justify-between items-center w-full px-3 my-auto">
-        <div>
-          {{ $t('project.createdAt') }}: {{ formatDate(project.createdAt) }}
+        <div v-if="project?.createdAt">
+          {{ $t('project.createdAt') }}: {{ formatDate(project?.createdAt) }}
         </div>
-        <div>
-          {{ $t('project.deadline') }} {{ formatDate(project.deadline) }}
+        <div v-if="project?.deadline">>
+          {{ $t('project.deadline') }} {{ formatDate(project?.deadline) }}
         </div>
       </section>
       <section class="inline-flex justify-between items-center w-full px-3 my-auto">
@@ -54,12 +56,13 @@ const emit = defineEmits<{
             {{ $t('project.status') }}:
           </div>
           <StatusesList
-            :disabled = !creatorOnly(project)
+            v-if="project"
+            :disabled ="!hasAccess({project, roles: ['owner']})"
             :project="project"
           />
         </div>
         <div>
-          {{ $t('project.createdBy') }}: {{ project.createdBy.name }}
+          {{ $t('project.createdBy') }}: {{ project?.createdBy.name }}
         </div>
       </section>
     </div>

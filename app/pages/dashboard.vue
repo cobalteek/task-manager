@@ -10,7 +10,12 @@ const {user, isLoading} = storeToRefs(auth)
 const {isMobile, isDesktop, isTablet} = useBreakpoint()
 const chooseRole = ref(false)
 const showProjects = ref(false)
+const showTasks = ref(false)
 const kek = '</>'
+
+watch(showTasks, (value) => {
+  if(showProjects.value) showProjects.value = false;
+})
 
 definePageMeta({
   layout: 'dashboard',
@@ -26,13 +31,24 @@ definePageMeta({
     <div v-if="user" class="w-full h-full p-2 flex">
       <div class="w-full h-full">
         <section class="inline-flex items-center justify-end w-full gap-3">
-          <button v-if="user.role === 'owner'" @click="chooseRole = !chooseRole"
-                  class="p-2 text-shadow btn">
+          <button
+            v-if="user.role === 'owner'"
+            @click="chooseRole = !chooseRole"
+            class="p-2 text-shadow btn"
+          >
             {{$t('btn.changeRole')}}
           </button>
-          <button @click="showProjects = !showProjects"
-                  class="p-2 text-shadow btn">
+          <button
+            @click="showProjects = !showProjects"
+            class="p-2 text-shadow btn"
+          >
             {{$t('btn.projects')}}
+          </button>
+          <button
+            @click="showTasks = !showTasks"
+            class="p-2 text-shadow btn"
+          >
+            {{$t('btn.tasks')}}
           </button>
         </section>
         <ChangeRoleModalContent

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useProjectsStore} from "~/stores/projects";
 import type {Project} from '~~/types/project'
-import {creatorOnly} from "~~/utils/creatorOnly";
+import {hasAccess} from "~~/utils/hasAccess";
 
 const projectsStore = useProjectsStore()
 
@@ -127,7 +127,7 @@ async function submit() {
 
 async function deleteProject(project: Project) {
   try {
-    if (!creatorOnly(project)) {
+    if (!hasAccess({project, roles: ['owner']})) {
       throw createError({
         statusCode: 401,
         statusMessage: $t('error.user.onlyCreator'),
