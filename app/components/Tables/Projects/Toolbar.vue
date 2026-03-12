@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {hasAccess} from "~~/utils/hasAccess";
+
 const props = defineProps<{
   query: string
   allProjects: boolean
@@ -34,6 +36,7 @@ const emit = defineEmits<{
         </button>
 
         <button
+          v-if="!hasAccess( { roles: ['owner'] })"
           @click="emit('add')"
           class="p-3 text-shadow btn"
         >
