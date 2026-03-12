@@ -13,7 +13,7 @@ const showProjects = ref(false)
 const showTasks = ref(false)
 const kek = '</>'
 
-watch(showTasks, (value) => {
+watch(showTasks, () => {
   if(showProjects.value) showProjects.value = false;
 })
 
