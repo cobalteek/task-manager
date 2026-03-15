@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const userRole = await prisma.role.findUnique({
-      where: { name: 'user' },
+      where: { name: 'owner' },
     })
 
     if (!userRole) {
