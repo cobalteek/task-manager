@@ -5,10 +5,14 @@ import type { Project } from "~~/types/project"
 import AddOrEditModalContent from "~/components/AddOrEditModalContent.vue"
 import { hasAccess } from "~~/utils/hasAccess"
 import InfoModalContent from "~/components/InfoModalContent.vue";
+import {useProjectTaskForm} from "~~/composables/useProjectTaskForm";
 
 defineProps<{ modelValue: boolean }>()
 
-const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', v: boolean): void
+  (e: 'toggleTasks', v: Project): void
+}>()
 
 const selectedProject = ref<Project | undefined>(undefined)
 
@@ -17,12 +21,17 @@ const projectInfo = ref(false)
 const modalError = ref(false)
 const allProjects = ref(true)
 
+const mode = ref<'create-task' | 'edit-task' | 'create-project' | 'edit-project' | ''>('')
+
 const textError = ref('')
 const query = ref('')
 const type_ = ref('')
 
 const projectsStore = useProjectsStore()
 const { projects, isLoading } = storeToRefs(projectsStore)
+const auth = useAuthStore()
+const {user} = storeToRefs(auth)
+const formApi = useProjectTaskForm()
 
 onMounted(async () => {
   await allFetch()
@@ -47,17 +56,18 @@ function close() {
 }
 
 function onAdd() {
+  mode.value = 'create-project'
   selectedProject.value = undefined
   modalOpen.value = true
 }
 
 function onEdit(project: Project) {
   if (hasAccess({project, roles: ['owner']})) {
+    mode.value = 'edit-project'
     selectedProject.value = project
     modalOpen.value = true
     return
   }
-
   textError.value = $t('error.user.hasAccess')
   modalError.value = true
 }
@@ -94,6 +104,53 @@ async function myFetch() {
       $t('error.project.fetchMy')
   }
 }
+
+const contextMenu = ref({
+  visible: false,
+  x: 0,
+  y: 0,
+  project: null as Project | null
+})
+
+const menuItems = computed(() => [
+  { label: 'Открыть', key: 'open' },
+  { label: 'Посмотреть задачи', key: 'tasks' },
+  {
+    label: 'Редактировать',
+    key: 'edit',
+    disabled: user.value?.role === 'user'
+  }
+])
+
+function openContextMenu(project: Project, event: MouseEvent) {
+  event.preventDefault()
+
+  contextMenu.value.visible = true
+  contextMenu.value.x = event.clientX
+  contextMenu.value.y = event.clientY
+  contextMenu.value.project = project
+}
+
+function showTasks(project: Project) {
+  emit('toggleTasks', project)
+}
+
+function handleContextAction(key: string) {
+  const project = contextMenu.value.project
+  if (!project) return
+
+  switch (key) {
+    case 'open':
+      projectOpen(project)
+      break
+    case 'tasks':
+      showTasks(project)
+      break
+    case 'edit':
+      onEdit(project)
+      break
+  }
+}
 </script>
 
 <template>
@@ -117,13 +174,24 @@ async function myFetch() {
       :projects="projects"
       :is-loading="isLoading"
       @open="projectOpen"
-      @edit="onEdit"
+      @openContextMenu="openContextMenu"
     />
+    <ClientOnly>
+      <ContextMenu
+        v-model="contextMenu.visible"
+        :x="contextMenu.x"
+        :y="contextMenu.y"
+        :items="menuItems"
+        @select="handleContextAction"
+      />
+    </ClientOnly>
 
     <AddOrEditModalContent
       v-model="modalOpen"
+      :mode="mode"
       :sort="allProjects"
       :project="selectedProject"
+      :form-api="formApi"
     />
 
     <InfoModalContent

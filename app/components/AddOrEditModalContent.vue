@@ -1,118 +1,53 @@
 <script setup lang="ts">
-import {useProjectsStore} from "~/stores/projects";
-import type {Project} from '~~/types/project'
-import {hasAccess} from "~~/utils/hasAccess";
-
-const projectsStore = useProjectsStore()
-
-const {isLoading} = projectsStore
+import type { Project } from '~~/types/project'
+import type { Task } from '~~/types/task'
+import { computed, ref } from 'vue'
+import { hasAccess } from '~~/utils/hasAccess'
+import { useProjectTaskAction } from '~~/composables/useProjectTaskAction'
+import {type ProjectTaskFormApi} from '~~/composables/useProjectTaskForm'
+import {useProjectTaskModalState} from "~~/composables/useProjectTaskModalState";
+import {useUsersStore} from "#imports";
 
 const type_ = ref('')
 const text = ref('')
-
 const error = ref(false)
 
 const props = defineProps<{
   modelValue: boolean
-  project?: Project
+  mode: 'create-project' | 'edit-project' | 'create-task' | 'edit-task' | ''
+  project?: Project | undefined
+  task?: Task
   sort: boolean
+  formApi: ProjectTaskFormApi
 }>()
 
 const emit = defineEmits<{
   (e: 'update:modelValue', v: boolean): void
 }>()
 
-const form = ref(getEmptyForm())
+const usersStore = useUsersStore()
 
-watch(
-  () => props.project,
-  (p) => {
-    if (!p) {
-      form.value = getEmptyForm()
-      return
-    }
-    form.value = {
-      title: p?.title ?? '',
-      description: p?.description ?? '',
-      deadline: p?.deadline
-        ? formatForDateTimeLocal(p.deadline)
-        : ''
-    }
-  },
-  {immediate: true}
+const action = useProjectTaskAction(props)
+
+const formApi = props.formApi
+
+const canDelete = computed(() =>
+  hasAccess({
+    project: props.project,
+    task: props.task,
+    roles: ['admin', 'owner']
+  })
 )
-
-watch(
-  () => props.modelValue,
-  (isOpen) => {
-    if (!isOpen && !props.project) {
-      form.value = getEmptyForm()
-    }
-  }
-)
-
-function getEmptyForm() {
-  return {
-    title: '',
-    description: '',
-    deadline: '',
-  }
-}
-
-function formatForDateTimeLocal(dateString: string) {
-  const date = new Date(dateString)
-
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-
-  return `${year}-${month}-${day}T${hours}:${minutes}`
-}
 
 function close() {
   emit('update:modelValue', false)
-  form.value = getEmptyForm()
 }
 
-async function submit() {
+async function onSubmit() {
   try {
-    let deadline: Date | null = null
-    if (form.value.deadline) {
-      deadline = new Date(form.value.deadline + ':00')
-      const now = Date.now() + 60_000
-
-      const targetTime = new Date(deadline).getTime()
-
-      if (targetTime < now) {
-        throw createError({
-          statusCode: 401,
-          statusMessage: $t('error.project.deadlineEarlier'),
-        })
-      }
-    }
-    if (props.project) {
-      const prj = props.project
-      prj.title = form.value.title
-      prj.description = form.value.description
-      prj.deadline = form.value.deadline
-      await projectsStore.updateProject(prj)
-      await projectsStore.fetchAll()
-      close()
-    } else {
-      const created = await projectsStore.createProject(
-        form.value.title,
-        form.value.description,
-        deadline
-      )
-      if (!created) return
-      if (props.sort) {
-        await projectsStore.fetchAll()
-      }
-      else await projectsStore.myFetch()
-      close()
-    }
+    await action.submit(props, formApi)
+    props.formApi.resetForm()
+    close()
   } catch (e: any) {
     type_.value = 'error'
     text.value =
@@ -121,21 +56,13 @@ async function submit() {
       e?.message ||
       $t('error.project.addEdit')
     error.value = true
-    return
   }
 }
 
-async function deleteProject(project: Project) {
+async function onDelete() {
   try {
-    if (!hasAccess({project, roles: ['owner']})) {
-      throw createError({
-        statusCode: 401,
-        statusMessage: $t('error.user.onlyCreator'),
-      })
-    }
-
-    await projectsStore.deleteProject(project.id)
-    await projectsStore.fetchAll()
+    await action.deleteItem(props)
+    props.formApi.resetForm()
     close()
   } catch (e: any) {
     type_.value = 'error'
@@ -145,70 +72,46 @@ async function deleteProject(project: Project) {
       e?.message ||
       $t('error.project.delete')
     error.value = true
-    return
   }
 }
 
-function resetErrorModal() {
+function onResetErrorModal() {
   error.value = false
   text.value = ''
   type_.value = ''
 }
+
+useProjectTaskModalState(
+  props,
+  usersStore,
+  {
+    resetForm: formApi.resetForm,
+    fillFromProject: formApi.fillFromProject,
+    fillFromTask: formApi.fillFromTask
+  }
+)
 </script>
 
 <template>
-  <Modal
+  <AddOrEditEntityModal
     :model-value="modelValue"
     @update:model-value="emit('update:modelValue', $event)"
-    class="w-full h-[600px] max-w-[600px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
   >
-    <form @submit.prevent="submit">
-      <div class="grid gap-4 mx-2 mt-1 text-xl">
-        <div class="flex flex-col justify-center gap-2 text-center">
-          <label>{{ $t('project.title') }}</label>
-          <input
-            required
-            v-model="form.title"
-            class="m-1 rounded-xl w-1/2 mx-auto h-[50px] text-black bg-white  p-1"
-          />
-        </div>
-        <div class="flex flex-col gap-4">
-          <label class="text-center">{{ $t('project.description') }}</label>
-          <textarea
-            required
-            v-model="form.description"
-            class="m-1 rounded-xl h-[150px] text-black bg-white  text-mono p-1"
-          />
-        </div>
-        <div class="flex flex-col gap-4 text-center">
-          <label>{{ $t('project.deadline') }}</label>
-          <input
-            v-model="form.deadline"
-            class="m-1 rounded-xl w-1/2 mx-auto text-black p-1 bg-white "
-            type="datetime-local"
-          />
-        </div>
-        <div class="flex justify-center gap-2 mt-2">
-          <button type="submit" class="p-2 border rounded-md">
-            {{ $t('btn.save') }}
-          </button>
-          <button
-            v-if="project"
-            type="button"
-            class="p-2 border rounded-md"
-            @click="deleteProject(project)"
-          >
-            {{ $t('btn.delete') }}
-          </button>
-        </div>
-      </div>
-    </form>
-    <ErrorModalContent
-      v-model="error"
-      :type="type_"
-      :text="text"
-      @close="resetErrorModal"
+    <ProjectTaskForm
+      :mode="mode"
+      :project="project"
+      :task="task"
+      :can-delete="canDelete"
+      :formApi="formApi"
+      @submit="onSubmit"
+      @delete="onDelete"
     />
-    <Loading v-if="isLoading"/>
-  </Modal>
+  </AddOrEditEntityModal>
+
+  <ErrorModalContent
+    v-model="error"
+    :type="type_"
+    :text="text"
+    @close="onResetErrorModal"
+  />
 </template>
