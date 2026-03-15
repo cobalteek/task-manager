@@ -15,9 +15,9 @@ export function hasAccess(
   }) {
   const obj = ref()
   if (project) {
-    obj.value = project.createdById
+    obj.value = project.handlerId
   } else if (task) {
-    obj.value = task.handler
+    obj.value = task.handlerId
   }
 
   const auth = useAuthStore()
