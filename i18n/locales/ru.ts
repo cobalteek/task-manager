@@ -6,17 +6,20 @@ export default {
   pages: {
     about: 'О нас',
     contact: 'Контакты',
-    docs: 'Документация',
+    docs: 'Лицензия',
     home: 'Главная',
     dashboard: 'Панель управления',
   },
-  project: {
+  table: {
     title: 'Название',
     description: 'Описание',
     createdAt: 'Дата создания',
     deadline: 'Срок сдачи',
     status: 'Статус',
-    createdBy: 'Создан',
+    createdBy: 'Создатель',
+    handler: 'Ответственный',
+    doneAt: 'Завершён',
+    selectHandler: 'Выберите ответственного'
   },
   auth: {
     signIn: 'Войти',
@@ -41,10 +44,13 @@ export default {
   btn: {
     allProjects: 'Все проекты',
     myProjects: 'Мои проекты',
+    allTasks: 'Все задачи',
+    myTasks: 'Мои задачи',
     add: 'Создать',
     changeRole: 'Изменить роль',
     projects: 'Проекты',
     tasks: 'Задачи',
+    back: 'Назад',
     save: 'Сохранить',
     delete: 'Удалить',
     set: 'Установить',
@@ -79,6 +85,7 @@ export default {
     frozen: 'Заморожен',
   },
   error: {
+    notFound: 'Не найдено',
     project: {
       notFound: 'Проект не найден',
       idRequired: 'Требуется ID проекта',
@@ -111,6 +118,7 @@ export default {
       emailExist: 'Данная почта уже зарегистрирована.',
       unAuth: 'Не авторизован',
       logoutFailed: 'Не удалось выйти из аккаунта.',
+      register: 'Не удалось зарегистрироваться.',
     },
     user: {
       notFound: 'Пользователь не найден',
