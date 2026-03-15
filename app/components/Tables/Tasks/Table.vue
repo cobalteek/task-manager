@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import type { Task } from "~~/types/task"
-import { formatDate } from "~~/utils/formatDate"
-import { hasAccess } from "~~/utils/hasAccess"
+import type {Task} from "~~/types/task"
+import {formatDate} from "~~/utils/formatDate"
+import {hasAccess} from "~~/utils/hasAccess"
+import type {Project} from "~~/types/project";
+import NotFound from "~/components/NotFound.vue";
 
-const props = defineProps<{
+ defineProps<{
+  project: Project
   tasks: Task[]
   isLoading?: boolean
 }>()
@@ -14,13 +17,15 @@ const emit = defineEmits<{
 }>()
 
 const headers = computed(() => [
-  $t('task.title'),
-  $t('task.description'),
-  $t('task.createdAt'),
-  $t('task.deadline'),
-  $t('task.status'),
-  $t('task.createdBy'),
+  $t('table.title'),
+  $t('table.description'),
+  $t('table.status'),
+  $t('table.deadline'),
+  $t('table.createdAt'),
+  $t('table.handler'),
 ])
+
+const taskColumns = 'minmax(180px, 1.8fr) minmax(220px, 1.8fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(140px, 0.9fr) minmax(150px, 1fr)'
 
 function onOpen(task: Task) {
   emit('open', task)
@@ -32,7 +37,7 @@ function onEdit(task: Task) {
 </script>
 
 <template>
-  <TablesBase :headers="headers">
+  <TablesBase :headers="headers" :grid-template-columns="taskColumns">
     <template #default="{ gridTemplateColumns }">
       <div
         v-for="tsk in tasks"
@@ -55,6 +60,19 @@ function onEdit(task: Task) {
           {{ tsk.description }}
         </div>
 
+        <StatusesList
+          :disabled="!hasAccess({ task: tsk, roles: ['admin', 'owner'] })"
+          :project="project"
+          :task="tsk"
+        />
+
+        <div
+          class="min-w-[50px] max-w-[300px] text-center"
+          @click="onOpen(tsk)"
+        >
+          {{ formatDate(tsk.deadline) }}
+        </div>
+
         <div
           class="min-w-[50px] max-w-[300px] text-center"
           @click="onOpen(tsk)"
@@ -66,23 +84,13 @@ function onEdit(task: Task) {
           class="min-w-[50px] max-w-[300px] text-center"
           @click="onOpen(tsk)"
         >
-          {{ formatDate(tsk.deadline) }}
-        </div>
-
-        <StatusesList
-          :disabled="!hasAccess({ task: tsk, roles: ['admin'] })"
-          :task="tsk"
-        />
-
-        <div
-          class="min-w-[50px] max-w-[300px] text-center"
-          @click="onOpen(tsk)"
-        >
           {{ tsk.handler.name }}
         </div>
       </div>
-
-      <Loading v-if="isLoading" />
+      <NotFound
+        v-if="tasks.length === 0"
+      />
+      <Loading v-if="isLoading"/>
     </template>
   </TablesBase>
 </template>

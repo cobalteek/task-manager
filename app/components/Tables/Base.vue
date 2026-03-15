@@ -21,7 +21,7 @@ const minWidth = computed(() => {
 <template>
   <div class="overflow-x-auto hide-scrollbar h-full">
     <div
-      class="w-max min-w-full"
+      class="w-full"
       :style="{ minWidth }"
     >
       <div

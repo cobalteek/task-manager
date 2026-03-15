@@ -74,7 +74,7 @@ function setValue(key: string, value: string) {
           </label>
         </div>
         <button
-          @submit.prevent="emit('submit')"
+          type="submit"
           class="w-1/2 text-bold bg-gray-800 mt-3 rounded-xl p-1 hover:bg-gray-600 transition duration-300"
         >
           {{ btnName }}

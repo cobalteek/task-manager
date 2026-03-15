@@ -8,7 +8,7 @@ const usersStore = useUsersStore()
 const roleStore = useRolesStore()
 const auth = useAuthStore()
 
-const { isLoading } = storeToRefs(usersStore)
+const { loading: isLoading } = storeToRefs(usersStore)
 
 const candidate = ref('')
 const role = ref()

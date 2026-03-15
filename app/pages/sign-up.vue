@@ -4,10 +4,10 @@ import {useAuthStore} from "~/stores/auth";
 const auth = useAuthStore()
 const {t} = useI18n()
 const fields = computed(() => [
-  {key: 'name', type: 'text', placeholder: t('form.placeholder.name')},
-  {key: 'email', type: 'email', placeholder: t('form.placeholder.email')},
-  {key: 'password', type: 'password', placeholder: t('form.placeholder.password')},
-  {key: 'confirmPassword', type: 'password', placeholder: t('form.placeholder.confirmPassword')},
+  {key: 'name', type: 'text', placeholder: 'form.placeholder.name'},
+  {key: 'email', type: 'email', placeholder: 'form.placeholder.email'},
+  {key: 'password', type: 'password', placeholder: 'form.placeholder.password'},
+  {key: 'confirmPassword', type: 'password', placeholder: 'form.placeholder.confirmPassword'},
 ] as const)
 
 const form = ref({
@@ -33,6 +33,7 @@ function validate(text: string) {
 const type_ = ref('error')
 
 async function onRegister() {
+  console.count('onRegister called')
   if (validate(form.value.password) || validate(form.value.name)) {
     textError.value = $t('error.auth.onlyEnglish')
     modalRef.value = true
