@@ -1,19 +1,15 @@
-import {prisma} from '~~/server/utils/prisma'
-import {requireUser} from "#imports";
+import {prisma} from '#server/utils/prisma'
+import {requireUser} from "#server/utils/auth";
 
 export default defineEventHandler(async (event) => {
 
   const {userId} = await requireUser(event)
+  const {projectId} = getRouterParams(event)
 
-  return prisma.project.findMany({
+  return prisma.task.findMany({
     where: {
-      OR: [
-        {
-          handler: {
-            id: {contains: userId, mode: "insensitive"}
-          }
-        }
-      ]
+      projectId: projectId,
+      handlerId: userId
     },
 
     orderBy: {title: 'asc'},

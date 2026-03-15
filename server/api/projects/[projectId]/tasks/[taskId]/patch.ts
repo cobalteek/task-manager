@@ -1,7 +1,7 @@
-import {prisma} from "~~/server/utils/prisma"
+import {prisma} from "#server/utils/prisma"
 
 export default defineEventHandler(async (event) => {
-  const {id} = getRouterParams(event)
+  const {projectId, taskId} = getRouterParams(event)
   const {userId} = await requireUser(event)
   const t = await useTranslation(event)
 
@@ -9,8 +9,9 @@ export default defineEventHandler(async (event) => {
     title: string
     description: string
     deadline: string
+    handlerId: string
   }>(event)
-
+  console.log('BODY', body)
   if (!body) {
     throw createError({
       statusCode: 400,
@@ -19,10 +20,10 @@ export default defineEventHandler(async (event) => {
   }
 
   const project = await prisma.project.findUnique({
-    where: {id},
+    where: {id: projectId},
     select: {
       id: true,
-      createdById: true,
+      handlerId: true,
     },
   })
 
@@ -30,6 +31,21 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 404,
       statusMessage: t('error.project.notFound')
+    })
+  }
+
+  const task = await prisma.task.findUnique({
+    where: {id: taskId},
+    select: {
+      id: true,
+      handlerId: true,
+    }
+  })
+
+  if (!task) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: t('error.task.notFound')
     })
   }
 
@@ -58,27 +74,36 @@ export default defineEventHandler(async (event) => {
 
   const isOwner = user.roles.some((r: { role: { name: string; }; }) => r.role.name === 'owner')
 
-  if (project.createdById !== userId && !isOwner) {
+  if (project.handlerId !== userId &&
+    task.handlerId !== userId &&
+    !isOwner) {
     throw createError({
       statusCode: 403,
-      statusMessage: t('error.user.onlyCreator')
+      statusMessage: t('error.user.hasAccess'),
     })
   }
 
   try {
-    return await prisma.project.update({
-      where: {id},
+    console.log('BODY', body, projectId, taskId)
+    return await prisma.task.update({
+      where: {projectId: projectId, id: taskId},
       data: {
         title: body.title,
         description: body.description,
         deadline: body.deadline ? new Date(body.deadline) : null,
+        handler: {
+          connect: {id: body.handlerId}
+        },
+      },
+      include: {
+        handler: true
       }
     })
   } catch (e) {
-    console.error("PATCH PROJECT ERROR:", e)
+    console.error("PATCH TASK ERROR:", e)
     throw createError({
       statusCode: 500,
-      statusMessage: t('error.project.update')
+      statusMessage: t('error.task.update')
     })
   }
 })

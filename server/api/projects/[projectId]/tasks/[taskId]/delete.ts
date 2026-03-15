@@ -1,14 +1,21 @@
-import {prisma} from '~~/server/utils/prisma'
+import {prisma} from '#server/utils/prisma'
 
 export default defineEventHandler(async (event) => {
-  const {id} = getRouterParams(event)
+  const {projectId, taskId} = getRouterParams(event)
   const t = await useTranslation(event)
   const {userId} = await requireUser(event)
 
-  if (!id) {
+  if (!projectId) {
     throw createError({
       statusCode: 400,
       statusMessage: t('error.project.idRequired')
+    })
+  }
+
+  if(!taskId) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: t('error.task.idRequired')
     })
   }
 
@@ -20,10 +27,10 @@ export default defineEventHandler(async (event) => {
   }
 
   const project = await prisma.project.findUnique({
-    where: {id},
+    where: {id: projectId},
     select: {
       id: true,
-      createdById: true,
+      handlerId: true,
     },
   })
 
@@ -31,6 +38,21 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 404,
       statusMessage: t('error.project.notFound')
+    })
+  }
+
+  const task = await prisma.task.findUnique({
+    where: {id: taskId},
+    select: {
+      id: true,
+      handlerId: true,
+    },
+  })
+
+  if (!task) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: t('error.task.notFound')
     })
   }
 
@@ -59,7 +81,9 @@ export default defineEventHandler(async (event) => {
 
   const isOwner = user.roles.some((r: { role: { name: string } }) => r.role.name === 'owner')
 
-  if (project.createdById !== userId && !isOwner) {
+  if (project.handlerId !== userId &&
+    task.handlerId !== userId &&
+    !isOwner) {
     throw createError({
       statusCode: 403,
       statusMessage: t('error.user.onlyCreator'),
@@ -68,18 +92,18 @@ export default defineEventHandler(async (event) => {
 
 
   try {
-    return await prisma.project.delete({
-      where: {id},
+    return await prisma.task.delete({
+      where: {projectId: projectId, id: taskId },
       include: {
         status: true,
-        createdBy: {
+        handler: {
           select: {id: true, name: true}
         }
       }
     })
 
   } catch (error: any) {
-    console.error('DELETE PROJECT ERROR:', error)
+    console.error('DELETE TASK ERROR:', error)
 
     throw createError({
       statusCode: 400,

@@ -4,14 +4,19 @@ import {useProjectsStore} from "~/stores/projects";
 import type {Project} from "~~/types/project";
 import type {Task} from "~~/types/task";
 
-defineProps<{
-  project?: Project
+const props = defineProps<{
+  project: Project
   task?: Task
   disabled?: boolean
 }>()
 
 const statusesStore = useStatusesStore()
 const projectsStore = useProjectsStore()
+const tasksStore = useTasksStore()
+
+const entityId = computed(() => props.task?.id ? props.task?.id : props.project?.id)
+const currentStatusId = computed(() => props.task?.statusId ? props.task?.statusId : props.project?.statusId)
+
 
 const type_ = ref('')
 const textError = ref('')
@@ -32,9 +37,15 @@ onMounted(async () => {
   }
 })
 
-async function onStatusChange(projectId: string, statusId: number) {
-  await statusesStore.updateStatus(projectId, statusId)
-  await projectsStore.fetchAll()
+async function onStatusChange(statusId: number) {
+  if(!entityId) return
+  if(props.task) {
+    await statusesStore.updateTaskStatus(props.project.id, props.task, statusId)
+    await tasksStore.fetchAll(props.project.id)
+  } else {
+    await statusesStore.updateProjectStatus(props.project.id, statusId)
+    await projectsStore.fetchAll()
+  }
 }
 </script>
 
@@ -42,8 +53,8 @@ async function onStatusChange(projectId: string, statusId: number) {
   <div class="min-w-[50px] max-w-[300px] text-center">
     <select
       :disabled=disabled
-      @change="onStatusChange(project.id, Number(($event.target as HTMLSelectElement).value))"
-      :value="project.statusId ? project.statusId : textError"
+      @change="onStatusChange(Number(($event.target as HTMLSelectElement).value))"
+      :value="currentStatusId ? currentStatusId : textError"
       class="select w-[150px]">
       <option
         v-for="o in statusesStore.options"

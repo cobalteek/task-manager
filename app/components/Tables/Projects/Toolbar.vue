@@ -36,7 +36,7 @@ const emit = defineEmits<{
         </button>
 
         <button
-          v-if="!hasAccess( { roles: ['owner'] })"
+          v-if="hasAccess( { roles: ['owner'] })"
           @click="emit('add')"
           class="p-3 text-shadow btn"
         >

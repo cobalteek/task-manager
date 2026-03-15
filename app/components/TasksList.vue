@@ -5,10 +5,17 @@ import type {Task} from "~~/types/task"
 import AddOrEditModalContent from "~/components/AddOrEditModalContent.vue"
 import {hasAccess} from "~~/utils/hasAccess"
 import InfoModalContent from "~/components/InfoModalContent.vue";
+import type {Project} from "~~/types/project";
+import {useProjectTaskForm} from "~~/composables/useProjectTaskForm";
 
-defineProps<{ modelValue: boolean }>()
+const props = defineProps<{
+  modelValue: boolean
+  project: Project
+}>()
 
-const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', v: boolean): void
+}>()
 
 const selectedTask = ref<Task | undefined>(undefined)
 
@@ -16,16 +23,18 @@ const modalOpen = ref(false)
 const taskInfo = ref(false)
 const modalError = ref(false)
 const allTasks = ref(true)
+const mode = ref<'create-task' | 'edit-task' | 'create-project' | 'edit-project'>('create-task')
 
 const textError = ref('')
 const query = ref('')
 const type_ = ref('')
 
 const tasksStore = useTasksStore()
-const { tasks, isLoading } = storeToRefs(tasksStore)
+const {tasks, isLoading} = storeToRefs(tasksStore)
+const formApi = useProjectTaskForm()
 
 onMounted(async () => {
-  await allFetch()
+  await tasksStore.fetchAll(props.project.id)
 })
 
 watch(query, async (v) => {
@@ -47,12 +56,14 @@ function close() {
 }
 
 function onAdd() {
+  mode.value = 'create-task'
   selectedTask.value = undefined
   modalOpen.value = true
 }
 
 function onEdit(task: Task) {
-  if (hasAccess({task, roles:['admin']})) {
+  if (hasAccess({task, roles: ['admin', 'owner']})) {
+    mode.value = 'edit-task'
     selectedTask.value = task
     modalOpen.value = true
     return
@@ -70,7 +81,7 @@ function taskOpen(task: Task) {
 async function allFetch() {
   try {
     allTasks.value = true
-    await tasksStore.fetchAll()
+    await tasksStore.fetchAll(props.project.id)
   } catch (e: any) {
     type_.value = 'error'
     textError.value =
@@ -84,7 +95,7 @@ async function allFetch() {
 async function myFetch() {
   try {
     allTasks.value = false
-    await tasksStore.myFetch()
+    await tasksStore.myFetch(props.project.id)
   } catch (e: any) {
     type_.value = 'error'
     textError.value =
@@ -103,7 +114,7 @@ async function myFetch() {
   >
     <TablesTasksToolbar
       :query="query"
-      :all-tasks="allTasks"
+      :allTasks="allTasks"
       @update:query="query = $event"
       @all="allFetch"
       @my="myFetch"
@@ -114,6 +125,7 @@ async function myFetch() {
     <hr class="my-1 w-full">
 
     <TablesTasksTable
+      :project="project"
       :tasks="tasks"
       :is-loading="isLoading"
       @open="taskOpen"
@@ -122,13 +134,17 @@ async function myFetch() {
 
     <AddOrEditModalContent
       v-model="modalOpen"
+      :mode="mode"
       :sort="allTasks"
+      :project="project"
       :task="selectedTask"
+      :form-api="formApi"
     />
 
     <InfoModalContent
       v-if="selectedTask"
       v-model="taskInfo"
+      :project="project"
       :task="selectedTask"
     />
 

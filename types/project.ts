@@ -2,10 +2,10 @@ export interface Project {
   id: string
   title: string
   description: string
-  createdAt: string // с API обычно приходит string
+  createdAt: string
   deadline: string | null
   statusId: number
-  createdById: string
+  handlerId: string
   status: { id: number; name: string }
-  createdBy: { id: string; name: string; }
+  handler: { id: string; name: string; }
 }

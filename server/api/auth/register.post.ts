@@ -1,11 +1,13 @@
 import bcrypt from 'bcrypt'
-import {prisma} from '~~/server/utils/prisma'
+import { prisma } from '~~/server/utils/prisma'
+import { Prisma } from '@prisma/client'
 
 export default defineEventHandler(async (event) => {
   const t = await useTranslation(event)
+
   try {
     const body = await readBody(event)
-    const {email, password, name, gender} = body
+    const { email, password, name, gender } = body
 
     if (!email || !password || !name || !gender) {
       throw createError({
@@ -15,9 +17,8 @@ export default defineEventHandler(async (event) => {
     }
 
     const exists = await prisma.user.findUnique({
-      where: {email},
+      where: { email },
     })
-
 
     if (exists) {
       throw createError({
@@ -27,9 +28,8 @@ export default defineEventHandler(async (event) => {
     }
 
     const userRole = await prisma.role.findUnique({
-      where: {name: 'user'},
+      where: { name: 'user' },
     })
-
 
     if (!userRole) {
       throw createError({
@@ -61,23 +61,28 @@ export default defineEventHandler(async (event) => {
       },
     })
 
-
     return {
       id: user.id,
       email: user.email,
       name: user.name,
       gender: user.gender,
-      roles: user.roles.map((r: typeof user.roles[number]) => r.role.name),
+      roles: user.roles.map((r: { role: { name: any } }) => r.role.name),
     }
   } catch (error: any) {
-    console.error('REGISTER ERROR FULL:', error)
-    console.error('REGISTER ERROR MESSAGE:', error?.message)
-    console.error('REGISTER ERROR CODE:', error?.code)
-    console.error('REGISTER ERROR META:', error?.meta)
+    if (error?.statusCode) {
+      throw error
+    }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      throw createError({
+        statusCode: 409,
+        statusMessage: t('error.auth.emailExist'),
+      })
+    }
 
     throw createError({
       statusCode: 500,
-      statusMessage: error?.message || t('error.auth.register'),
+      statusMessage: t('error.auth.register'),
     })
   }
 })

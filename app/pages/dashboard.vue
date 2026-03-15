@@ -3,19 +3,28 @@ import {useAuthStore} from "~/stores/auth";
 import {storeToRefs} from "pinia";
 import {useBreakpoint} from "~~/composables/useBreakpoint";
 import ChangeRoleModalContent from "~/components/ChangeRoleModalContent.vue";
+import type {Project} from "~~/types/project";
 
 
 const auth = useAuthStore()
 const {user, isLoading} = storeToRefs(auth)
 const {isMobile, isDesktop, isTablet} = useBreakpoint()
+const selectedProject = ref<Project>()
 const chooseRole = ref(false)
 const showProjects = ref(false)
 const showTasks = ref(false)
 const kek = '</>'
 
 watch(showTasks, () => {
-  if(showProjects.value) showProjects.value = false;
+  if (showProjects.value) showProjects.value = false;
+  if (!showTasks.value) showProjects.value = true;
 })
+
+function toggleTasks(project: Project) {
+  if (!project) return
+  selectedProject.value = project
+  showTasks.value = !showTasks.value;
+}
 
 definePageMeta({
   layout: 'dashboard',
@@ -36,19 +45,13 @@ definePageMeta({
             @click="chooseRole = !chooseRole"
             class="p-2 text-shadow btn"
           >
-            {{$t('btn.changeRole')}}
+            {{ $t('btn.changeRole') }}
           </button>
           <button
             @click="showProjects = !showProjects"
             class="p-2 text-shadow btn"
           >
-            {{$t('btn.projects')}}
-          </button>
-          <button
-            @click="showTasks = !showTasks"
-            class="p-2 text-shadow btn"
-          >
-            {{$t('btn.tasks')}}
+            {{ $t('btn.projects') }}
           </button>
         </section>
         <ChangeRoleModalContent
@@ -56,28 +59,40 @@ definePageMeta({
           v-model="chooseRole"
         />
         <div>
-          {{$t('user.name')}}: {{ user.name }}
+          {{ $t('user.name') }}: {{ user.name }}
         </div>
         <div>
-          {{$t('user.email')}}: {{ user.email }}
+          {{ $t('user.email') }}: {{ user.email }}
         </div>
         <div>
-          {{$t('user.gender')}}: {{ $t(`user.${user.gender}`) }}
+          {{ $t('user.gender') }}: {{ $t(`user.${user.gender}`) }}
         </div>
         <div>
-          {{$t('user.role')}}: {{ $t(`role.${user.role}`) }}
+          {{ $t('user.role') }}: {{ $t(`role.${user.role}`) }}
         </div>
-        <AppTransition>
-          <div v-if="showProjects" class="flex flex-col justify-center items-center">
-            <ProjectsList
-              v-if="(isDesktop || isTablet)"
-              class="mt-5"
-              v-model="showProjects"/>
-            <SMProjectList
-              v-if="isMobile"
-            />
-          </div>
-        </AppTransition>
+        <ClientOnly>
+          <AppTransition>
+            <div v-if="showProjects" class="flex flex-col justify-center items-center">
+              <ProjectsList
+                v-if="(isDesktop || isTablet)"
+                class="mt-5"
+                v-model="showProjects"
+                @toggleTasks="toggleTasks"
+              />
+              <SMProjectList
+                v-if="isMobile"
+              />
+            </div>
+            <div v-if="showTasks && selectedProject">
+              <TasksList
+                v-if="(isDesktop || isTablet)"
+                class="mt-5"
+                :project="selectedProject"
+                v-model="showTasks"
+              />
+            </div>
+          </AppTransition>
+        </ClientOnly>
       </div>
     </div>
     <AppTransition>

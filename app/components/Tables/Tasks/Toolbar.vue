@@ -3,7 +3,7 @@ import {hasAccess} from "~~/utils/hasAccess";
 
 const props = defineProps<{
   query: string
-  allProjects: boolean
+  allTasks: boolean
 }>()
 
 const emit = defineEmits<{
@@ -20,7 +20,7 @@ const emit = defineEmits<{
     <div class="w-full inline-flex justify-center pt-1 lg:justify-end">
       <div class="flex items-center gap-3">
         <button
-          :disabled="allProjects"
+          :disabled="allTasks"
           @click="emit('all')"
           class="p-3 text-shadow btn"
         >
@@ -28,7 +28,7 @@ const emit = defineEmits<{
         </button>
 
         <button
-          :disabled="!allProjects"
+          :disabled="!allTasks"
           @click="emit('my')"
           class="p-3 text-shadow btn"
         >
@@ -36,7 +36,7 @@ const emit = defineEmits<{
         </button>
 
         <button
-          v-if="!hasAccess( { roles: ['admin'] })"
+          v-if="hasAccess( { roles: ['admin', 'owner'] })"
           @click="emit('add')"
           class="p-3 text-shadow btn"
         >

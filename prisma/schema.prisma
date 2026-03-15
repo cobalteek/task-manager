@@ -17,7 +17,7 @@ model User {
 
   roles     UserRole[]
   handledTasks     Task[]     @relation("TaskHandler")
-  projects  Project[]  @relation("ProjectCreatedBy")
+  projects  Project[]  @relation("ProjectHandler")
 
   adminProjects AdminProject[]
   userTasks UserTask[]
@@ -84,18 +84,16 @@ model Project {
   deadline    DateTime?
   doneAt    DateTime?
 
-  // status
   status   Status @relation(fields: [statusId], references: [id])
   statusId Int
 
-  // createdBy
-  createdBy   User   @relation("ProjectCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
-  createdById String
+  handler   User   @relation("ProjectHandler", fields: [handlerId], references: [id], onDelete: Cascade)
+  handlerId String
 
   tasks Task[]
   admins AdminProject[]
 
-  @@index([createdById])
+  @@index([handlerId])
   @@index([statusId])
   @@index([deadline])
 }

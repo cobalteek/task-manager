@@ -1,7 +1,8 @@
 import {prisma} from '~~/server/utils/prisma'
-import {requireUser} from '../../utils/auth'
+import {requireUser} from '~~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
+  const {projectId} = getRouterParams(event)
   const body = await readBody(event)
   const t = await useTranslation(event)
 
@@ -23,19 +24,28 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    return await prisma.project.create({
+    return await prisma.task.create({
       data: {
         title: body.title,
         description: body.description,
         deadline: body.deadline ? new Date(body.deadline) : null,
         status: {
-          connect: { id: defaultStatus.id }
+          connect: {id: defaultStatus.id}
         },
         ...(body.handlerId && {
           handler: {
-            connect: { id: body.handlerId }
+            connect: {id: body.handlerId}
           }
-        })
+        }),
+        project: {
+          connect: {id: projectId}
+        }
+      },
+      include: {
+        status: true,
+        handler: {
+          select: {id: true, name: true}
+        }
       }
     })
   } catch (error: any) {

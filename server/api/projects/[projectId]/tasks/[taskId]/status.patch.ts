@@ -1,9 +1,10 @@
-import {prisma} from "~~/server/utils/prisma"
+import {prisma} from "#server/utils/prisma"
+import type {Task} from "~~/types/task";
 
 export default defineEventHandler(async (event) => {
-  const {id} = getRouterParams(event)
+  const { projectId, taskId } = getRouterParams(event)
   const {userId} = await requireUser(event)
-  const body = await readBody<{ statusId: number }>(event)
+  const body = await readBody<{task: Task, statusId: number }>(event)
   const t = await useTranslation(event)
 
   if (!body?.statusId) {
@@ -11,12 +12,14 @@ export default defineEventHandler(async (event) => {
   }
 
   const project = await prisma.project.findUnique({
-    where: {id},
+    where: {id: projectId},
     select: {
       id: true,
-      createdById: true,
+      handlerId: true,
     },
   })
+
+  project.createdById
 
   if (!project) {
     throw createError({
@@ -50,19 +53,21 @@ export default defineEventHandler(async (event) => {
 
   const isOwner = user.roles.some((r: { role: { name: string; }; }) => r.role.name === 'owner')
 
-  if (project.createdById !== userId && !isOwner) {
+  if (project.handlerId !== userId &&
+    body.task.handler.id !== userId &&
+    !isOwner) {
     throw createError({
       statusCode: 403,
-      statusMessage: t('error.user.onlyCreator')
+      statusMessage: t('error.user.hasAccess')
     })
   }
 
-  return await prisma.project.update({
-    where: {id},
+  return await prisma.task.update({
+    where: {projectId: projectId, id: taskId},
     data: {statusId: Number(body.statusId)},
     include: {
       status: true,
-      createdBy: {select: {id: true, name: true}},
+      handler: {select: {id: true, name: true}},
     },
   })
 })

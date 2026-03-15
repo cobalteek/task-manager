@@ -30,12 +30,12 @@ export const useProjectsStore = defineStore('project', () => {
     )
   }
 
-  async function createProject(title: string, description: string, deadline: Date | null) {
+  async function createProject(title: string, description: string, deadline: Date | null, handlerId: string) {
     isLoading.value = true
     try {
       const created = await $fetch<Project>('/api/projects/projects', {
         method: 'POST',
-        body: {title, description, deadline}
+        body: {title, description, deadline, handlerId}
       })
 
       projects.value.unshift(created)

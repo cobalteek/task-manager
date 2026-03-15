@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
           {title: {contains: String(q), mode: "insensitive"}},
           {description: {contains: String(q), mode: "insensitive"}},
           {
-            createdBy: {
+            handler: {
               name: {contains: String(q), mode: "insensitive"}
             }
           }
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
     include: {
       status: true,
-      createdBy: {
+      handler: {
         select: {id: true, name: true},
       },
     },

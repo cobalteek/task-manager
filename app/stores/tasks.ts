@@ -2,23 +2,23 @@ import {defineStore} from 'pinia'
 import {ref} from "vue"
 import type {Task} from '~~/types/task'
 
-export const useTasksStore = defineStore('task', () => {
+export const useTasksStore = defineStore('task', (event) => {
   const tasks = ref<Task[]>([])
   const isLoading = ref(false)
 
-  async function fetchAll() {
+  async function fetchAll(projectId: string) {
     isLoading.value = true
     try {
-      tasks.value = await $fetch<Task[]>('/api/tasks/tasksSearch')
+      tasks.value = await $fetch<Task[]>(`/api/projects/${projectId}/tasks/tasks`)
     } finally {
       isLoading.value = false
     }
   }
 
-  async function myFetch() {
+  async function myFetch(projectId: string) {
     isLoading.value = true
     try {
-      tasks.value = await $fetch<Task[]>('/api/tasks/myTasks')
+      tasks.value = await $fetch<Task[]>(`/api/projects/${projectId}/tasks/myTasks`)
     } finally {
       isLoading.value = false
     }
@@ -30,12 +30,12 @@ export const useTasksStore = defineStore('task', () => {
     )
   }
 
-  async function createTask(title: string, description: string, deadline: Date | null) {
+  async function createTask(projectId: string, title: string, description: string, deadline: Date | null, handlerId: string) {
     isLoading.value = true
     try {
-      const created = await $fetch<Task>('/api/tasks/tasks', {
+      const created = await $fetch<Task>(`/api/projects/${projectId}/tasks/task`, {
         method: 'POST',
-        body: {title, description, deadline}
+        body: {title, description, deadline, handlerId}
       })
 
       tasks.value.unshift(created)
@@ -45,9 +45,8 @@ export const useTasksStore = defineStore('task', () => {
     }
   }
 
-  async function updateTask(task: Task) {
-
-    const updated = await $fetch<Task>(`/api/tasks/${task.id}/patch`, {
+  async function updateTask(projectId: string, task: Task) {
+    const updated = await $fetch<Task>(`/api/projects/${projectId}/tasks/${task.id}/patch`, {
       method: 'PATCH',
       body: task,
     })
@@ -56,8 +55,8 @@ export const useTasksStore = defineStore('task', () => {
     )
   }
 
-  async function deleteTask(id: string) {
-    await $fetch<Task>(`/api/tasks/${id}/delete`, {
+  async function deleteTask(projectId: string, taskId: string) {
+    await $fetch<Task>(`/api/projects/${projectId}/tasks/${taskId}/delete`, {
       method: 'DELETE',
     })
   }

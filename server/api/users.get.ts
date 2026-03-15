@@ -1,13 +1,34 @@
-import {prisma} from '../utils/prisma'
-import {defineEventHandler} from 'h3'
+import { prisma } from '../utils/prisma'
+import {
+  defineEventHandler,
+  createError,
+  getQuery
+} from 'h3'
 
 export default defineEventHandler(async (event) => {
   const t = await useTranslation(event)
+  const query = getQuery(event)
+  const role = query.role ? String(query.role) : undefined
+
   try {
     return await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
+      ...(role && {
+        where: {
+          roles: {
+            some: {
+              role: {
+                name: String(role)
+              }
+            }
+          }
+        }
+      }),
+      include: {
+        roles: {
+          include: {
+            role: true
+          }
+        }
       }
     })
   } catch (error) {
