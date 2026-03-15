@@ -1,3 +1,3 @@
 [build]
-  command = "pnpm prisma db push --force-reset && pnpm prisma generate && npm run build"
+  command = "pnpm prisma generate && npm run build"
   publish = "dist"
