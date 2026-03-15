@@ -17,6 +17,8 @@ const type_ = ref('')
 
 const projectsStore = useProjectsStore()
 
+const mode = ref<'create-task' | 'edit-task' | 'create-project' | 'edit-project'>('edit-project')
+
 const {projects, isLoading} = storeToRefs(projectsStore)
 
 onMounted(async () => {
@@ -164,10 +166,10 @@ async function myFetch() {
           </div>
           <div class='flex flex-col gap-2 justify-center items-center'>
             <div>
-              {{ $t('project.createdBy') }}:
+              {{ $t('project.handler') }}:
             </div>
             <div>
-              {{ prj.createdBy.name }}
+              {{ prj.handler.name }}
             </div>
           </div>
         </section>
@@ -177,6 +179,7 @@ async function myFetch() {
     <AddOrEditModalContent
       :sort="allProjects"
       v-model="modalOpen"
+      :mode = "mode"
       :project="selectedProject"
     />
     <ErrorModalContent

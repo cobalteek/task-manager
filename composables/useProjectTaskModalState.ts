@@ -1,7 +1,7 @@
-import { watch, ref, type Ref } from 'vue'
-import type { Project } from '../types/project'
-import type { Task } from '../types/task'
-import type { useUsersStore } from '../app/stores/users'
+import {watch} from 'vue'
+import type {Project} from '../types/project'
+import type {Task} from '../types/task'
+import type {useUsersStore} from '../app/stores/users'
 import {useProjectTaskForm} from "./useProjectTaskForm";
 
 type Mode = 'create-project' | 'edit-project' | 'create-task' | 'edit-task' | ''
@@ -49,7 +49,7 @@ export function useProjectTaskModalState(
         await usersStore.fetchUsers('user')
       }
     },
-    { immediate: true }
+    {immediate: true}
   )
 
 }
