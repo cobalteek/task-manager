@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "pnpm prisma migrate deploy && prisma generate && nuxt build",
+    "build": "prisma migrate deploy && nuxt build",
     "dev": "prisma generate && nuxt dev",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
