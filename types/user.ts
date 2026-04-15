@@ -1,7 +1,14 @@
-export interface User {
+export type User = {
   id: string
-  email: string
   name: string
-  gender: string
-  role: string
+  email?: string
+  gender?: string
+  roles?: {
+    userId: string
+    roleId: number
+    role: {
+      id: number
+      name: string
+    }
+  }[]
 }
