@@ -21,6 +21,11 @@ export default {
     doneAt: 'Завершён',
     selectHandler: 'Выберите ответственного'
   },
+  contextMenu: {
+    open: 'Открыть',
+    viewTasks: 'Посмотреть задачи',
+    edit: 'Редактировать',
+  },
   auth: {
     signIn: 'Войти',
     signUp: 'Регистрация',

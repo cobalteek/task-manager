@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {useTasksStore} from "~/stores/tasks"
-import {storeToRefs} from "pinia"
-import type {Task} from "~~/types/task"
+import { useTasksStore } from "~/stores/tasks"
+import { storeToRefs } from "pinia"
+import type { Task } from "~~/types/task"
+import type { Project } from "~~/types/project"
 import AddOrEditModalContent from "~/components/AddOrEditModalContent.vue"
-import {hasAccess} from "~~/utils/hasAccess"
-import InfoModalContent from "~/components/InfoModalContent.vue";
-import type {Project} from "~~/types/project";
-import {useProjectTaskForm} from "~~/composables/useProjectTaskForm";
+import InfoModalContent from "~/components/InfoModalContent.vue"
+import { hasAccess } from "~~/utils/hasAccess"
+import { useProjectTaskForm } from "~~/composables/useProjectTaskForm"
 
 const props = defineProps<{
   modelValue: boolean
@@ -14,7 +14,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', v: boolean): void
+  (e: "update:modelValue", v: boolean): void
 }>()
 
 const selectedTask = ref<Task | undefined>(undefined)
@@ -23,14 +23,17 @@ const modalOpen = ref(false)
 const taskInfo = ref(false)
 const modalError = ref(false)
 const allTasks = ref(true)
-const mode = ref<'create-task' | 'edit-task' | 'create-project' | 'edit-project'>('create-task')
 
-const textError = ref('')
-const query = ref('')
-const type_ = ref('')
+const mode = ref<"create-task" | "edit-task" | "create-project" | "edit-project">(
+  "create-task"
+)
+
+const textError = ref("")
+const query = ref("")
+const type_ = ref("")
 
 const tasksStore = useTasksStore()
-const {tasks, isLoading} = storeToRefs(tasksStore)
+const { tasks, isLoading } = storeToRefs(tasksStore)
 const formApi = useProjectTaskForm()
 
 onMounted(async () => {
@@ -41,35 +44,36 @@ watch(query, async (v) => {
   try {
     await tasksStore.searchTasks(v)
   } catch (e: any) {
-    type_.value = 'info'
+    type_.value = "info"
     textError.value =
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      $t('error.task.searchFailed')
+      $t("error.task.searchFailed")
     modalError.value = true
   }
 })
 
 function close() {
-  emit('update:modelValue', false)
+  emit("update:modelValue", false)
 }
 
 function onAdd() {
-  mode.value = 'create-task'
+  mode.value = "create-task"
   selectedTask.value = undefined
   modalOpen.value = true
 }
 
 function onEdit(task: Task) {
-  if (hasAccess({task, roles: ['admin', 'owner']})) {
-    mode.value = 'edit-task'
+  if (hasAccess({ task, roles: ["admin", "owner"] })) {
+    mode.value = "edit-task"
     selectedTask.value = task
     modalOpen.value = true
     return
   }
 
-  textError.value = $t('error.user.hasAccess')
+  type_.value = "error"
+  textError.value = $t("error.user.hasAccess")
   modalError.value = true
 }
 
@@ -83,12 +87,13 @@ async function allFetch() {
     allTasks.value = true
     await tasksStore.fetchAll(props.project.id)
   } catch (e: any) {
-    type_.value = 'error'
+    type_.value = "error"
     textError.value =
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      $t('error.task.fetchAll')
+      $t("error.task.fetchAll")
+    modalError.value = true
   }
 }
 
@@ -97,12 +102,13 @@ async function myFetch() {
     allTasks.value = false
     await tasksStore.myFetch(props.project.id)
   } catch (e: any) {
-    type_.value = 'error'
+    type_.value = "error"
     textError.value =
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      $t('error.task.fetchMy')
+      $t("error.task.fetchMy")
+    modalError.value = true
   }
 }
 </script>
@@ -110,27 +116,46 @@ async function myFetch() {
 <template>
   <div
     v-if="modelValue"
-    class="w-full border border-solid border-gray-100 rounded-md h-[50vh] overflow-x-hidden hide-scrollbar max-w-[1500px]"
+    class="
+      w-full
+      max-w-[1500px]
+      mx-auto
+      rounded-xl
+      border border-solid border-gray-100
+      overflow-hidden
+
+      min-h-[420px]
+      max-h-[80vh]
+      bg-[var(--bg-modal)]
+    "
   >
-    <TablesTasksToolbar
-      :query="query"
-      :allTasks="allTasks"
-      @update:query="query = $event"
-      @all="allFetch"
-      @my="myFetch"
-      @add="onAdd"
-      @close="close"
-    />
+    <div class="flex h-full flex-col">
+      <div class="shrink-0 px-2 py-2 sm:px-3 sm:py-3 lg:px-4">
+        <TablesTasksToolbar
+          :query="query"
+          :allTasks="allTasks"
+          @update:query="query = $event"
+          @all="allFetch"
+          @my="myFetch"
+          @add="onAdd"
+          @close="close"
+        />
+      </div>
 
-    <hr class="my-1 w-full">
+      <hr class="w-full my-1" />
 
-    <TablesTasksTable
-      :project="project"
-      :tasks="tasks"
-      :is-loading="isLoading"
-      @open="taskOpen"
-      @edit="onEdit"
-    />
+      <div class="min-h-0 flex-1 overflow-hidden">
+        <div class="h-full overflow-auto px-1 sm:px-2 lg:px-3 hide-scrollbar">
+          <TablesTasksTable
+            :project="project"
+            :tasks="tasks"
+            :is-loading="isLoading"
+            @open="taskOpen"
+            @edit="onEdit"
+          />
+        </div>
+      </div>
+    </div>
 
     <AddOrEditModalContent
       v-model="modalOpen"
@@ -150,7 +175,7 @@ async function myFetch() {
 
     <ErrorModalContent
       v-model="modalError"
-      type="error"
+      :type="type_ || 'error'"
       :text="textError"
     />
   </div>

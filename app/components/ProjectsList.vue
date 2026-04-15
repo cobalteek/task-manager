@@ -4,14 +4,14 @@ import { storeToRefs } from "pinia"
 import type { Project } from "~~/types/project"
 import AddOrEditModalContent from "~/components/AddOrEditModalContent.vue"
 import { hasAccess } from "~~/utils/hasAccess"
-import InfoModalContent from "~/components/InfoModalContent.vue";
-import {useProjectTaskForm} from "~~/composables/useProjectTaskForm";
+import InfoModalContent from "~/components/InfoModalContent.vue"
+import { useProjectTaskForm } from "~~/composables/useProjectTaskForm"
 
 defineProps<{ modelValue: boolean }>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', v: boolean): void
-  (e: 'toggleTasks', v: Project): void
+  (e: "update:modelValue", v: boolean): void
+  (e: "toggleTasks", v: Project): void
 }>()
 
 const selectedProject = ref<Project | undefined>(undefined)
@@ -21,16 +21,20 @@ const projectInfo = ref(false)
 const modalError = ref(false)
 const allProjects = ref(true)
 
-const mode = ref<'create-task' | 'edit-task' | 'create-project' | 'edit-project' | ''>('')
+const mode = ref<
+  "create-task" | "edit-task" | "create-project" | "edit-project" | ""
+>("")
 
-const textError = ref('')
-const query = ref('')
-const type_ = ref('')
+const textError = ref("")
+const query = ref("")
+const type_ = ref("")
 
 const projectsStore = useProjectsStore()
 const { projects, isLoading } = storeToRefs(projectsStore)
+
 const auth = useAuthStore()
-const {user} = storeToRefs(auth)
+const { user } = storeToRefs(auth)
+
 const formApi = useProjectTaskForm()
 
 onMounted(async () => {
@@ -41,34 +45,36 @@ watch(query, async (v) => {
   try {
     await projectsStore.searchProjects(v)
   } catch (e: any) {
-    type_.value = 'info'
+    type_.value = "info"
     textError.value =
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      $t('error.project.searchFailed')
+      $t("error.project.searchFailed")
     modalError.value = true
   }
 })
 
 function close() {
-  emit('update:modelValue', false)
+  emit("update:modelValue", false)
 }
 
 function onAdd() {
-  mode.value = 'create-project'
+  mode.value = "create-project"
   selectedProject.value = undefined
   modalOpen.value = true
 }
 
 function onEdit(project: Project) {
-  if (hasAccess({project, roles: ['owner']})) {
-    mode.value = 'edit-project'
+  if (hasAccess({ project, roles: ["owner"] })) {
+    mode.value = "edit-project"
     selectedProject.value = project
     modalOpen.value = true
     return
   }
-  textError.value = $t('error.user.hasAccess')
+
+  type_.value = "error"
+  textError.value = $t("error.user.hasAccess")
   modalError.value = true
 }
 
@@ -82,12 +88,13 @@ async function allFetch() {
     allProjects.value = true
     await projectsStore.fetchAll()
   } catch (e: any) {
-    type_.value = 'error'
+    type_.value = "error"
     textError.value =
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      $t('error.project.fetchAll')
+      $t("error.project.fetchAll")
+    modalError.value = true
   }
 }
 
@@ -96,12 +103,13 @@ async function myFetch() {
     allProjects.value = false
     await projectsStore.myFetch()
   } catch (e: any) {
-    type_.value = 'error'
+    type_.value = "error"
     textError.value =
       e?.data?.statusMessage ||
       e?.data?.message ||
       e?.message ||
-      $t('error.project.fetchMy')
+      $t("error.project.fetchMy")
+    modalError.value = true
   }
 }
 
@@ -113,12 +121,12 @@ const contextMenu = ref({
 })
 
 const menuItems = computed(() => [
-  { label: 'Открыть', key: 'open' },
-  { label: 'Посмотреть задачи', key: 'tasks' },
+  { label: $t("contextMenu.open"), key: "open" },
+  { label: $t("contextMenu.viewTasks"), key: "tasks" },
   {
-    label: 'Редактировать',
-    key: 'edit',
-    disabled: user.value?.role === 'user'
+    label: $t("contextMenu.edit"),
+    key: "edit",
+    disabled: user.value?.role === "user"
   }
 ])
 
@@ -132,7 +140,7 @@ function openContextMenu(project: Project, event: MouseEvent) {
 }
 
 function showTasks(project: Project) {
-  emit('toggleTasks', project)
+  emit("toggleTasks", project)
 }
 
 function handleContextAction(key: string) {
@@ -140,42 +148,66 @@ function handleContextAction(key: string) {
   if (!project) return
 
   switch (key) {
-    case 'open':
+    case "open":
       projectOpen(project)
       break
-    case 'tasks':
+    case "tasks":
       showTasks(project)
       break
-    case 'edit':
+    case "edit":
       onEdit(project)
       break
   }
+
+  contextMenu.value.visible = false
 }
 </script>
 
 <template>
   <div
     v-if="modelValue"
-    class="w-full border border-solid border-gray-100 rounded-md h-[50vh] overflow-x-hidden hide-scrollbar max-w-[1500px]"
+    class="
+      w-full
+      max-w-[1500px]
+      mx-auto
+      rounded-xl
+      border border-solid border-gray-200
+      overflow-hidden
+
+      h-[calc(100dvh-100px)]
+      min-h-[420px]
+
+      sm:h-[70dvh]
+      lg:h-[75vh]
+    "
   >
-    <TablesProjectsToolbar
-      :query="query"
-      :all-projects="allProjects"
-      @update:query="query = $event"
-      @all="allFetch"
-      @my="myFetch"
-      @add="onAdd"
-      @close="close"
-    />
+    <div class="flex h-full flex-col">
+      <div class="shrink-0 px-2 py-2 sm:px-3 sm:py-3 lg:px-4">
+        <TablesProjectsToolbar
+          :query="query"
+          :all-projects="allProjects"
+          @update:query="query = $event"
+          @all="allFetch"
+          @my="myFetch"
+          @add="onAdd"
+          @close="close"
+        />
+      </div>
 
-    <hr class="my-1 w-full">
+      <hr class="w-full border-gray-200" />
 
-    <TablesProjectsTable
-      :projects="projects"
-      :is-loading="isLoading"
-      @open="projectOpen"
-      @openContextMenu="openContextMenu"
-    />
+      <div class="min-h-0 flex-1 overflow-hidden">
+        <div class="h-full overflow-auto px-1 sm:px-2 lg:px-3 hide-scrollbar">
+          <TablesProjectsTable
+            :projects="projects"
+            :is-loading="isLoading"
+            @open="projectOpen"
+            @openContextMenu="openContextMenu"
+          />
+        </div>
+      </div>
+    </div>
+
     <ClientOnly>
       <ContextMenu
         v-model="contextMenu.visible"
@@ -202,7 +234,7 @@ function handleContextAction(key: string) {
 
     <ErrorModalContent
       v-model="modalError"
-      type="error"
+      :type="type_ || 'error'"
       :text="textError"
     />
   </div>

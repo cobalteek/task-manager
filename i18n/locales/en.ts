@@ -21,6 +21,11 @@ export default {
     doneAt: 'Done At',
     selectHandler: 'Select a handler',
   },
+  contextMenu: {
+    open: 'Open',
+    viewTasks: 'View Tasks',
+    edit: 'Edit',
+  },
   auth: {
     signIn: 'Sign In',
     signUp: 'Sign Up',
@@ -78,8 +83,8 @@ export default {
     hello: 'Hello',
   },
   status: {
-    notStarted: 'Not Started',
-    inProcess: 'In Process',
+    notStarted: 'Not started',
+    inProcess: 'In process',
     completed: 'Completed',
     abandoned: 'Abandoned',
     frozen: 'Frozen',
