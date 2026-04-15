@@ -53,7 +53,7 @@ definePageMeta({
           </button>
         </section>
         <ChangeRoleModalContent
-          class="w-[320px] h-[180px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="w-[calc(100%-16px)] max-w-[520px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
           v-model="chooseRole"
         />
         <div>

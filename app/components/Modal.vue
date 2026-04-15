@@ -18,24 +18,22 @@ function close() {
   <AppTransition>
     <div
       v-if="modelValue"
-      class="fixed inset-0 flex items-center justify-center"
+      class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4"
     >
       <div
         v-bind="$attrs"
-        class="flex flex-col gap-2 border border-solid border-gray-200 rounded-xl bg-[var(--bg-modal)] min-w-[280px] min-h-[160px]"
+        class="relative flex flex-col border border-solid border-gray-200 rounded-2xl bg-[var(--bg-modal)] min-w-[280px] min-h-[160px] shadow-xl"
       >
-        <div class="flex-1">
-          <slot/>
-        </div>
+        <button
+          type="button"
+          @click="close"
+          class="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/80 text-lg leading-none transition hover:scale-95"
+        >
+          ×
+        </button>
 
-        <div class="flex justify-center items-center h-[50px]">
-          <button
-            type="button"
-            @click="close"
-            class="border border-solid border-gray-200 rounded-md p-1"
-          >
-            {{ $t('btn.close') }}
-          </button>
+        <div class="flex-1">
+          <slot />
         </div>
       </div>
     </div>

@@ -1,88 +1,108 @@
 <script setup lang="ts">
-import {formatDate} from "~~/utils/formatDate";
-import type {Project} from "~~/types/project";
-import AutoTextArea from "~/components/AutoTextArea.vue";
-import {hasAccess} from "~~/utils/hasAccess";
-import type {Task} from "~~/types/task";
+import { computed } from "vue"
+import { formatDate } from "~~/utils/formatDate"
+import type { Project } from "~~/types/project"
+import type { Task } from "~~/types/task"
+import { hasAccess } from "~~/utils/hasAccess"
 
 const props = defineProps<{
-  modelValue: boolean,
+  modelValue: boolean
   project: Project
   task?: Task
-}>();
-
-const obj = ref()
-
-onMounted( () => {
-  if(props.task) {
-    obj.value = props.task
-  } else obj.value = props.project
-})
-
-const emit = defineEmits<{
-  (e: 'update:modelValue', v: boolean): void
 }>()
 
+const emit = defineEmits<{
+  (e: "update:modelValue", v: boolean): void
+}>()
+
+const obj = computed(() => props.task ?? props.project)
 </script>
 
 <template>
   <Modal
     :model-value="modelValue"
     @update:model-value="emit('update:modelValue', $event)"
-    class="w-full h-[600px] max-w-[600px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+    class="fixed left-1/2 top-1/2 w-[calc(100%-16px)] max-w-[720px] -translate-x-1/2 -translate-y-1/2"
   >
-    <div class="flex flex-col h-full">
-      <div class="flex flex-col justify-center items-center w-full my-auto">
-        <div>
-          {{ $t('table.title') }}
-        </div>
-        <AutoTextArea
-          :text="obj?.title"
-          class="w-1/2 text-black text-center rounded-md max-h-[50px] overflow-y-auto bg-white "
-        />
+    <div
+      class="max-h-[85vh] overflow-y-auto rounded-2xl bg-[var(--bg-modal)] p-3 sm:p-4 md:p-5"
+    >
+      <div class="flex flex-col gap-3 sm:gap-4">
+        <section class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
+          <div class="mb-1 text-xs sm:text-sm text-gray-500">
+            {{ $t('table.title') }}
+          </div>
+          <div class="break-words text-base font-semibold sm:text-lg">
+            {{ obj?.title || '—' }}
+          </div>
+        </section>
+
+        <section class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
+          <div class="mb-1 text-xs sm:text-sm text-gray-500">
+            {{ $t('table.description') }}
+          </div>
+          <div class="whitespace-pre-wrap break-words text-sm sm:text-base">
+            {{ obj?.description || '—' }}
+          </div>
+        </section>
+
+        <section
+          class="grid grid-cols-1 gap-3 sm:grid-cols-2"
+        >
+          <div class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
+            <div class="mb-1 text-xs sm:text-sm text-gray-500">
+              {{ $t('table.createdAt') }}
+            </div>
+            <div class="break-words text-sm sm:text-base">
+              {{ obj?.createdAt ? formatDate(obj.createdAt) : '—' }}
+            </div>
+          </div>
+
+          <div class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
+            <div class="mb-1 text-xs sm:text-sm text-gray-500">
+              {{ $t('table.deadline') }}
+            </div>
+            <div class="break-words text-sm sm:text-base">
+              {{ obj?.deadline ? formatDate(obj.deadline) : '—' }}
+            </div>
+          </div>
+        </section>
+
+        <section class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
+          <div class="mb-2 text-xs sm:text-sm text-gray-500">
+            {{ $t('table.status') }}
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <div v-if="task">
+              <StatusesList
+                :disabled="!hasAccess({ task: task, roles: ['admin', 'owner'] })"
+                :project="project"
+                :task="task"
+                class="bg-[var(--bg-back)] text-black"
+              />
+            </div>
+
+            <div v-else>
+              <StatusesList
+                v-if="project"
+                :disabled="!hasAccess({ project, roles: ['owner'] })"
+                :project="project"
+                class="bg-[var(--bg-back)] text-black"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
+          <div class="mb-1 text-xs sm:text-sm text-gray-500">
+            {{ $t('table.handler') }}
+          </div>
+          <div class="break-words text-sm sm:text-base">
+            {{ obj?.handler?.name || '—' }}
+          </div>
+        </section>
       </div>
-      <div class="my-auto flex flex-col justify-center items-center w-full">
-        <div>
-          {{ $t('table.description') }}
-        </div>
-        <AutoTextArea
-          :text="obj?.description"
-          class="w-full max-h-[300px] max-w-[550px] resize-none overflow-y-auto rounded-md border p-2 text-black active:border-0 m-1 bg-white "
-        />
-      </div>
-      <section class="inline-flex justify-between items-center w-full px-3 my-auto">
-        <div v-if="obj?.createdAt">
-          {{ $t('table.createdAt') }}: {{ formatDate(obj?.createdAt) }}
-        </div>
-        <div v-if="obj?.deadline">
-          {{ $t('table.deadline') }} {{ formatDate(obj?.deadline) }}
-        </div>
-      </section>
-      <section class="inline-flex justify-between items-center w-full px-3 my-auto">
-        <div class="inline-flex gap-2 items-center">
-          <div class="text-[18px]">
-            {{ $t('table.status') }}:
-          </div>
-          <div v-if="task">
-            <StatusesList
-              :disabled="!hasAccess({ task: task, roles: ['admin', 'owner'] })"
-              :project="project"
-              :task="task"
-              class="bg-[var(--bg-back)] text-black"
-            />
-          </div>
-          <div v-else>
-            <StatusesList
-              v-if="project"
-              :disabled="!hasAccess({project, roles: ['owner']})"
-              :project="project"
-            />
-          </div>
-        </div>
-        <div>
-          {{ $t('table.handler') }}: {{ obj?.handler.name }}
-        </div>
-      </section>
     </div>
   </Modal>
 </template>

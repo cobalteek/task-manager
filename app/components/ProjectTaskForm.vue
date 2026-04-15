@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type {Project} from "~~/types/project";
-import {resetErrorModal} from "~~/utils/resetErrorModal";
-import {type ProjectTaskFormApi} from "~~/composables/useProjectTaskForm";
-import type {Task} from "~~/types/task";
+import type { Project } from "~~/types/project"
+import { resetErrorModal } from "~~/utils/resetErrorModal"
+import { type ProjectTaskFormApi } from "~~/composables/useProjectTaskForm"
+import type { Task } from "~~/types/task"
 
 const props = defineProps<{
   mode: 'create-project' | 'edit-project' | 'create-task' | 'edit-task' | ''
@@ -24,80 +24,125 @@ const emit = defineEmits<{
 }>()
 
 const usersStore = useUsersStore()
-
 const formApi = props.formApi
 
+const isTaskMode = computed(() =>
+  props.mode === 'create-task' || props.mode === 'edit-task'
+)
 </script>
 
 <template>
-  <form
-    @submit.prevent="emit('submit')"
-  >
-    <div class="grid gap-4 mx-2 mt-1 text-xl">
-      <div class="flex flex-col justify-center gap-2 text-center">
-        <label>{{ $t('table.title') }}</label>
-        <input
-          required
-          v-model="formApi.form.value.title"
-          class="m-1 rounded-xl w-1/2 mx-auto h-[50px] text-black bg-white  p-1"
-        />
-      </div>
-      <div class="flex flex-col gap-4">
-        <label class="text-center">{{ $t('table.description') }}</label>
-        <textarea
-          required
-          v-model="formApi.form.value.description"
-          class="m-1 rounded-xl h-[150px] text-black bg-white  text-mono p-1"
-        />
-      </div>
-      <div class="inline-flex items-center justify-between px-5">
-        <div class="flex flex-col gap-4 text-center">
-          <label>{{ $t('table.deadline') }}</label>
-          <input
-            v-model="formApi.form.value.deadline"
-            class="m-1 rounded-xl mx-auto text-black p-1 bg-white "
-            type="datetime-local"
-          />
+  <div>
+    <form @submit.prevent="emit('submit')">
+      <div
+        class="mx-auto w-full max-w-3xl rounded-2xl bg-[var(--bg-modal)] p-4 sm:p-5 md:p-6 shadow-sm"
+      >
+        <div class="mb-5">
+          <h2 class="text-xl sm:text-2xl font-semibold text-center">
+            {{
+              mode === 'create-project'
+                ? $t('btn.addProject')
+                : mode === 'edit-project'
+                  ? $t('btn.editProject')
+                  : mode === 'create-task'
+                    ? $t('btn.addTask')
+                    : $t('btn.editTask')
+            }}
+          </h2>
         </div>
-        <div class="flex flex-col gap-4 text-center">
-          <label>{{ $t('table.handler') }}</label>
-          <select
-            v-model="formApi.form.value.handlerId"
-          >
-            <option disabled value="">
-              {{ $t('table.selectHandler') }}
-            </option>
-            <option
-              v-for="o in usersStore.options"
-              :key="o.value"
-              :value="o.value"
-              class="select"
+
+        <div class="flex flex-col gap-4 sm:gap-5">
+          <section class="rounded-2xl bg-[var(--bg-back)] p-4">
+            <label class="mb-2 block text-sm font-medium opacity-80">
+              {{ $t('table.title') }}
+            </label>
+            <input
+              v-model="formApi.form.value.title"
+              required
+              class="w-full rounded-xl border border-transparent bg-white px-4 py-3 text-black outline-none transition
+                   focus:border-gray-300 focus:ring-2 focus:ring-gray-200"
+            />
+          </section>
+
+          <section class="rounded-2xl bg-[var(--bg-back)] p-4 shadow-sm">
+            <label class="mb-2 block text-sm font-medium opacity-80">
+              {{ $t('table.description') }}
+            </label>
+            <textarea
+              v-model="formApi.form.value.description"
+              required
+              class="min-h-[140px] w-full resize-none rounded-xl border border-transparent bg-white px-4 py-3 text-black outline-none transition
+                   focus:border-gray-300 focus:ring-2 focus:ring-gray-200"
+            />
+          </section>
+
+          <section class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="rounded-2xl bg-[var(--bg-back)] p-4 shadow-sm">
+              <label class="mb-2 block text-sm font-medium opacity-80">
+                {{ $t('table.deadline') }}
+              </label>
+              <input
+                v-model="formApi.form.value.deadline"
+                type="datetime-local"
+                class="w-full rounded-xl border border-transparent bg-white px-4 py-3 text-black outline-none transition
+                     focus:border-gray-300 focus:ring-2 focus:ring-gray-200"
+              />
+            </div>
+
+            <div
+              v-if="isTaskMode"
+              class="rounded-2xl bg-[var(--bg-back)] p-4 shadow-sm"
             >
-              {{ o.label }}
-            </option>
-          </select>
+              <label class="mb-2 block text-sm font-medium opacity-80">
+                {{ $t('table.handler') }}
+              </label>
+              <select
+                v-model="formApi.form.value.handlerId"
+                class="w-full rounded-xl border border-transparent bg-white px-4 py-3 text-black outline-none transition
+                     focus:border-gray-300 focus:ring-2 focus:ring-gray-200"
+              >
+                <option disabled value="">
+                  {{ $t('table.selectHandler') }}
+                </option>
+                <option
+                  v-for="o in usersStore.options"
+                  :key="o.value"
+                  :value="o.value"
+                >
+                  {{ o.label }}
+                </option>
+              </select>
+            </div>
+          </section>
+
+          <section class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+            <button
+              v-if="canDelete"
+              type="button"
+              class="rounded-xl border border-red-300 px-4 py-3 font-medium text-red-600 transition hover:scale-[0.98] active:scale-95"
+              @click="emit('delete')"
+            >
+              {{ $t('btn.delete') }}
+            </button>
+
+            <button
+              type="submit"
+              class="rounded-xl bg-black px-4 py-3 font-medium text-white transition hover:scale-[0.98] active:scale-95"
+            >
+              {{ $t('btn.save') }}
+            </button>
+          </section>
         </div>
       </div>
-      <div class="flex justify-center gap-2 mt-2">
-        <button type="submit" class="p-2 border rounded-md">
-          {{ $t('btn.save') }}
-        </button>
-        <button
-          v-if="canDelete"
-          type="button"
-          class="p-2 border rounded-md"
-          @click="emit('delete')"
-        >
-          {{ $t('btn.delete') }}
-        </button>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
+
   <ErrorModalContent
     v-model="error"
     :type="type_"
     :text="text"
     @close="resetErrorModal"
   />
+
   <Loading v-if="loading" />
 </template>
