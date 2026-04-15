@@ -1,30 +1,30 @@
 import type {Project} from "~~/types/project"
 import {useAuthStore} from "~/stores/auth"
 import {storeToRefs} from "pinia"
-import type {Task} from "~~/types/task";
+import type {Task} from "~~/types/task"
 
 export function hasAccess(
   {
-    project,
-    task,
+    project, task,
     roles = []
   }: {
     project?: Project
     task?: Task
     roles?: string[]
   }) {
-  const obj = ref()
+  let handlerId: string | undefined
+
   if (project) {
-    obj.value = project.handlerId
+    handlerId = project.handlerId
   } else if (task) {
-    obj.value = task.handlerId
+    handlerId = task.handlerId
   }
 
   const auth = useAuthStore()
   const {user} = storeToRefs(auth)
 
   return (
-    obj.value === user.value?.id ||
-    roles.includes(user.value?.role ?? '')
+    handlerId === user.value?.id ||
+    user.value?.roles?.some(r => roles.includes(r.role.name)) === true
   )
 }
