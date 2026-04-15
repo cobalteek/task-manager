@@ -1,10 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
-  nitro: {
-    preset: "netlify"
-  },
-
   css: ['~/assets/css/main.css'],
 
   vite: {
