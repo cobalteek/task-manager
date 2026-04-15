@@ -60,6 +60,11 @@ export default {
     delete: 'Delete',
     set: 'Set',
     close: 'Close',
+    cancel: 'Cancel',
+    addProject: 'Add project',
+    addTask: 'Add task',
+    editProject: 'Edit project',
+    editTask: 'Edit task',
     cross: '×'
   },
   select: {
@@ -130,6 +135,7 @@ export default {
       idRequired: 'User ID required',
       onlyCreator: 'Only the creator of the project can do it.',
       onlyOwner: 'Only owner can do it.',
+      creatorForever: 'You can\'t stop being the owner.',
       chooseUserAndRole: 'Please choose a user and a role.',
       loadUsers: 'Failed to load users.',
       get: 'Failed to get user'
