@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia'
 import {ref} from "vue"
 import type {Project} from '~~/types/project'
+// import {useTasksStore} from "~/stores/tasks";
 
 export const useProjectsStore = defineStore('project', () => {
   const projects = ref<Project[]>([])
@@ -62,6 +63,11 @@ export const useProjectsStore = defineStore('project', () => {
     })
   }
 
+  // async function progressProject(projectId: string) {
+  //   await useTasksStore.fetchAll(projectId)
+  //
+  // }
+
   return {
     projects,
     isLoading,
@@ -70,6 +76,7 @@ export const useProjectsStore = defineStore('project', () => {
     createProject,
     searchProjects,
     updateProject,
-    deleteProject
+    deleteProject,
+    // progressProject
   }
 })
