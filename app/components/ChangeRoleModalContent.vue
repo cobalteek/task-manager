@@ -156,7 +156,7 @@ async function addRole() {
             type="button"
             @click="addRole"
             :disabled="!candidate  || !role"
-            class="rounded-xl border border-[var(--btn-border)] bg-[var(--btn-bg)] px-5 py-3 font-medium text-black transition
+            class="rounded-xl border border-[var(--btn-border)] bg-[var(--btn-bg)] px-5 py-3 font-medium text-[var(--text-main)] transition
                   disabled:cursor-not-allowed disabled:opacity-50 hover:scale-[0.98] active:scale-95"
           >
             {{ $t('btn.set') }}
