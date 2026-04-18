@@ -135,8 +135,6 @@ function onEdit(task: Task) {
 
     <!-- tablet / desktop table -->
     <div class="hidden md:block">
-      <div class="overflow-x-auto">
-        <div class="min-w-[980px]">
           <TablesBase :headers="headers" :grid-template-columns="taskColumns">
             <template #default="{ gridTemplateColumns }">
               <div
@@ -194,8 +192,6 @@ function onEdit(task: Task) {
               <Loading v-if="isLoading" />
             </template>
           </TablesBase>
-        </div>
-      </div>
     </div>
   </div>
 </template>

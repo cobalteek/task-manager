@@ -148,7 +148,7 @@ async function myFetch() {
       <hr class="w-full my-1" />
 
       <div class="min-h-0 flex-1 overflow-hidden">
-        <div class="h-full overflow-auto px-1 sm:px-2 lg:px-3 hide-scrollbar">
+        <div class="h-full overflow-auto hide-scrollbar">
           <TablesTasksTable
             :project="project"
             :tasks="tasks"
