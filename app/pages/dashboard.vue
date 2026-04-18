@@ -39,7 +39,7 @@ definePageMeta({
       <div class="w-full h-full">
         <section class="inline-flex items-center justify-end w-full gap-3">
           <button
-            v-if="user?.roles?.some(r => r.role.name === 'owner')"
+            v-if="user?.role === 'owner'"
             @click="chooseRole = !chooseRole"
             class="p-2 text-shadow btn"
           >

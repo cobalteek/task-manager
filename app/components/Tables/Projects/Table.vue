@@ -2,6 +2,7 @@
 import type { Project } from "~~/types/project"
 import { formatDate } from "~~/utils/formatDate"
 import { hasAccess } from "~~/utils/hasAccess"
+import NotFound from "~/components/NotFound.vue";
 
 defineProps<{
   projects: Project[]
@@ -120,7 +121,7 @@ function onOpen(project: Project) {
           </div>
         </div>
       </div>
-
+      <NotFound v-if="projects.length === 0 && !isLoading" />
       <Loading v-if="isLoading" />
     </div>
 
@@ -178,7 +179,7 @@ function onOpen(project: Project) {
                   {{ prj.handler?.name || "—" }}
                 </div>
               </div>
-
+              <NotFound v-if="projects.length === 0 && !isLoading" />
               <Loading v-if="isLoading" />
             </template>
           </TablesBase>

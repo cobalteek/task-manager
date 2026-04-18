@@ -53,7 +53,7 @@ const selectedUser = computed(() => {
 })
 
 watchEffect(() => {
-  role.value = selectedUser.value?.roles?.[0]?.roleId ?? null
+  role.value = selectedUser?.value?.role.id ?? null
 })
 
 function close() {

@@ -25,6 +25,6 @@ export function hasAccess(
 
   return (
     handlerId === user.value?.id ||
-    user.value?.roles?.some(r => roles.includes(r.role.name)) === true
+    roles.includes(user.value?.role ?? '')
   )
 }
