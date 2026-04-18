@@ -29,7 +29,7 @@ const obj = computed(() => props.task ?? props.project)
     >
       <div class="flex flex-col gap-3 sm:gap-4">
         <section class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
-          <div class="mb-1 text-xs sm:text-sm text-gray-500">
+          <div class="mb-1 text-xs sm:text-sm text-[var(--text-main)]">
             {{ $t('table.title') }}
           </div>
           <div class="break-words text-base font-semibold sm:text-lg">
@@ -38,7 +38,7 @@ const obj = computed(() => props.task ?? props.project)
         </section>
 
         <section class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
-          <div class="mb-1 text-xs sm:text-sm text-gray-500">
+          <div class="mb-1 text-xs sm:text-sm text-[var(--text-main)]">
             {{ $t('table.description') }}
           </div>
           <div class="whitespace-pre-wrap break-words text-sm sm:text-base">
@@ -50,7 +50,7 @@ const obj = computed(() => props.task ?? props.project)
           class="grid grid-cols-1 gap-3 sm:grid-cols-2"
         >
           <div class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
-            <div class="mb-1 text-xs sm:text-sm text-gray-500">
+            <div class="mb-1 text-xs sm:text-sm text-[var(--text-main)]">
               {{ $t('table.createdAt') }}
             </div>
             <div class="break-words text-sm sm:text-base">
@@ -59,7 +59,7 @@ const obj = computed(() => props.task ?? props.project)
           </div>
 
           <div class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
-            <div class="mb-1 text-xs sm:text-sm text-gray-500">
+            <div class="mb-1 text-xs sm:text-sm ">
               {{ $t('table.deadline') }}
             </div>
             <div class="break-words text-sm sm:text-base">
@@ -69,7 +69,7 @@ const obj = computed(() => props.task ?? props.project)
         </section>
 
         <section class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
-          <div class="mb-2 text-xs sm:text-sm text-gray-500">
+          <div class="mb-2 text-xs sm:text-sm ">
             {{ $t('table.status') }}
           </div>
 
@@ -79,7 +79,7 @@ const obj = computed(() => props.task ?? props.project)
                 :disabled="!hasAccess({ task: task, roles: ['admin', 'owner'] })"
                 :project="project"
                 :task="task"
-                class="bg-[var(--bg-back)] text-black"
+                class="bg-[var(--bg-back)] text-[var(--input-bg)]"
               />
             </div>
 
@@ -88,14 +88,14 @@ const obj = computed(() => props.task ?? props.project)
                 v-if="project"
                 :disabled="!hasAccess({ project, roles: ['owner'] })"
                 :project="project"
-                class="bg-[var(--bg-back)] text-black"
+                class="bg-[var(--bg-back)] text-[var(--input-text)]"
               />
             </div>
           </div>
         </section>
 
         <section class="rounded-2xl bg-[var(--bg-back)] p-3 sm:p-4 shadow-sm">
-          <div class="mb-1 text-xs sm:text-sm text-gray-500">
+          <div class="mb-1 text-xs sm:text-sm">
             {{ $t('table.handler') }}
           </div>
           <div class="break-words text-sm sm:text-base">

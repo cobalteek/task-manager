@@ -45,7 +45,7 @@ onBeforeUnmount(() => {
   <Teleport to="body">
     <div
       v-if="modelValue"
-      class="fixed z-50 min-w-[200px] overflow-hidden rounded-md border border-gray-200 bg-[var(--bg-context)] shadow-lg"
+      class="fixed z-50 min-w-[200px] overflow-hidden rounded-md border border-[var(--bg-main)] bg-[var(--bg-context)] shadow-lg"
       :style="{
         left: `${x}px`,
         top: `${y}px`
@@ -56,8 +56,7 @@ onBeforeUnmount(() => {
       <button
         v-for="item in items"
         :key="item.key"
-        class="block w-full px-4 py-2 text-gray-100 text-left hover:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
-        :class="{ 'text-red-500': item.danger, 'text-black': !item.danger }"
+        class="block w-full px-4 py-2 text-[var(--text-main)] bg-[var(--bg-context)] text-left hover:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
         :disabled="item.disabled"
         @click="onSelect(item)"
       >

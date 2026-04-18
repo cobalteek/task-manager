@@ -67,8 +67,8 @@ watch(
             <input
               v-model="formApi.form.value.title"
               required
-              class="w-full rounded-xl border border-transparent bg-white px-4 py-3 text-black outline-none transition
-                   focus:border-gray-300 focus:ring-2 focus:ring-gray-200"
+              class="w-full rounded-xl border border-transparent bg-[var(--input-bg)] px-4 py-3 text-[var(--input-text)] outline-none transition
+                   focus:border-[var(--border-main)] focus:ring-2 focus:ring-gray-200"
             />
           </section>
 
@@ -79,8 +79,8 @@ watch(
             <textarea
               v-model="formApi.form.value.description"
               required
-              class="min-h-[140px] w-full resize-none rounded-xl border border-transparent bg-white px-4 py-3 text-black outline-none transition
-                   focus:border-gray-300 focus:ring-2 focus:ring-gray-200"
+              class="min-h-[140px] w-full resize-none rounded-xl border border-transparent bg-[var(--input-bg)] px-4 py-3 text-[var(--input-text)] outline-none transition
+                   focus:border-[var(--border-main)] focus:ring-2 focus:ring-gray-200"
             />
           </section>
 
@@ -92,8 +92,8 @@ watch(
               <input
                 v-model="formApi.form.value.deadline"
                 type="datetime-local"
-                class="w-full rounded-xl border border-transparent bg-white px-4 py-3 text-black outline-none transition
-                     focus:border-gray-300 focus:ring-2 focus:ring-gray-200"
+                class="w-full rounded-xl border border-transparent bg-[var(--input-bg)] px-4 py-3 text-[var(--input-text)] outline-none transition
+                     focus:border-[var(--border-main)] focus:ring-2 focus:ring-gray-200"
               />
             </div>
 
@@ -103,8 +103,8 @@ watch(
               </label>
               <select
                 v-model="formApi.form.value.handlerId"
-                class="w-full rounded-xl border border-transparent bg-white px-4 py-3 text-black outline-none transition
-                     focus:border-gray-300 focus:ring-2 focus:ring-gray-200"
+                class="w-full rounded-xl border border-transparent bg-[var(--input-bg)] px-4 py-3 text-[var(--input-text)] outline-none transition
+                     focus:border-[var(--border-main)] focus:ring-2 focus:ring-gray-200"
               >
                 <option disabled value="">
                   {{ $t('table.selectHandler') }}
@@ -132,7 +132,7 @@ watch(
 
             <button
               type="submit"
-              class="rounded-xl bg-black px-4 py-3 font-medium text-white transition hover:scale-[0.98] active:scale-95"
+              class="rounded-xl bg-[var(--btn-bg)] px-4 py-3 font-medium text-[var(--text-main)] transition hover:scale-[0.98] active:scale-95"
             >
               {{ $t('btn.save') }}
             </button>

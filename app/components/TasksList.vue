@@ -7,6 +7,7 @@ import AddOrEditModalContent from "~/components/AddOrEditModalContent.vue"
 import InfoModalContent from "~/components/InfoModalContent.vue"
 import { hasAccess } from "~~/utils/hasAccess"
 import { useProjectTaskForm } from "~~/composables/useProjectTaskForm"
+import {useProjectsStore} from "~/stores/projects";
 
 const props = defineProps<{
   modelValue: boolean
@@ -27,6 +28,8 @@ const allTasks = ref(true)
 const mode = ref<"create-task" | "edit-task" | "create-project" | "edit-project">(
   "create-task"
 )
+
+const prjStore = useProjectsStore()
 
 const textError = ref("")
 const query = ref("")
@@ -121,7 +124,7 @@ async function myFetch() {
       max-w-[1500px]
       mx-auto
       rounded-xl
-      border border-solid border-gray-100
+      border border-solid border-[var(--bg-main)]
       overflow-hidden
 
       min-h-[420px]

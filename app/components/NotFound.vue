@@ -4,7 +4,7 @@ const targetText = `<${$t('error.notFound')}/>`
 
 <template>
   <div class="flex items-center justify-center h-full">
-    <div class="font-mono text-2xl text-gray-100">
+    <div class="font-mono text-2xl text-[var(--text-main)]">
       {{targetText}}
     </div>
   </div>

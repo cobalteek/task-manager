@@ -22,12 +22,12 @@ function close() {
     >
       <div
         v-bind="$attrs"
-        class="relative flex flex-col border border-solid border-gray-200 rounded-2xl bg-[var(--bg-modal)] min-w-[280px] min-h-[160px] shadow-xl"
+        class="relative flex flex-col border border-solid border-[var(--bg-main)] rounded-2xl bg-[var(--bg-modal)] min-w-[280px] min-h-[160px] shadow-xl"
       >
         <button
           type="button"
           @click="close"
-          class="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/80 text-lg leading-none transition hover:scale-95"
+          class="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-main)] bg-[var(--btn-bg)]text-lg leading-none transition hover:scale-95"
         >
           ×
         </button>

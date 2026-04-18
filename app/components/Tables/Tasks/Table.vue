@@ -26,7 +26,7 @@ const headers = computed(() => [
 ])
 
 const taskColumns =
-  "minmax(140px, 1.1fr) minmax(180px, 1.3fr) minmax(150px, 1fr) minmax(140px, 1fr) minmax(140px, 1fr) minmax(120px, 0.9fr)"
+  "minmax(140px, 1.1fr) minmax(180px, 1.3fr) minmax(180px, 1fr) minmax(140px, 1fr) minmax(140px, 1fr) minmax(120px, 0.9fr)"
 
 function onOpen(task: Task) {
   emit("open", task)
@@ -44,7 +44,7 @@ function onEdit(task: Task) {
       <div
         v-for="tsk in tasks"
         :key="tsk.id"
-        class="rounded-2xl border border-gray-200 bg-[var(--bg-modal)] p-3 shadow-sm"
+        class="rounded-2xl border border-[var(--bg-main)] bg-[var(--bg-modal)] p-3 shadow-sm"
       >
         <div class="flex items-start justify-between gap-3">
           <div
@@ -60,7 +60,7 @@ function onEdit(task: Task) {
           </div>
 
           <button
-            class="shrink-0 rounded-lg border border-gray-300 px-2 py-1 text-lg leading-none"
+            class="shrink-0 rounded-lg border border-[var(--btn-bg)] px-2 py-1 text-[var(--btn-text)] text-lg leading-none"
             @click="onEdit(tsk)"
           >
             ⋮

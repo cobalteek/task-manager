@@ -39,13 +39,13 @@ function onUpdateModelValue(value: boolean) {
       <div class="row-start-1 flex justify-center items-center mt-9">
         <div
           v-if="type == 'error'"
-          class="w-[30px] h-[30px] bg-[var(--bg-error)] rounded-full border border-gray-200 leading-tight text-center text-xl"
+          class="w-[30px] h-[30px] bg-[var(--bg-error)] rounded-full border border-[var(--bg-main)] leading-tight text-center text-xl"
         >
           !
         </div>
         <div
           v-if="type == 'info'"
-          class="w-[30px] h-[30px] bg-[var(--bg-info)] text-semibold text-black rounded-full border border-gray-200 leading-tight text-center text-xl"
+          class="w-[30px] h-[30px] bg-[var(--bg-info)] text-semibold text-black rounded-full border border-[var(--bg-main)] leading-tight text-center text-xl"
         >
           i
         </div>

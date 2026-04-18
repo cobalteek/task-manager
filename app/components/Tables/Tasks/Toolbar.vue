@@ -22,7 +22,7 @@ const emit = defineEmits<{
         <div class="relative w-full sm:max-w-[320px]">
           <input
             :value="query"
-            class="w-full rounded-xl border border-gray-300 bg-white py-2 pl-3 pr-9 text-black focus:outline-none"
+            class="w-full rounded-xl border border-[var(--bg-main)] bg-[var(--input-bg)] py-2 pl-3 pr-9 text-[var(--input-text)] focus:outline-none"
             :placeholder="$t('form.placeholder.search')"
             @input="emit('update:query', ($event.target as HTMLInputElement).value)"
           >

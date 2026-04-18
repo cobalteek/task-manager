@@ -171,7 +171,7 @@ function handleContextAction(key: string) {
       max-w-[1500px]
       mx-auto
       rounded-xl
-      border border-solid border-gray-200
+      border border-solid border-[var(--bg-main)]
       overflow-hidden
 
       h-[calc(100dvh-100px)]
@@ -194,10 +194,10 @@ function handleContextAction(key: string) {
         />
       </div>
 
-      <hr class="w-full border-gray-200" />
+      <hr class="w-full border-[var(--bg-main)]" />
 
       <div class="min-h-0 flex-1 overflow-hidden">
-        <div class="h-full overflow-auto px-1 sm:px-2 lg:px-3 hide-scrollbar">
+        <div class="h-full overflow-auto hide-scrollbar">
           <TablesProjectsTable
             :projects="projects"
             :is-loading="isLoading"

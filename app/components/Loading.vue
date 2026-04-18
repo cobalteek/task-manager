@@ -56,7 +56,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex items-center justify-center h-full">
-    <span class="font-mono text-2xl text-gray-100">
+    <span class="font-mono text-2xl text-[var(--text-main)]">
       {{ displayText }}<span class="animate-pulse">|</span>
     </span>
   </div>

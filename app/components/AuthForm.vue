@@ -26,7 +26,7 @@ function setValue(key: string, value: string) {
 
 <template>
   <div
-    class="w-2/6 min-w-[300px] max-w-[330px] max-h-4/6 p-10 bg-[var(--bg-modal)] border border-solid border-neutral rounded-xl flex overflow-hidden">
+    class="w-2/6 min-w-[300px] max-w-[330px] max-h-4/6 p-10 bg-[var(--bg-modal)] border border-solid border-[var(--bg-main)] rounded-xl flex overflow-hidden">
     <div class="flex mx-auto flex-col justify-between items-center">
       <h4 class="font-bold text-xl mb-2 ">
         {{ name }}
@@ -41,7 +41,7 @@ function setValue(key: string, value: string) {
           @input="setValue(field.key, ($event.target as HTMLInputElement).value)"
           :type="field.type"
           :placeholder="$t(field.placeholder)"
-          class="p-1 pl-2 mb-5 rounded-md active:border-gray-600 text-black bg-white"
+          class="p-1 pl-2 mb-5 rounded-md active:border-gray-200 text-[var(--input-text)] bg-[var(--input-bg)]"
         />
         <div v-if="sex" class="flex gap-6">
           <label class="flex items-center gap-2 cursor-pointer">

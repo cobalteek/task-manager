@@ -2,6 +2,7 @@
 import {navigateTo} from "nuxt/app";
 import {useAuthStore} from "~/stores/auth";
 import {storeToRefs} from "pinia";
+import ToggleTheme from "~/components/ToggleTheme.vue";
 
 const auth = useAuthStore()
 const {user} = storeToRefs(auth)
@@ -36,13 +37,13 @@ const onChangeLocale = async (event: Event) => {
 </script>
 
 <template>
-  <header class="inline-flex justify-between items-center w-full bg-[var(--bg-header)] text-white text-md">
+  <header class="inline-flex justify-between items-center w-full bg-[var(--bg-header)] text-[var(--text-main)] text-md">
     <div class="inline-flex items-center">
       <NuxtLink class="" to="/">
-        <img class="max-w-[100px] invert" src="../assets/logo.png" alt="logo"/>
+        <img class="max-w-[100px] theme-logo" src="../assets/logo.png" alt="logo"/>
       </NuxtLink>
       <ClientOnly>
-        <div>
+        <div class="inline-flex gap-2">
           <select
             :value="locale"
             class="select"
@@ -60,6 +61,7 @@ const onChangeLocale = async (event: Event) => {
             </option>
           </select>
         </div>
+        <ToggleTheme/>
       </ClientOnly>
     </div>
     <div class="sm:inline-flex hidden gap-8">
@@ -79,7 +81,7 @@ const onChangeLocale = async (event: Event) => {
       </NuxtLink>
       <button @click="logout_" class="inline-flex items-center justify-center bg- border rounded p-1 btn sm: mr-4">
         {{ user?.name }}
-        <img src="../assets/logout.png" alt="logout" class="invert h-[30px]"/>
+        <img src="../assets/logout.png" alt="logout" class="theme-logo h-[30px]"/>
       </button>
     </div>
     <div v-else class="inline-flex items-center justify-center gap-2 sm: mr-1">

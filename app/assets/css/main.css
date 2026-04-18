@@ -5,19 +5,33 @@
   padding: 0;
   --font-sans: 'Inter', sans-serif;
   --bg-header: #111111;
-  --bg-context: #17161CE6;
-  --bg-hover-context: #FFFFFF26;
+  --bg-context: #17161ce6;
+  --bg-hover-context: #ffffff26;
   --bg-back: #1f1f29;
   --bg-modal: #17161c;
   --bg-error: rgba(112, 2, 2, 0.75);
   --bg-info: #fdca01;
   --btn-hover: #4b4b50;
 
+  --text-main: #f5f7fa;
+  --text-soft: #c9ced6;
+  --text-muted: #9aa3b2;
+
+  --border-main: #3a3a44;
+  --input-bg: #22222c;
+  --input-border: #4b5563;
+  --input-text: #f5f7fa;
+  --placeholder: #9ca3af;
+
+  --btn-bg: #1f1f29;
+  --btn-text: #f5f7fa;
+  --btn-border: #d1d5db;
+
   .btn {
     @apply
     border
     border-solid
-    border-gray-100
+    border-[var(--btn-border)]
     rounded-md
     hover:bg-[var(--bg-hover-context)]
     disabled:opacity-50
@@ -30,12 +44,12 @@
 
   .select {
     @apply
-    text-gray-100
+    text-[var(--text-main)]
     bg-[var(--bg-context)]
     rounded-md
     p-1
     border
-    border-gray-100
+    border-[var(--border-main)]
     disabled:opacity-50
     disabled:cursor-not-allowed
   }
@@ -49,4 +63,33 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+}
+
+html:not(.light) .theme-logo {
+  filter: invert(1);
+}
+
+html.light {
+  --bg-header: #ffffff;
+  --bg-context: rgba(255, 255, 255, 0.96);
+  --bg-hover-context: rgba(15, 23, 42, 0.05);
+  --bg-back: #f5f7fb;
+  --bg-modal: #ffffff;
+  --bg-error: rgba(220, 38, 38, 0.12);
+  --bg-info: #fef3c7;
+  --btn-hover: #e7eaf0;
+
+  --text-main: #111827;
+  --text-soft: #374151;
+  --text-muted: #6b7280;
+
+  --border-main: #d7dde7;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --input-text: #111827;
+  --placeholder: #94a3b8;
+
+  --btn-bg: #ffffff;
+  --btn-text: #111827;
+  --btn-border: #cbd5e1;
 }

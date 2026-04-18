@@ -90,7 +90,7 @@ definePageMeta({
     </div>
     <AppTransition>
       <div v-if="!showProjects"
-           class="my-auto w-full h-full flex justify-center items-center text-[200px] text-[var(--bg-back)]">
+           class="select-none my-auto w-full h-full flex justify-center items-center text-[200px] text-[var(--bg-back)]">
         <h1>{{ kek }}</h1>
       </div>
     </AppTransition>

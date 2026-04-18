@@ -112,8 +112,8 @@ async function addRole() {
             </label>
             <select
               v-model="candidate"
-              class="w-full rounded-xl border border-white/10 bg-[var(--bg-context)] px-4 py-3 text-gray-100 outline-none transition
-                     focus:border-white/20"
+              class="w-full rounded-xl border border-[var(--border-main)] bg-[var(--bg-context)] px-4 py-3 text-[var(--text-main)] outline-none transition
+                     focus:border-[var(--border-main)/20]"
             >
               <option disabled value="">
                 {{ $t('select.selectUser') }}
@@ -134,8 +134,8 @@ async function addRole() {
             </label>
             <select
               v-model.number="role"
-              class="w-full rounded-xl border border-white/10 bg-[var(--bg-context)] px-4 py-3 text-gray-100 outline-none transition
-         focus:border-white/20"
+              class="w-full rounded-xl border border-[var(--border-main)] bg-[var(--bg-context)] px-4 py-3 text-[var(--text-main)] outline-none transition
+              focus:border-[var(--border-main)/20]"
             >
               <option disabled :value="null">
                 {{ $t('select.selectRole') }}
@@ -156,7 +156,7 @@ async function addRole() {
             type="button"
             @click="addRole"
             :disabled="!candidate  || !role"
-            class="rounded-xl border border-white/10 bg-white px-5 py-3 font-medium text-black transition
+            class="rounded-xl border border-[var(--btn-border)] bg-[var(--btn-bg)] px-5 py-3 font-medium text-black transition
                   disabled:cursor-not-allowed disabled:opacity-50 hover:scale-[0.98] active:scale-95"
           >
             {{ $t('btn.set') }}

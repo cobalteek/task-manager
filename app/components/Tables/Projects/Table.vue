@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { Project } from "~~/types/project"
-import { formatDate } from "~~/utils/formatDate"
-import { hasAccess } from "~~/utils/hasAccess"
+import type {Project} from "~~/types/project"
+import {formatDate} from "~~/utils/formatDate"
+import {hasAccess} from "~~/utils/hasAccess"
 import NotFound from "~/components/NotFound.vue";
 
 defineProps<{
@@ -24,7 +24,7 @@ const headers = computed(() => [
 ])
 
 const projectColumns =
-  "minmax(180px, 1fr) minmax(220px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(140px, 0.9fr) minmax(150px, 1fr)"
+  "minmax(180px, 1fr) minmax(220px, 1fr) minmax(180px, 1fr) minmax(150px, 1fr) minmax(140px, 0.9fr) minmax(150px, 1fr)"
 
 function onOpen(project: Project) {
   emit("open", project)
@@ -38,14 +38,14 @@ function onOpen(project: Project) {
       <div
         v-for="prj in projects"
         :key="prj.id"
-        class="rounded-2xl border border-gray-200 p-3 shadow-sm"
+        class="rounded-2xl border border-[var(--bg-main)] p-3 shadow-sm"
       >
         <div class="flex items-start justify-between gap-3">
           <div
             class="min-w-0 flex-1 cursor-pointer"
             @click="onOpen(prj)"
           >
-            <div class="text-sm text-gray-500">
+            <div class="text-sm text-[var(--text-main)]">
               {{ $t("table.title") }}
             </div>
             <div class="break-words text-base font-semibold line-clamp-2">
@@ -54,7 +54,7 @@ function onOpen(project: Project) {
           </div>
 
           <button
-            class="shrink-0 rounded-lg border border-gray-200 px-2 py-1 text-lg leading-none"
+            class="shrink-0 rounded-lg border border-[var(--btn-border)] px-2 py-1 text-lg leading-none"
             @click="emit('openContextMenu', prj, $event)"
           >
             ⋮
@@ -65,7 +65,7 @@ function onOpen(project: Project) {
           class="mt-3 cursor-pointer"
           @click="onOpen(prj)"
         >
-          <div class="text-sm text-gray-500">
+          <div class="text-sm">
             {{ $t("table.description") }}
           </div>
           <div class="break-words text-sm line-clamp-3">
@@ -75,7 +75,7 @@ function onOpen(project: Project) {
 
         <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
-            <div class="mb-1 text-sm text-gray-500">
+            <div class="mb-1 text-sm">
               {{ $t("table.status") }}
             </div>
             <StatusesList
@@ -88,7 +88,7 @@ function onOpen(project: Project) {
             class="cursor-pointer"
             @click="onOpen(prj)"
           >
-            <div class="text-sm text-gray-500">
+            <div class="text-sm">
               {{ $t("table.handler") }}
             </div>
             <div class="text-sm break-words">
@@ -100,7 +100,7 @@ function onOpen(project: Project) {
             class="cursor-pointer"
             @click="onOpen(prj)"
           >
-            <div class="text-sm text-gray-500">
+            <div class="text-sm">
               {{ $t("table.deadline") }}
             </div>
             <div class="text-sm">
@@ -112,7 +112,7 @@ function onOpen(project: Project) {
             class="cursor-pointer"
             @click="onOpen(prj)"
           >
-            <div class="text-sm text-gray-500">
+            <div class="text-sm">
               {{ $t("table.createdAt") }}
             </div>
             <div class="text-sm">
@@ -121,70 +121,66 @@ function onOpen(project: Project) {
           </div>
         </div>
       </div>
-      <NotFound v-if="projects.length === 0 && !isLoading" />
-      <Loading v-if="isLoading" />
+      <NotFound v-if="projects.length === 0 && !isLoading"/>
+      <Loading v-if="isLoading"/>
     </div>
 
     <div class="hidden md:block">
-      <div class="overflow-x-auto">
-        <div class="min-w-[980px]">
-          <TablesBase :headers="headers" :grid-template-columns="projectColumns">
-            <template #default="{ gridTemplateColumns }">
-              <div
-                v-for="prj in projects"
-                :key="prj.id"
-                class="grid items-center gap-2 my-3 rounded-lg px-2 py-2 hover:bg-[var(--bg-hover-context)] hover:cursor-pointer"
-                :style="{ gridTemplateColumns }"
-                @contextmenu.prevent.stop="emit('openContextMenu', prj, $event)"
-              >
-                <div
-                  class="min-w-0 text-center overflow-hidden line-clamp-3 break-words"
-                  @click="onOpen(prj)"
-                >
-                  {{ prj.title }}
-                </div>
+      <TablesBase :headers="headers" :grid-template-columns="projectColumns">
+        <template #default="{ gridTemplateColumns }">
+          <div
+            v-for="prj in projects"
+            :key="prj.id"
+            class="grid w-full box-border items-center gap-2 my-3 rounded-lg px-2 py-2 hover:bg-[var(--bg-hover-context)] hover:cursor-pointer"
+            :style="{ gridTemplateColumns }"
+            @contextmenu.prevent.stop="emit('openContextMenu', prj, $event)"
+          >
+            <div
+              class="min-w-0 text-center overflow-hidden line-clamp-3 break-words"
+              @click="onOpen(prj)"
+            >
+              {{ prj.title }}
+            </div>
 
-                <div
-                  class="min-w-0 overflow-hidden line-clamp-3 break-words"
-                  @click="onOpen(prj)"
-                >
-                  {{ prj.description }}
-                </div>
+            <div
+              class="min-w-0 overflow-hidden line-clamp-3 break-words"
+              @click="onOpen(prj)"
+            >
+              {{ prj.description }}
+            </div>
 
-                <div class="min-w-0 flex justify-center">
-                  <StatusesList
-                    :disabled="!hasAccess({ project: prj, roles: ['owner'] })"
-                    :project="prj"
-                  />
-                </div>
+            <div class="min-w-0 flex justify-center">
+              <StatusesList
+                :disabled="!hasAccess({ project: prj, roles: ['owner'] })"
+                :project="prj"
+              />
+            </div>
 
-                <div
-                  class="min-w-0 text-center"
-                  @click="onOpen(prj)"
-                >
-                  {{ formatDate(prj.deadline) }}
-                </div>
+            <div
+              class="min-w-0 text-center"
+              @click="onOpen(prj)"
+            >
+              {{ formatDate(prj.deadline) }}
+            </div>
 
-                <div
-                  class="min-w-0 text-center"
-                  @click="onOpen(prj)"
-                >
-                  {{ formatDate(prj.createdAt) }}
-                </div>
+            <div
+              class="min-w-0 text-center"
+              @click="onOpen(prj)"
+            >
+              {{ formatDate(prj.createdAt) }}
+            </div>
 
-                <div
-                  class="min-w-0 text-center break-words"
-                  @click="onOpen(prj)"
-                >
-                  {{ prj.handler?.name || "—" }}
-                </div>
-              </div>
-              <NotFound v-if="projects.length === 0 && !isLoading" />
-              <Loading v-if="isLoading" />
-            </template>
-          </TablesBase>
-        </div>
-      </div>
+            <div
+              class="min-w-0 text-center break-words"
+              @click="onOpen(prj)"
+            >
+              {{ prj.handler?.name || "—" }}
+            </div>
+          </div>
+          <NotFound v-if="projects.length === 0 && !isLoading"/>
+          <Loading v-if="isLoading"/>
+        </template>
+      </TablesBase>
     </div>
   </div>
 </template>
