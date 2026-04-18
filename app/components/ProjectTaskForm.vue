@@ -26,8 +26,16 @@ const emit = defineEmits<{
 const usersStore = useUsersStore()
 const formApi = props.formApi
 
-const isTaskMode = computed(() =>
-  props.mode === 'create-task' || props.mode === 'edit-task'
+watch(
+  () => props.mode,
+  async (v) => {
+    if (v === 'create-project' || v === 'edit-project') {
+      await usersStore.fetchUsers('admin', { force: true })
+    } else {
+      await usersStore.fetchUsers('user', { force: true })
+    }
+  },
+  { immediate: true }
 )
 </script>
 
@@ -114,7 +122,7 @@ const isTaskMode = computed(() =>
 
           <section class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
             <button
-              v-if="canDelete"
+              v-if="canDelete && mode === 'edit-project' || mode === 'edit-task'"
               type="button"
               class="rounded-xl border border-red-300 px-4 py-3 font-medium text-red-600 transition hover:scale-[0.98] active:scale-95"
               @click="emit('delete')"
