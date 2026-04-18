@@ -89,10 +89,7 @@ const isTaskMode = computed(() =>
               />
             </div>
 
-            <div
-              v-if="isTaskMode"
-              class="rounded-2xl bg-[var(--bg-back)] p-4 shadow-sm"
-            >
+            <div class="rounded-2xl bg-[var(--bg-back)] p-4 shadow-sm">
               <label class="mb-2 block text-sm font-medium opacity-80">
                 {{ $t('table.handler') }}
               </label>
